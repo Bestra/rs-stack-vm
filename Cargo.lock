@@ -1,0 +1,4 @@
+[[package]]
+name = "stack_vm"
+version = "0.1.0"
+
