@@ -1,4 +1,5 @@
 #![feature(nll)]
+use std::collections::HashMap;
 
 pub enum Instruction {
     Halt,
@@ -16,11 +17,32 @@ pub enum Instruction {
     IsLt,
     Jmp(i32),
     JmpIf(i32),
+    Load(i32),
+    Store(i32),
+}
+
+pub struct Frame {
+    variables: HashMap<i32, i32>,
+}
+
+impl Frame {
+    pub fn get_variable(&self, key: i32) -> i32 {
+        *self.variables.get(&key).unwrap_or(&0)
+    }
+
+    pub fn set_variable(&mut self, key: i32, val: i32) {
+        self.variables.insert(key, val);
+    }
+
+    pub fn new() -> Frame {
+        Frame { variables: HashMap::new(), }
+    }
 }
 
 pub struct CPU {
     stack: Vec<i32>,
     program: Vec<Instruction>,
+    current_frame: Frame,
     instruction_address: usize,
     halted: bool,
 }
@@ -30,6 +52,7 @@ impl CPU {
         CPU {
             stack: Vec::new(),
             program: program,
+            current_frame: Frame::new(),
             instruction_address: 0,
             halted: false,
         }
@@ -131,6 +154,16 @@ impl CPU {
                 if k == 1 {
                     self.instruction_address = addr as usize;
                 }
+            }
+
+            Instruction::Store(var_pos) => {
+                let k = self.stack.pop().unwrap();
+                self.current_frame.set_variable(var_pos, k);
+            }
+
+            Instruction::Load(var_pos) => {
+                let v = self.current_frame.get_variable(var_pos);
+                self.stack.push(v);
             }
         }
     }
@@ -326,5 +359,32 @@ mod tests {
                 Instruction::Halt,
             ],
             6)
+    }
+
+    fn assert_current_frame_value(cpu: &CPU, index: i32, value: i32) {
+        assert_eq!(cpu.current_frame.get_variable(index), value);
+    }
+
+    #[test]
+    fn store_var() {
+        let mut cpu = CPU::new(vec![Instruction::Push(42), Instruction::Store(0), Instruction::Halt]);
+        cpu.run();
+        assert_eq!(3, cpu.instruction_address);
+        assert!(cpu.halted);
+        assert_current_frame_value(&cpu, 0, 42);
+    }
+
+    #[test]
+    fn load_uninitialized_var() {
+        
+    }
+
+    #[test]
+    fn load_stored_var() {
+        let mut cpu = CPU::new(vec![Instruction::Push(42), Instruction::Store(0), Instruction::Halt]);
+        cpu.run();
+        assert_eq!(3, cpu.instruction_address);
+        assert!(cpu.halted);
+        assert_current_frame_value(&cpu, 0, 42);
     }
 }
