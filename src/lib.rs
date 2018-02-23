@@ -14,6 +14,8 @@ pub enum Instruction {
     IsEq,
     IsGt,
     IsLt,
+    Jmp(i32),
+    JmpIf(i32),
 }
 
 pub struct CPU {
@@ -108,7 +110,7 @@ impl CPU {
 
             Instruction::Pop => {
                 assert!(self.stack.len() >= 1, "stack needs at least 1 value to pop");
-                self.stack.pop();
+                self.stack.pop().unwrap();
             }
 
             Instruction::Dup => {
@@ -118,6 +120,17 @@ impl CPU {
                 );
                 let n = self.stack.last().unwrap();
                 self.stack.push(*n);
+            }
+
+            Instruction::Jmp(addr) => {
+                self.instruction_address = addr as usize;
+            }
+
+            Instruction::JmpIf(addr) => {
+                let k = self.stack.pop().unwrap();
+                if k == 1 {
+                    self.instruction_address = addr as usize;
+                }
             }
         }
     }
@@ -134,6 +147,13 @@ mod tests {
         assert_eq!(l, cpu.instruction_address);
         assert!(cpu.halted);
         assert_eq!(cpu.stack, s);
+    }
+
+    fn test_final_address_for_instructions(prog: Vec<Instruction>, i: usize) {
+        let mut cpu = CPU::new(prog);
+        cpu.run();
+        assert!(cpu.halted);
+        assert_eq!(i, cpu.instruction_address);
     }
 
     #[test]
@@ -281,5 +301,30 @@ mod tests {
             ],
             vec![0],
         )
+    }
+
+    #[test]
+    fn test_jump() {
+        test_final_address_for_instructions(
+            vec![
+                Instruction::Jmp(2),
+                Instruction::Halt,
+                Instruction::Jmp(1)
+            ],
+        2)
+    }
+
+    #[test]
+    fn test_jump_if() {
+        test_final_address_for_instructions(
+            vec![
+                Instruction::Push(1),
+                Instruction::JmpIf(3),
+                Instruction::Pop,
+                Instruction::Push(0),
+                Instruction::JmpIf(2),
+                Instruction::Halt,
+            ],
+            6)
     }
 }
