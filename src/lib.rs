@@ -11,6 +11,9 @@ pub enum Instruction {
     Or,
     Pop,
     Dup,
+    IsEq,
+    IsGt,
+    IsLt,
 }
 
 pub struct CPU {
@@ -50,9 +53,9 @@ impl CPU {
             "stack needs at least 2 values to perform binary operation"
         );
 
-        let n1 = self.stack.pop().unwrap();
-        let n2 = self.stack.pop().unwrap();
-        self.stack.push(perform(n1, n2));
+        let top = self.stack.pop().unwrap();
+        let bot = self.stack.pop().unwrap();
+        self.stack.push(perform(top, bot));
     }
 
     fn decode_next_instruction(&mut self) {
@@ -63,22 +66,34 @@ impl CPU {
             Instruction::Halt => self.halted = true,
             Instruction::Push(val) => self.stack.push(val),
             Instruction::Add => {
-                self.bin_op(|n1, n2| n1 + n2);
+                self.bin_op(|top, bot| top + bot);
             }
             Instruction::Subtract => {
-                self.bin_op(|n2, n1| n1 - n2);
+                self.bin_op(|top, bot| bot - top);
             }
 
             Instruction::Multiply => {
-                self.bin_op(|n1, n2| n1 * n2);
+                self.bin_op(|top, bot| top * bot);
             }
 
             Instruction::And => {
-                self.bin_op(|n1, n2| ((n1 == 1) && (n2 == 1)) as i32);
+                self.bin_op(|top, bot| ((top == 1) && (bot == 1)) as i32);
             }
 
             Instruction::Or => {
-                self.bin_op(|n1, n2| ((n1 == 1) || (n2 == 1)) as i32);
+                self.bin_op(|top, bot| ((top == 1) || (bot == 1)) as i32);
+            }
+
+            Instruction::IsEq => {
+                self.bin_op(|top, bot| (top == bot) as i32);
+            }
+
+            Instruction::IsGt => {
+                self.bin_op(|top, bot| (top > bot) as i32);
+            }
+
+            Instruction::IsLt => {
+                self.bin_op(|top, bot| (top < bot) as i32);
             }
 
             Instruction::Not => {
@@ -87,8 +102,8 @@ impl CPU {
                     "stack needs at least 1 values to add"
                 );
 
-                let n1 = self.stack.pop().unwrap() == 1;
-                self.stack.push(!n1 as i32);
+                let top = self.stack.pop().unwrap() == 1;
+                self.stack.push(!top as i32);
             }
 
             Instruction::Pop => {
@@ -200,5 +215,71 @@ mod tests {
             vec![Instruction::Push(3), Instruction::Dup, Instruction::Halt],
             vec![3, 3],
         );
+    }
+
+    #[test]
+    fn is_eq() {
+        test_stack_for_instructions(
+            vec![
+                Instruction::Push(3),
+                Instruction::Push(3),
+                Instruction::IsEq,
+                Instruction::Halt,
+            ],
+            vec![1],
+        );
+        test_stack_for_instructions(
+            vec![
+                Instruction::Push(5),
+                Instruction::Push(3),
+                Instruction::IsEq,
+                Instruction::Halt,
+            ],
+            vec![0],
+        )
+    }
+
+    #[test]
+    fn is_lt() {
+        test_stack_for_instructions(
+            vec![
+                Instruction::Push(3),
+                Instruction::Push(4),
+                Instruction::IsLt,
+                Instruction::Halt,
+            ],
+            vec![0],
+        );
+        test_stack_for_instructions(
+            vec![
+                Instruction::Push(5),
+                Instruction::Push(3),
+                Instruction::IsLt,
+                Instruction::Halt,
+            ],
+            vec![1],
+        )
+    }
+
+    #[test]
+    fn is_gt() {
+        test_stack_for_instructions(
+            vec![
+                Instruction::Push(3),
+                Instruction::Push(4),
+                Instruction::IsGt,
+                Instruction::Halt,
+            ],
+            vec![1],
+        );
+        test_stack_for_instructions(
+            vec![
+                Instruction::Push(5),
+                Instruction::Push(3),
+                Instruction::IsGt,
+                Instruction::Halt,
+            ],
+            vec![0],
+        )
     }
 }
