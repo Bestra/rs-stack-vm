@@ -41,7 +41,10 @@ impl CPU {
         self.decode_next_instruction();
     }
 
-    fn bin_op<F>(&mut self, perform: F) where F: Fn(i32, i32) -> i32 {
+    fn bin_op<F>(&mut self, perform: F)
+    where
+        F: Fn(i32, i32) -> i32,
+    {
         assert!(
             self.stack.len() >= 2,
             "stack needs at least 2 values to perform binary operation"
@@ -60,59 +63,22 @@ impl CPU {
             Instruction::Halt => self.halted = true,
             Instruction::Push(val) => self.stack.push(val),
             Instruction::Add => {
-                assert!(
-                    self.stack.len() >= 2,
-                    "stack needs at least 2 values to add"
-                );
-
-                let n1 = self.stack.pop().unwrap();
-                let n2 = self.stack.pop().unwrap();
-                self.stack.push(n1 + n2);
+                self.bin_op(|n1, n2| n1 + n2);
             }
             Instruction::Subtract => {
-                assert!(
-                    self.stack.len() >= 2,
-                    "stack needs at least 2 values to add"
-                );
-
-                let n2 = self.stack.pop().unwrap();
-                let n1 = self.stack.pop().unwrap();
-                self.stack.push(n1 - n2);
+                self.bin_op(|n2, n1| n1 - n2);
             }
 
             Instruction::Multiply => {
-                assert!(
-                    self.stack.len() >= 2,
-                    "stack needs at least 2 values to add"
-                );
-
-                let n1 = self.stack.pop().unwrap();
-                let n2 = self.stack.pop().unwrap();
-                self.stack.push(n1 * n2);
+                self.bin_op(|n1, n2| n1 * n2);
             }
 
             Instruction::And => {
-                assert!(
-                    self.stack.len() >= 2,
-                    "stack needs at least 2 values to add"
-                );
-
-                let n1 = self.stack.pop().unwrap() == 1;
-                let n2 = self.stack.pop().unwrap() == 1;
-                let r = n1 && n2;
-                self.stack.push(r as i32);
+                self.bin_op(|n1, n2| ((n1 == 1) && (n2 == 1)) as i32);
             }
 
             Instruction::Or => {
-                assert!(
-                    self.stack.len() >= 2,
-                    "stack needs at least 2 values to add"
-                );
-
-                let n1 = self.stack.pop().unwrap() == 1;
-                let n2 = self.stack.pop().unwrap() == 1;
-                let r = n1 || n2;
-                self.stack.push(r as i32);
+                self.bin_op(|n1, n2| ((n1 == 1) || (n2 == 1)) as i32);
             }
 
             Instruction::Not => {

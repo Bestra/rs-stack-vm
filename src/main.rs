@@ -1,5 +1,5 @@
 extern crate stack_vm;
 
 fn main() {
-    println!("Hello, world!");
+    println!("HI"); // later used
 }
