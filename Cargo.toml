@@ -1,0 +1,6 @@
+[package]
+name = "stack_vm"
+version = "0.1.0"
+authors = ["Chris Westra <cwestra@gmail.com>"]
+
+[dependencies]
