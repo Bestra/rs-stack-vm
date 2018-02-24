@@ -157,6 +157,10 @@ impl CPU {
             }
 
             Instruction::Store(var_pos) => {
+                assert!(
+                    self.stack.len() >= 1,
+                    "stack needs at least 1 value to store"
+                );
                 let k = self.stack.pop().unwrap();
                 self.current_frame.set_variable(var_pos, k);
             }
@@ -376,15 +380,19 @@ mod tests {
 
     #[test]
     fn load_uninitialized_var() {
-        
+        let mut cpu = CPU::new(vec![Instruction::Load(0), Instruction::Halt]);
+        cpu.run();
+        assert_eq!(cpu.stack, vec![0]);
+        assert_eq!(2, cpu.instruction_address);
+        assert!(cpu.halted);
     }
 
     #[test]
     fn load_stored_var() {
-        let mut cpu = CPU::new(vec![Instruction::Push(42), Instruction::Store(0), Instruction::Halt]);
+        let mut cpu = CPU::new(vec![Instruction::Push(42), Instruction::Store(0), Instruction::Load(0), Instruction::Halt]);
         cpu.run();
-        assert_eq!(3, cpu.instruction_address);
+        assert_eq!(4, cpu.instruction_address);
+        assert_eq!(cpu.stack, vec![42]);
         assert!(cpu.halted);
-        assert_current_frame_value(&cpu, 0, 42);
     }
 }
