@@ -1,0 +1,47 @@
+use std::str::FromStr;
+use instruction::{Instruction, Ref, OpCode};
+
+grammar;
+
+pub Program: Vec<Instruction> = {
+    Line*
+};
+
+pub Line = {
+    Label , Op, Ref
+};
+
+pub Label: Instruction = {
+    <i: Identifier> ":" => Instruction::Label(i.to_string())
+};
+
+pub Ref: Instruction = {
+    "CALL" <i: Identifier> => Instruction::Ref(Ref::Call(i.to_string())),
+    "JMP" <i: Identifier> => Instruction::Ref(Ref::Jmp(i.to_string())),
+    "JIF" <i: Identifier> => Instruction::Ref(Ref::JmpIf(i.to_string())),
+};
+
+Op: Instruction = {
+    "ADD" => Instruction::OpCode(OpCode::Add),
+    "HALT" => Instruction::OpCode(OpCode::Halt),
+    "PUSH" <i: Integer> => Instruction::OpCode(OpCode::Push(i)),
+    "SUB" => Instruction::OpCode(OpCode::Subtract),
+    "MULT" => Instruction::OpCode(OpCode::Multiply),
+    "NOT" => Instruction::OpCode(OpCode::Not),
+    "AND" => Instruction::OpCode(OpCode::And),
+    "OR" => Instruction::OpCode(OpCode::Or),
+    "POP" => Instruction::OpCode(OpCode::Pop),
+    "DUP" => Instruction::OpCode(OpCode::Dup),
+    "ISEQ" => Instruction::OpCode(OpCode::IsEq),
+    "ISGT" => Instruction::OpCode(OpCode::IsGt),
+    "ISGE" => Instruction::OpCode(OpCode::IsGe),
+    "ISLT" => Instruction::OpCode(OpCode::IsLt),
+    "LOAD" <i: Address> => Instruction::OpCode(OpCode::Load(i)),
+    "STORE" <i: Address> => Instruction::OpCode(OpCode::Store(i)),
+    "PRINT" => Instruction::OpCode(OpCode::Print),
+    "RET" => Instruction::OpCode(OpCode::Ret),
+};
+
+Integer: i32 = <s:r"[0-9]+"> => i32::from_str(s).unwrap();
+Address: usize = <s:r"[0-9]+"> => usize::from_str(s).unwrap();
+Identifier: &'input str = r"[a-zA-Z][a-zA-Z0-9_]*" => <>;

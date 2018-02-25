@@ -1,5 +1,4 @@
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum OpCode {
     Halt,
     Push(i32),
@@ -22,13 +21,14 @@ pub enum OpCode {
     Print,
     Call(usize),
     Ret,
+    Label(String),
 }
 
 #[derive(Debug)]
 pub enum Instruction {
     OpCode(OpCode),
     Ref(Ref),
-    Label(String)
+    Label(String),
 }
 
 #[derive(Debug)]
@@ -37,4 +37,3 @@ pub enum Ref {
     JmpIf(String),
     Call(String),
 }
-

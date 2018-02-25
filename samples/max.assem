@@ -1,0 +1,19 @@
+PUSH 6
+PUSH 4
+CALL max
+PRINT
+HALT
+
+max:
+STORE 1
+STORE 0
+LOAD 1
+LOAD 0
+ISGE
+JIF max_a
+LOAD 1
+RET
+
+max_a:
+LOAD 0
+RET

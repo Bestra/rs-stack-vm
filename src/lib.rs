@@ -2,14 +2,10 @@
 
 pub mod instruction;
 pub mod assembly;
+pub mod assembler;
+
 use instruction::OpCode;
 use std::collections::HashMap;
-
-#[test]
-fn assembly_1() {
-    println!("{:?}", assembly::parse_Program("ADD foo:"));
-}
-
 
 #[derive(Debug)]
 pub struct Frame {
@@ -104,6 +100,7 @@ impl CPU {
 
         match *next_ins {
             OpCode::Halt => self.halted = true,
+            OpCode::Label(_) => (), //no-op
             OpCode::Push(val) => self.stack.push(val),
             OpCode::Add => {
                 self.bin_op(|top, bot| top + bot);
