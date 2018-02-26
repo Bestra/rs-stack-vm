@@ -8,11 +8,15 @@ pub Program: Vec<Instruction> = {
 };
 
 pub Line = {
-    Label , Op, Ref
+    Label , Op, Ref, Comment
 };
 
 pub Label: Instruction = {
     <i: Identifier> ":" => Instruction::Label(i.to_string())
+};
+
+pub Comment: Instruction = {
+    <c:r"'[a-z0-9]+'"> => Instruction::Comment(c.to_string())
 };
 
 pub Ref: Instruction = {

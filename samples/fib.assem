@@ -1,0 +1,32 @@
+CALL main
+
+main:
+
+PUSH 5
+CALL fib
+HALT
+
+fib:
+STORE 0
+LOAD 0
+PUSH 2
+ISGE
+JIF fib_base
+LOAD 0
+PUSH 1
+SUB
+CALL fib
+STORE 1
+LOAD 0
+PUSH 2
+SUB
+CALL fib
+LOAD 1
+ADD
+PRINT
+RET
+
+
+fib_base:
+LOAD 0
+RET

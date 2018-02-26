@@ -47,6 +47,7 @@ impl Assembler {
                 },
                 Instruction::Label(ref s) => OpCode::Label(s.clone()),
                 Instruction::OpCode(ref o) => o.clone(),
+                Instruction::Comment(ref c) => OpCode::Comment(c.clone()),
             })
             .collect()
     }

@@ -22,6 +22,7 @@ pub enum OpCode {
     Call(usize),
     Ret,
     Label(String),
+    Comment(String),
 }
 
 #[derive(Debug)]
@@ -29,6 +30,7 @@ pub enum Instruction {
     OpCode(OpCode),
     Ref(Ref),
     Label(String),
+    Comment(String),
 }
 
 #[derive(Debug)]

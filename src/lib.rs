@@ -37,6 +37,7 @@ pub struct CPU {
     frames: Vec<Frame>,
     instruction_address: usize,
     halted: bool,
+    pub debug: bool,
 }
 
 impl CPU {
@@ -48,6 +49,7 @@ impl CPU {
             frames: vec![Frame::new(0)],
             instruction_address: 0,
             halted: false,
+            debug: false,
         }
     }
 
@@ -95,12 +97,15 @@ impl CPU {
     fn decode_next_instruction(&mut self) {
         assert!(self.instruction_address < self.program.len());
         let next_ins = &self.program[self.instruction_address];
-        println!("{}: {:?}", self.instruction_address, next_ins);
+        if self.debug {
+            println!("{}: {:?} stack: {:?} locals: {:?}", self.instruction_address, next_ins, self.stack, self.current_frame());
+        }
         self.instruction_address += 1;
 
         match *next_ins {
             OpCode::Halt => self.halted = true,
             OpCode::Label(_) => (), //no-op
+            OpCode::Comment(_) => (), //no-op
             OpCode::Push(val) => self.stack.push(val),
             OpCode::Add => {
                 self.bin_op(|top, bot| top + bot);
