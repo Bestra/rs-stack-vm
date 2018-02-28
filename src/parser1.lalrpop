@@ -1,0 +1,46 @@
+use std::str::FromStr;
+use instruction::{Instruction, Ref, OpCode};
+use ast::Expr;
+
+grammar;
+
+pub Exprs = Semi<Expr>;
+
+Semi<T>: Vec<T> = { // (0)
+    <v:(<T> ";")*> <e:T?> => match e { // (1)
+        None=> v,
+        Some(e) => {
+            let mut v = v;
+            v.push(e);
+            v
+        }
+    }
+};
+
+Tier<Op,NextTier>: Box<Expr> = {
+    <left: Tier<Op,NextTier>> <operator: Op> <right: NextTier> => Box::new(Expr::Binary{<>}),
+    NextTier
+};
+
+Expr = Tier<ExprOp, Factor>;
+Factor = Tier<FactorOp, Term>;
+
+ExprOp: String = { // (3)
+    "+" => "+".to_string(),
+    "-" => "-".to_string(),
+};
+
+FactorOp: String = {
+    "*" => "*".to_string(),
+};
+
+Term: Box<Expr> = {
+    Num => Box::new(Expr::Literal{value: <>}),
+    "(" <Expr> ")"
+};
+
+Num: i32 = {
+    r"[0-9]+" => i32::from_str(<>).unwrap()
+};
+
+

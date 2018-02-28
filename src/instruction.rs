@@ -25,7 +25,7 @@ pub enum OpCode {
     Comment(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Instruction {
     OpCode(OpCode),
     Ref(Ref),
@@ -33,7 +33,7 @@ pub enum Instruction {
     Comment(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Ref {
     Jmp(String),
     JmpIf(String),

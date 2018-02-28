@@ -3,19 +3,21 @@
 pub mod instruction;
 pub mod assembly;
 pub mod assembler;
+pub mod ast;
+pub mod compiler;
+pub mod parser1;
 
 use instruction::OpCode;
-use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Frame {
-    variables: HashMap<usize, i32>,
+    variables: Vec<i32>,
     return_address: usize,
 }
 
 impl Frame {
     pub fn get_variable(&self, key: usize) -> i32 {
-        *self.variables.get(&key).unwrap_or(&0)
+        *self.variables.get(key).unwrap_or(&0)
     }
 
     pub fn set_variable(&mut self, key: usize, val: i32) {
@@ -24,7 +26,7 @@ impl Frame {
 
     pub fn new(return_address: usize) -> Frame {
         Frame {
-            variables: HashMap::new(),
+            variables: Vec::new(),
             return_address,
         }
     }
