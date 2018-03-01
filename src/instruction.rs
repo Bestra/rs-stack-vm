@@ -19,6 +19,7 @@ pub enum OpCode {
     Load(usize),
     Store(usize),
     Print,
+    DebugPrint,
     Call(usize),
     Ret,
     Label(String),

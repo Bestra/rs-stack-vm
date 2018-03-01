@@ -1,5 +1,3 @@
-use instruction::OpCode;
-
 #[derive(Debug, Clone)]
 pub enum Expr {
     // Assign {
@@ -37,32 +35,32 @@ pub enum Expr {
 
 #[derive(Debug, Clone)]
 pub enum Statement {
-    Block {
-        statements: Vec<Statement>,
-    },
+    // Block {
+    //     statements: Vec<Statement>,
+    // },
     Expression {
         expression: Box<Expr>,
     },
     // Function(FunctionDeclaration),
-    If {
-        condition: Box<Expr>,
-        then_branch: Box<Statement>,
-        else_branch: Option<Box<Statement>>,
-    },
+    // If {
+    //     condition: Box<Expr>,
+    //     then_branch: Box<Statement>,
+    //     else_branch: Option<Box<Statement>>,
+    // },
     Print {
         expression: Box<Expr>,
     },
-    Return {
-        value: Option<Box<Expr>>,
-    },
-    While {
-        condition: Box<Expr>,
-        body: Box<Statement>,
-    },
-    Var {
-        name: String,
-        initializer: Option<Box<Expr>>,
-    },
+    // Return {
+    //     value: Option<Box<Expr>>,
+    // },
+    // While {
+    //     condition: Box<Expr>,
+    //     body: Box<Statement>,
+    // },
+    // Var {
+    //     name: String,
+    //     initializer: Option<Box<Expr>>,
+    // },
 }
 
 pub struct Program {

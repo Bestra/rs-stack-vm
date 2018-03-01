@@ -50,7 +50,7 @@ fn run_assembly(contents: String, debug: bool) {
 }
 
 fn run_program(contents: String, debug: bool) {
-    let p = stack_vm::parser1::parse_Exprs(contents.as_str());
+    let p = stack_vm::parser1::parse_Program(contents.as_str());
     let mut compiler = stack_vm::compiler::Compiler::new();
     let instructions = compiler.generate_instructions(p.unwrap());
     let mut assembler = stack_vm::assembler::Assembler::new(instructions);

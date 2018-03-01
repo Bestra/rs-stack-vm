@@ -194,6 +194,11 @@ impl CPU {
             }
 
             OpCode::Print => {
+                let k = self.stack.pop().unwrap();
+                println!("{}", k);
+            }
+
+            OpCode::DebugPrint => {
                 println!("{:?}", self.stack);
                 println!("{:?}", self.current_frame());
             }

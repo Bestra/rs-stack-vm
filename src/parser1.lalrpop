@@ -1,10 +1,7 @@
 use std::str::FromStr;
-use instruction::{Instruction, Ref, OpCode};
-use ast::Expr;
+use ast::{Expr, Program, Statement};
 
 grammar;
-
-pub Exprs = Semi<Expr>;
 
 Semi<T>: Vec<T> = { // (0)
     <v:(<T> ";")*> <e:T?> => match e { // (1)
@@ -21,6 +18,22 @@ Tier<Op,NextTier>: Box<Expr> = {
     <left: Tier<Op,NextTier>> <operator: Op> <right: NextTier> => Box::new(Expr::Binary{<>}),
     NextTier
 };
+
+pub Program = Statement*;
+
+Statement = {
+  ExprStatement,
+  PrintStatement,
+};
+
+ExprStatement: Statement = {
+  <expression: Expr> ";" => Statement::Expression{<>}
+};
+
+PrintStatement: Statement = {
+  "print" <expression: Expr> ";" => Statement::Print{<>}
+};
+
 
 Expr = Tier<ExprOp, Factor>;
 Factor = Tier<FactorOp, Term>;

@@ -1,5 +1,5 @@
-use parser1::parse_Exprs;
-use ast::Expr;
+use parser1::parse_Program;
+use ast::{Expr, Statement};
 use instruction::{Instruction, OpCode};
 
 pub struct Compiler {
@@ -8,15 +8,39 @@ pub struct Compiler {
 
 impl Compiler {
     pub fn new() -> Compiler {
-        Compiler { instructions: Vec::new() }
+        Compiler {
+            instructions: Vec::new(),
+        }
     }
 
-    fn process_node(&mut self, n: Expr) {
+    fn process_statements(&mut self, statements: Vec<Statement>) {
+        for s in statements {
+            self.process_statement(s);
+        }
+    }
+
+    fn process_statement(&mut self, s: Statement) {
+        match s {
+            Statement::Expression { expression } => self.process_expr(*expression),
+            Statement::Print { expression } => {
+                let e = self.process_expr(*expression);
+                self.instructions.push(Instruction::OpCode(OpCode::Print));
+            }
+        }
+    }
+
+    fn process_expr(&mut self, n: Expr) {
         match n {
-            Expr::Literal{value: i} => self.instructions.push(Instruction::OpCode(OpCode::Push(i))),
-            Expr::Binary{left, operator, right} => {
-                self.process_node(*left);
-                self.process_node(*right);
+            Expr::Literal { value: i } => {
+                self.instructions.push(Instruction::OpCode(OpCode::Push(i)))
+            }
+            Expr::Binary {
+                left,
+                operator,
+                right,
+            } => {
+                self.process_expr(*left);
+                self.process_expr(*right);
 
                 let op = match operator.as_str() {
                     "+" => OpCode::Add,
@@ -29,20 +53,50 @@ impl Compiler {
         }
     }
 
-    pub fn generate_instructions(&mut self, exprs: Vec<Box<Expr>>) -> Vec<Instruction> {
-        for e in exprs {
-            self.process_node(*e);
-        }
+    pub fn generate_instructions(&mut self, statements: Vec<Statement>) -> Vec<Instruction> {
+        self.process_statements(statements);
         self.instructions.push(Instruction::OpCode(OpCode::Halt));
         self.instructions.clone()
     }
 }
 
 #[test]
-fn parses_addition() {
-    let r = parse_Exprs("(1 + 3) * 12;");
+fn compiles_simple_math() {
+    let r = parse_Program("(1 + 3) * 12;");
     println!("{:#?}", r);
 
-    let mut p = Compiler { instructions: Vec::new() };
-    println!("{:#?}", p.generate_instructions(r.unwrap()));
+    let mut p = Compiler {
+        instructions: Vec::new(),
+    };
+    let output = p.generate_instructions(r.unwrap());
+    println!("{:#?}", output);
+    assert_eq!(
+        output,
+        vec![
+            Instruction::OpCode(OpCode::Push(1)),
+            Instruction::OpCode(OpCode::Push(3)),
+            Instruction::OpCode(OpCode::Add),
+            Instruction::OpCode(OpCode::Push(12)),
+            Instruction::OpCode(OpCode::Multiply),
+            Instruction::OpCode(OpCode::Halt),
+        ]
+    );
+}
+
+#[test]
+fn compiles_print_statement() {
+    let r = parse_Program("print 12;");
+
+    let mut p = Compiler {
+        instructions: Vec::new(),
+    };
+    let output = p.generate_instructions(r.unwrap());
+    assert_eq!(
+        output,
+        vec![
+            Instruction::OpCode(OpCode::Push(12)),
+            Instruction::OpCode(OpCode::Print),
+            Instruction::OpCode(OpCode::Halt),
+        ]
+    );
 }
