@@ -1,15 +1,40 @@
-use parser1::parse_Program;
 use ast::{Expr, Statement};
 use instruction::{Instruction, OpCode};
+use std::collections::HashMap;
+
+pub struct Scope {
+    index: usize,
+    table: HashMap<String, usize>,
+}
+
+impl Scope {
+    pub fn new() -> Scope {
+        Scope { index: 0, table: HashMap::new() }
+    }
+
+    pub fn define(&mut self, symbol: String) -> usize {
+        let current_index = self.index;
+        self.table.insert(symbol, current_index);
+
+        self.index += 1;
+        current_index
+    }
+
+    pub fn get(&self, symbol: String) -> usize {
+        *self.table.get(&symbol).unwrap()
+    }
+}
 
 pub struct Compiler {
     instructions: Vec<Instruction>,
+    scope: Scope,
 }
 
 impl Compiler {
     pub fn new() -> Compiler {
         Compiler {
             instructions: Vec::new(),
+            scope: Scope::new(),
         }
     }
 
@@ -23,8 +48,19 @@ impl Compiler {
         match s {
             Statement::Expression { expression } => self.process_expr(*expression),
             Statement::Print { expression } => {
-                let e = self.process_expr(*expression);
+                self.process_expr(*expression);
                 self.instructions.push(Instruction::OpCode(OpCode::Print));
+            }
+
+            Statement::Var { name, initializer } => {
+                let idx = self.scope.define(name.clone());
+                self.instructions.push(Instruction::Local(name, idx));
+                if let Some(i) = initializer {
+                    // if there's an initializer first we put its value on the stack...
+                    self.process_expr(*i);
+                    // and then store it
+                    self.instructions.push(Instruction::OpCode(OpCode::Store(idx)));
+                }
             }
         }
     }
@@ -33,6 +69,10 @@ impl Compiler {
         match n {
             Expr::Literal { value: i } => {
                 self.instructions.push(Instruction::OpCode(OpCode::Push(i)))
+            }
+            Expr::Variable { name } => {
+                let i = self.scope.get(name);
+                self.instructions.push(Instruction::OpCode(OpCode::Load(i)))
             }
             Expr::Binary {
                 left,
@@ -50,6 +90,17 @@ impl Compiler {
                 };
                 self.instructions.push(Instruction::OpCode(op))
             }
+            Expr::Assign {
+                name,
+                value
+            } => {
+                let idx = self.scope.get(name);
+                self.process_expr(*value);
+                // TODO: See if these semantics are correct. It works for
+                // something like "print a = 3;" but might be silly elsewhere
+                self.instructions.push(Instruction::OpCode(OpCode::Dup));
+                self.instructions.push(Instruction::OpCode(OpCode::Store(idx)));
+            }
         }
     }
 
@@ -60,43 +111,117 @@ impl Compiler {
     }
 }
 
-#[test]
-fn compiles_simple_math() {
-    let r = parse_Program("(1 + 3) * 12;");
-    println!("{:#?}", r);
+#[cfg(test)]
+mod tests {
+    use parser1::parse_Program;
+    use super::*;
+    use instruction::{Instruction, OpCode};
+    #[test]
+    fn compiles_simple_math() {
+        let r = parse_Program("(1 + 3) * 12;");
+        println!("{:#?}", r);
 
-    let mut p = Compiler {
-        instructions: Vec::new(),
-    };
-    let output = p.generate_instructions(r.unwrap());
-    println!("{:#?}", output);
-    assert_eq!(
-        output,
-        vec![
-            Instruction::OpCode(OpCode::Push(1)),
-            Instruction::OpCode(OpCode::Push(3)),
-            Instruction::OpCode(OpCode::Add),
-            Instruction::OpCode(OpCode::Push(12)),
-            Instruction::OpCode(OpCode::Multiply),
-            Instruction::OpCode(OpCode::Halt),
-        ]
-    );
-}
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        println!("{:#?}", output);
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::Push(1)),
+                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Add),
+                Instruction::OpCode(OpCode::Push(12)),
+                Instruction::OpCode(OpCode::Multiply),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
 
-#[test]
-fn compiles_print_statement() {
-    let r = parse_Program("print 12;");
+    #[test]
+    fn compiles_print_statement() {
+        let r = parse_Program("print 12;");
 
-    let mut p = Compiler {
-        instructions: Vec::new(),
-    };
-    let output = p.generate_instructions(r.unwrap());
-    assert_eq!(
-        output,
-        vec![
-            Instruction::OpCode(OpCode::Push(12)),
-            Instruction::OpCode(OpCode::Print),
-            Instruction::OpCode(OpCode::Halt),
-        ]
-    );
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::Push(12)),
+                Instruction::OpCode(OpCode::Print),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_var_declaration() {
+        let r = parse_Program("var a;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::Local("a".to_string(), 0),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_var_def() {
+        let r = parse_Program("var a = 3;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::Local("a".to_string(), 0),
+                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Store(0)),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_var_use() {
+        let r = parse_Program("var a = 3; print a;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::Local("a".to_string(), 0),
+                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Store(0)),
+                Instruction::OpCode(OpCode::Load(0)),
+                Instruction::OpCode(OpCode::Print),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_var_assignment() {
+        let r = parse_Program("var a = 3; a = 4;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::Local("a".to_string(), 0),
+                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Store(0)),
+                Instruction::OpCode(OpCode::Push(4)),
+                Instruction::OpCode(OpCode::Dup), //assignment returns the value
+                Instruction::OpCode(OpCode::Store(0)),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
 }

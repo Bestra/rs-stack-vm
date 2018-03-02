@@ -1,9 +1,9 @@
 #[derive(Debug, Clone)]
 pub enum Expr {
-    // Assign {
-    //     name: String,
-    //     value: Box<Expr>,
-    // },
+    Assign {
+        name: String,
+        value: Box<Expr>,
+    },
     Binary {
         left: Box<Expr>,
         right: Box<Expr>,
@@ -28,9 +28,9 @@ pub enum Expr {
     //     right: Box<Expr>,
     //     operator: String,
     // },
-    // Variable {
-    //     name: String,
-    // },
+    Variable {
+        name: String,
+    },
 }
 
 #[derive(Debug, Clone)]
@@ -57,10 +57,10 @@ pub enum Statement {
     //     condition: Box<Expr>,
     //     body: Box<Statement>,
     // },
-    // Var {
-    //     name: String,
-    //     initializer: Option<Box<Expr>>,
-    // },
+    Var { // initializes a variable
+        name: String,
+        initializer: Option<Box<Expr>>,
+    },
 }
 
 pub struct Program {

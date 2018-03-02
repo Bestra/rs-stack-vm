@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use ast::{Expr, Program, Statement};
+use ast::{Expr, Statement};
 
 grammar;
 
@@ -19,21 +19,44 @@ Tier<Op,NextTier>: Box<Expr> = {
     NextTier
 };
 
-pub Program = Statement*;
+pub Program = Declaration*;
+
+Declaration = {
+    VariableDeclaration,
+    Statement,
+};
+
+VariableDeclaration: Statement = {
+    "var" <i: Identifier> <initializer:("=" <Expr> )?> ";" => {
+        let name = i.to_string();
+        Statement::Var { name, initializer }
+    }
+};
 
 Statement = {
-  ExprStatement,
-  PrintStatement,
+    ExprStatement,
+    PrintStatement,
 };
 
 ExprStatement: Statement = {
-  <expression: Expr> ";" => Statement::Expression{<>}
+    <expression: Expression> ";" => Statement::Expression{<>}
 };
 
 PrintStatement: Statement = {
-  "print" <expression: Expr> ";" => Statement::Print{<>}
+    "print" <expression: Expression> ";" => Statement::Print{<>}
 };
 
+
+Expression = {
+    Assignment
+};
+
+Assignment: Box<Expr> = {
+    <name: Identifier> "=" <v: Assignment> => {
+        Box::new(Expr::Assign {name: name.to_string(), value: v})
+    },
+    Expr
+};
 
 Expr = Tier<ExprOp, Factor>;
 Factor = Tier<FactorOp, Term>;
@@ -49,6 +72,7 @@ FactorOp: String = {
 
 Term: Box<Expr> = {
     Num => Box::new(Expr::Literal{value: <>}),
+    <i: Identifier> => Box::new(Expr::Variable{name: i.to_string()}),
     "(" <Expr> ")"
 };
 
@@ -56,4 +80,4 @@ Num: i32 = {
     r"[0-9]+" => i32::from_str(<>).unwrap()
 };
 
-
+Identifier: &'input str = r"[a-zA-Z][a-zA-Z0-9_]*" => <>;

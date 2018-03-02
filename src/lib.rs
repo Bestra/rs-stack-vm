@@ -6,6 +6,7 @@ pub mod assembler;
 pub mod ast;
 pub mod compiler;
 pub mod parser1;
+pub mod value;
 
 use instruction::OpCode;
 
@@ -106,8 +107,7 @@ impl CPU {
 
         match *next_ins {
             OpCode::Halt => self.halted = true,
-            OpCode::Label(_) => (), //no-op
-            OpCode::Comment(_) => (), //no-op
+            OpCode::NoOp => (), //no-op
             OpCode::Push(val) => self.stack.push(val),
             OpCode::Add => {
                 self.bin_op(|top, bot| top + bot);

@@ -14,13 +14,15 @@ impl Assembler {
         }
     }
 
+    pub fn assemble(&mut self) -> Vec<OpCode> {
+        self.resolve_labels();
+        self.generate_op_codes()
+    }
+
     pub fn resolve_labels(&mut self) {
         for (idx, instruction) in self.program.iter().enumerate() {
-            match *instruction {
-                Instruction::Label(ref s) => {
-                    self.labels.insert(s.to_string(), idx);
-                }
-                _ => (),
+            if let Instruction::Label(ref s) = *instruction {
+                self.labels.insert(s.to_string(), idx);
             }
         }
     }
@@ -45,9 +47,10 @@ impl Assembler {
                         OpCode::Call(*addr)
                     }
                 },
-                Instruction::Label(ref s) => OpCode::Label(s.clone()),
                 Instruction::OpCode(ref o) => o.clone(),
-                Instruction::Comment(ref c) => OpCode::Comment(c.clone()),
+                Instruction::Label(_) |
+                Instruction::Local(_, _) |
+                Instruction::Comment(_) => OpCode::NoOp,
             })
             .collect()
     }
