@@ -1,6 +1,7 @@
 use ast::{Expr, Statement};
 use instruction::{Instruction, OpCode};
 use std::collections::HashMap;
+use value::Value;
 
 pub struct Scope {
     index: usize,
@@ -28,6 +29,7 @@ impl Scope {
 pub struct Compiler {
     instructions: Vec<Instruction>,
     scope: Scope,
+    constant_pool: HashMap<String, Value>,
 }
 
 impl Compiler {
@@ -35,6 +37,7 @@ impl Compiler {
         Compiler {
             instructions: Vec::new(),
             scope: Scope::new(),
+            constant_pool: HashMap::new(),
         }
     }
 

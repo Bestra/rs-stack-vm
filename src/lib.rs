@@ -7,21 +7,24 @@ pub mod ast;
 pub mod compiler;
 pub mod parser1;
 pub mod value;
+pub mod assembly_program;
 
 use instruction::OpCode;
+use assembly_program::AssemblyProgram;
+use value::Value;
 
 #[derive(Debug)]
 pub struct Frame {
-    variables: Vec<i32>,
+    variables: Vec<Value>,
     return_address: usize,
 }
 
 impl Frame {
-    pub fn get_variable(&self, key: usize) -> i32 {
-        *self.variables.get(key).unwrap_or(&0)
+    pub fn get_variable(&self, key: usize) -> Value {
+        *self.variables.get(key).unwrap_or(&Value::Number(0))
     }
 
-    pub fn set_variable(&mut self, key: usize, val: i32) {
+    pub fn set_variable(&mut self, key: usize, val: Value) {
         self.variables.insert(key, val);
     }
 
@@ -34,8 +37,8 @@ impl Frame {
 }
 
 pub struct CPU {
-    stack: Vec<i32>,
-    program: Vec<OpCode>,
+    stack: Vec<Value>,
+    program: AssemblyProgram,
     current_frame_idx: usize,
     frames: Vec<Frame>,
     instruction_address: usize,
@@ -44,7 +47,7 @@ pub struct CPU {
 }
 
 impl CPU {
-    pub fn new(program: Vec<OpCode>) -> CPU {
+    pub fn new(program: AssemblyProgram) -> CPU {
         CPU {
             stack: Vec::new(),
             program: program,
@@ -77,7 +80,7 @@ impl CPU {
 
     fn bin_op<F>(&mut self, perform: F)
     where
-        F: Fn(i32, i32) -> i32,
+        F: Fn(Value, Value) -> Value,
     {
         assert!(
             self.stack.len() >= 2,
@@ -90,7 +93,7 @@ impl CPU {
     }
 
     fn assert_jump_address(&self, i: usize) {
-        assert!(i < self.program.len(), "Invalid jump address");
+        assert!(i < self.program.op_codes.len(), "Invalid jump address");
     }
 
     fn assert_return_address(&self) {
@@ -98,8 +101,8 @@ impl CPU {
     }
 
     fn decode_next_instruction(&mut self) {
-        assert!(self.instruction_address < self.program.len());
-        let next_ins = &self.program[self.instruction_address];
+        assert!(self.instruction_address < self.program.op_codes.len());
+        let next_ins = &self.program.op_codes[self.instruction_address];
         if self.debug {
             println!("{}: {:?} stack: {:?} locals: {:?}", self.instruction_address, next_ins, self.stack, self.current_frame());
         }
@@ -109,6 +112,10 @@ impl CPU {
             OpCode::Halt => self.halted = true,
             OpCode::NoOp => (), //no-op
             OpCode::Push(val) => self.stack.push(val),
+            OpCode::Constant(i) => {
+                let c = self.program.constant_pool[i];
+                self.stack.push(c);
+            }
             OpCode::Add => {
                 self.bin_op(|top, bot| top + bot);
             }
@@ -121,27 +128,37 @@ impl CPU {
             }
 
             OpCode::And => {
-                self.bin_op(|top, bot| ((top == 1) && (bot == 1)) as i32);
+                self.bin_op(|top, bot| {
+                    match (top, bot) {
+                        (Value::Bool(t), Value::Bool(b)) => Value::Bool(t && b),
+                        _ => panic!("need bools"),
+                    }
+                });
             }
 
             OpCode::Or => {
-                self.bin_op(|top, bot| ((top == 1) || (bot == 1)) as i32);
+                self.bin_op(|top, bot| {
+                    match (top, bot) {
+                        (Value::Bool(t), Value::Bool(b)) => Value::Bool(t || b),
+                        _ => panic!("need bools"),
+                    }
+                });
             }
 
             OpCode::IsEq => {
-                self.bin_op(|top, bot| (top == bot) as i32);
+                self.bin_op(|top, bot| Value::Bool(top == bot));
             }
 
             OpCode::IsGt => {
-                self.bin_op(|top, bot| (top > bot) as i32);
+                self.bin_op(|top, bot| Value::Bool(top > bot));
             }
 
             OpCode::IsGe => {
-                self.bin_op(|top, bot| (top >= bot) as i32);
+                self.bin_op(|top, bot| Value::Bool(top >= bot));
             }
 
             OpCode::IsLt => {
-                self.bin_op(|top, bot| (top < bot) as i32);
+                self.bin_op(|top, bot| Value::Bool(top < bot));
             }
 
             OpCode::Not => {
@@ -150,8 +167,8 @@ impl CPU {
                     "stack needs at least 1 values to add"
                 );
 
-                let top = self.stack.pop().unwrap() == 1;
-                self.stack.push(!top as i32);
+                let top = self.stack.pop().unwrap() == Value::Bool(true);
+                self.stack.push(Value::Bool(!top));
             }
 
             OpCode::Pop => {
@@ -174,7 +191,7 @@ impl CPU {
 
             OpCode::JmpIf(addr) => {
                 let k = self.stack.pop().unwrap();
-                if k == 1 {
+                if k == Value::Bool(true) {
                     self.instruction_address = addr;
                 }
             }
@@ -195,7 +212,7 @@ impl CPU {
 
             OpCode::Print => {
                 let k = self.stack.pop().unwrap();
-                println!("{}", k);
+                println!("{:?}", k);
             }
 
             OpCode::DebugPrint => {
@@ -225,7 +242,7 @@ impl CPU {
 mod tests {
     use super::*;
 
-    fn assert_current_frame_value(cpu: &CPU, index: usize, value: i32) {
+    fn assert_current_frame_value(cpu: &CPU, index: usize, value: Value) {
         assert_eq!(cpu.current_frame().get_variable(index), value);
     }
 
@@ -234,7 +251,7 @@ mod tests {
         assert!(cpu.halted);
     }
 
-    fn test_stack_for_instructions(prog: Vec<OpCode>, s: Vec<i32>) {
+    fn test_stack_for_instructions(prog: Vec<OpCode>, s: Vec<Value>) {
         let l = prog.len();
         let mut cpu = CPU::new(prog);
         cpu.run();

@@ -1,8 +1,9 @@
+use value::Value;
 #[derive(Debug, Clone, PartialEq)]
 pub enum OpCode {
     NoOp,
     Halt,
-    Push(i32),
+    Push(Value),
     Add,
     Subtract,
     Multiply,
@@ -22,6 +23,7 @@ pub enum OpCode {
     Print,
     DebugPrint,
     Call(usize),
+    Constant(usize),
     Ret,
 }
 
