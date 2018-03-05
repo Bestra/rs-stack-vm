@@ -48,6 +48,14 @@ impl CPU {
         }
     }
 
+    pub fn with_op_codes(v: Vec<OpCode>) -> CPU {
+        let a = AssemblyProgram {
+            op_codes: v,
+                constant_pool: Vec::new(),
+        };
+        CPU::new(a)
+    }
+
     pub fn current_frame(&self) -> &Frame {
         self.frames.get(self.current_frame_idx).unwrap()
     }
@@ -242,7 +250,7 @@ mod tests {
 
     fn test_stack_for_instructions(prog: Vec<OpCode>, s: Vec<Value>) {
         let l = prog.len();
-        let mut cpu = CPU::new(prog);
+        let mut cpu = CPU::with_op_codes(prog);
         cpu.run();
         assert_eq!(l, cpu.instruction_address);
         assert!(cpu.halted);
@@ -250,7 +258,7 @@ mod tests {
     }
 
     fn test_final_address_for_instructions(prog: Vec<OpCode>, i: usize) {
-        let mut cpu = CPU::new(prog);
+        let mut cpu = CPU::with_op_codes(prog);
         cpu.run();
         assert!(cpu.halted);
         assert_eq!(i, cpu.instruction_address);
@@ -258,7 +266,7 @@ mod tests {
 
     #[test]
     fn empty_program() {
-        let mut cpu = CPU::new(vec![OpCode::Halt]);
+        let mut cpu = CPU::with_op_codes(vec![OpCode::Halt]);
         cpu.step();
         assert_halted_at(&cpu, 1);
         assert_eq!(cpu.stack.len(), 0);
@@ -272,7 +280,7 @@ mod tests {
                 OpCode::Push(Value::Number(68)),
                 OpCode::Halt,
             ],
-            vec![42, 68],
+            vec![Value::Number(42), Value::Number(68)],
         );
     }
 
@@ -285,7 +293,7 @@ mod tests {
                 OpCode::Add,
                 OpCode::Halt,
             ],
-            vec![110],
+            vec![Value::Number(110)],
         );
     }
 
@@ -298,7 +306,7 @@ mod tests {
                 OpCode::Subtract,
                 OpCode::Halt,
             ],
-            vec![-1],
+            vec![Value::Number(-1)],
         );
     }
 
@@ -311,7 +319,7 @@ mod tests {
                 OpCode::Multiply,
                 OpCode::Halt,
             ],
-            vec![15],
+            vec![Value::Number(15)],
         );
     }
 
@@ -324,7 +332,7 @@ mod tests {
                 OpCode::Pop,
                 OpCode::Halt,
             ],
-            vec![3],
+            vec![Value::Number(3)],
         )
     }
 
@@ -332,7 +340,7 @@ mod tests {
     fn dup() {
         test_stack_for_instructions(
             vec![OpCode::Push(Value::Number(3)), OpCode::Dup, OpCode::Halt],
-            vec![3, 3],
+            vec![Value::Number(3), Value::Number(3)],
         );
     }
 
@@ -345,7 +353,7 @@ mod tests {
                 OpCode::IsEq,
                 OpCode::Halt,
             ],
-            vec![1],
+            vec![Value::Bool(true)],
         );
         test_stack_for_instructions(
             vec![
@@ -354,7 +362,7 @@ mod tests {
                 OpCode::IsEq,
                 OpCode::Halt,
             ],
-            vec![0],
+            vec![Value::Bool(false)],
         )
     }
 
@@ -367,7 +375,7 @@ mod tests {
                 OpCode::IsLt,
                 OpCode::Halt,
             ],
-            vec![0],
+            vec![Value::Bool(false)],
         );
         test_stack_for_instructions(
             vec![
@@ -376,7 +384,7 @@ mod tests {
                 OpCode::IsLt,
                 OpCode::Halt,
             ],
-            vec![1],
+            vec![Value::Bool(true)],
         )
     }
 
@@ -389,7 +397,7 @@ mod tests {
                 OpCode::IsGt,
                 OpCode::Halt,
             ],
-            vec![1],
+            vec![Value::Bool(true)],
         );
         test_stack_for_instructions(
             vec![
@@ -398,7 +406,7 @@ mod tests {
                 OpCode::IsGt,
                 OpCode::Halt,
             ],
-            vec![0],
+            vec![Value::Bool(false)],
         )
     }
 
@@ -414,7 +422,7 @@ mod tests {
     fn test_jump_if() {
         test_final_address_for_instructions(
             vec![
-                OpCode::Push(Value::Number(1)),
+                OpCode::Push(Value::Bool(true)),
                 OpCode::JmpIf(3),
                 OpCode::Pop,
                 OpCode::Push(Value::Number(0)),
@@ -427,40 +435,40 @@ mod tests {
 
     #[test]
     fn store_var() {
-        let mut cpu = CPU::new(vec![
+        let mut cpu = CPU::with_op_codes(vec![
             OpCode::Push(Value::Number(42)),
             OpCode::Store(0),
             OpCode::Halt,
         ]);
         cpu.run();
         assert_halted_at(&cpu, 3);
-        assert_current_frame_value(&cpu, 0, 42);
+        assert_current_frame_value(&cpu, 0, Value::Number(42));
     }
 
     #[test]
     fn load_uninitialized_var() {
-        let mut cpu = CPU::new(vec![OpCode::Load(0), OpCode::Halt]);
+        let mut cpu = CPU::with_op_codes(vec![OpCode::Load(0), OpCode::Halt]);
         cpu.run();
-        assert_eq!(cpu.stack, vec![0]);
+        assert_eq!(cpu.stack, vec![Value::Number(0)]);
         assert_halted_at(&cpu, 2);
     }
 
     #[test]
     fn load_stored_var() {
-        let mut cpu = CPU::new(vec![
+        let mut cpu = CPU::with_op_codes(vec![
             OpCode::Push(Value::Number(42)),
             OpCode::Store(0),
             OpCode::Load(0),
             OpCode::Halt,
         ]);
         cpu.run();
-        assert_eq!(cpu.stack, vec![42]);
+        assert_eq!(cpu.stack, vec![Value::Number(42)]);
         assert_halted_at(&cpu, 4);
     }
 
     #[test]
     fn fn_no_args_no_return() {
-        let mut cpu = CPU::new(vec![
+        let mut cpu = CPU::with_op_codes(vec![
             OpCode::Call(2),
             OpCode::Halt,
             OpCode::Ret,
@@ -472,7 +480,7 @@ mod tests {
 
     #[test]
     fn fn_no_args_returns_int() {
-        let mut cpu = CPU::new(vec![
+        let mut cpu = CPU::with_op_codes(vec![
             OpCode::Call(2),
             OpCode::Halt,
             OpCode::Push(Value::Number(7)),
@@ -480,12 +488,12 @@ mod tests {
         ]);
         cpu.run();
         assert_halted_at(&cpu, 2);
-        assert_eq!(cpu.stack, vec![7]);
+        assert_eq!(cpu.stack, vec![Value::Number(7)]);
     }
 
     #[test]
     fn fn_doubles_given_arg() {
-        let mut cpu = CPU::new(vec![
+        let mut cpu = CPU::with_op_codes(vec![
             OpCode::Push(Value::Number(3)),
             OpCode::Call(3),
             OpCode::Halt,
@@ -495,31 +503,6 @@ mod tests {
         ]);
         cpu.run();
         assert_halted_at(&cpu, 3);
-        assert_eq!(cpu.stack, vec![6]);
-    }
-
-    #[test]
-    fn test_max_a_b() {
-        let mut cpu = CPU::new(vec![
-            OpCode::Push(Value::Number(6)),
-            OpCode::Push(Value::Number(4)),
-            OpCode::Call(4),
-            OpCode::Halt,
-            OpCode::Store(1),
-            OpCode::Store(0),
-            OpCode::Load(1),
-            OpCode::Load(0),
-            OpCode::Print,
-            OpCode::IsGe,
-            OpCode::Print,
-            OpCode::JmpIf(14),
-            OpCode::Load(1),
-            OpCode::Ret,
-            OpCode::Load(0),
-            OpCode::Ret,
-        ]);
-        cpu.run();
-        assert_halted_at(&cpu, 4);
-        assert_eq!(cpu.stack, vec![6]);
+        assert_eq!(cpu.stack, vec![Value::Number(6)]);
     }
 }

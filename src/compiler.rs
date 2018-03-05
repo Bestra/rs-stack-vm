@@ -136,7 +136,7 @@ mod tests {
     use instruction::{Instruction, OpCode};
     #[test]
     fn compiles_simple_math() {
-        let r = parse_Program("(1 + 3) * 12;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "(1 + 3) * 12;");
         println!("{:#?}", r);
 
         let mut p = Compiler::new();
@@ -145,10 +145,10 @@ mod tests {
         assert_eq!(
             output,
             vec![
-                Instruction::OpCode(OpCode::Push(1)),
-                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Constant(1)),
                 Instruction::OpCode(OpCode::Add),
-                Instruction::OpCode(OpCode::Push(12)),
+                Instruction::OpCode(OpCode::Constant(2)),
                 Instruction::OpCode(OpCode::Multiply),
                 Instruction::OpCode(OpCode::Halt),
             ]
@@ -157,14 +157,14 @@ mod tests {
 
     #[test]
     fn compiles_print_statement() {
-        let r = parse_Program("print 12;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "print 12;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
         assert_eq!(
             output,
             vec![
-                Instruction::OpCode(OpCode::Push(12)),
+                Instruction::OpCode(OpCode::Constant(0)),
                 Instruction::OpCode(OpCode::Print),
                 Instruction::OpCode(OpCode::Halt),
             ]
@@ -173,7 +173,7 @@ mod tests {
 
     #[test]
     fn compiles_var_declaration() {
-        let r = parse_Program("var a;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "var a;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -188,7 +188,7 @@ mod tests {
 
     #[test]
     fn compiles_var_def() {
-        let r = parse_Program("var a = 3;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "var a = 3;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -196,7 +196,7 @@ mod tests {
             output,
             vec![
                 Instruction::Local("a".to_string(), 0),
-                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Constant(0)),
                 Instruction::OpCode(OpCode::Store(0)),
                 Instruction::OpCode(OpCode::Halt),
             ]
@@ -205,7 +205,7 @@ mod tests {
 
     #[test]
     fn compiles_var_use() {
-        let r = parse_Program("var a = 3; print a;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "var a = 3; print a;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -213,7 +213,7 @@ mod tests {
             output,
             vec![
                 Instruction::Local("a".to_string(), 0),
-                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Constant(0)),
                 Instruction::OpCode(OpCode::Store(0)),
                 Instruction::OpCode(OpCode::Load(0)),
                 Instruction::OpCode(OpCode::Print),
@@ -224,7 +224,7 @@ mod tests {
 
     #[test]
     fn compiles_var_assignment() {
-        let r = parse_Program("var a = 3; a = 4;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "var a = 3; a = 4;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -232,9 +232,9 @@ mod tests {
             output,
             vec![
                 Instruction::Local("a".to_string(), 0),
-                Instruction::OpCode(OpCode::Push(3)),
+                Instruction::OpCode(OpCode::Constant(0)),
                 Instruction::OpCode(OpCode::Store(0)),
-                Instruction::OpCode(OpCode::Push(4)),
+                Instruction::OpCode(OpCode::Constant(1)),
                 Instruction::OpCode(OpCode::Dup), //assignment returns the value
                 Instruction::OpCode(OpCode::Store(0)),
                 Instruction::OpCode(OpCode::Halt),

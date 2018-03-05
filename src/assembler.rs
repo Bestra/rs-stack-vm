@@ -67,7 +67,7 @@ impl Assembler {
 fn adds_labels_to_hash() {
     let mut a = Assembler::new(vec![
         Instruction::Label("bar".to_string()),
-        Instruction::OpCode(OpCode::Push(5)),
+        Instruction::OpCode(OpCode::Push(Value::Number(5))),
         Instruction::Label("foo".to_string()),
     ]);
     a.resolve_labels();
@@ -78,11 +78,11 @@ fn adds_labels_to_hash() {
 #[test]
 fn turns_refs_to_ops() {
     let mut a = Assembler::new(vec![
-        Instruction::OpCode(OpCode::Push(5)),
+        Instruction::OpCode(OpCode::Push(Value::Number(5))),
         Instruction::Ref(Ref::Call("main".to_string())),
         Instruction::Label("main".to_string()),
-        Instruction::OpCode(OpCode::Push(5)),
-        Instruction::OpCode(OpCode::Push(5)),
+        Instruction::OpCode(OpCode::Push(Value::Number(5))),
+        Instruction::OpCode(OpCode::Push(Value::Number(5))),
     ]);
     a.resolve_labels();
     let ops = a.generate_op_codes();
