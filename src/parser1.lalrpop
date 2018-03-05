@@ -1,7 +1,9 @@
 use std::str::FromStr;
 use ast::{Expr, Statement};
+use value::Value;
+use std::collections::HashMap;
 
-grammar;
+grammar<'c>(constants: &'c mut HashMap<String, usize>, constant_pool: &'c mut Vec<Value>);
 
 Semi<T>: Vec<T> = { // (0)
     <v:(<T> ";")*> <e:T?> => match e { // (1)
@@ -76,8 +78,16 @@ Term: Box<Expr> = {
     "(" <Expr> ")"
 };
 
-Num: i32 = {
-    r"[0-9]+" => i32::from_str(<>).unwrap()
+Num: usize = {
+    <s: r"[0-9]+"> => {
+        let idx = constants.entry(s.to_string()).or_insert_with(|| {
+            let v = Value::Number(i32::from_str(<>).unwrap());
+            let i = constant_pool.len();
+            constant_pool.push(v);
+            i
+        });
+        *idx
+    }
 };
 
 Identifier: &'input str = r"[a-zA-Z][a-zA-Z0-9_]*" => <>;

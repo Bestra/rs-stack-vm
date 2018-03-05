@@ -44,18 +44,17 @@ fn run_assembly(contents: String, debug: bool) {
     let p = stack_vm::assembly::parse_Program(contents.as_str());
     let mut assembler = stack_vm::assembler::Assembler::new(p.unwrap());
     assembler.resolve_labels();
-    let mut cpu = stack_vm::CPU::new(assembler.generate_op_codes());
+    let program = stack_vm::assembler::AssemblyProgram {
+        op_codes: assembler.generate_op_codes(),
+        constant_pool: Vec::new(),
+    };
+    let mut cpu = stack_vm::cpu::CPU::new(program);
     cpu.debug = debug;
     cpu.run();
 }
 
 fn run_program(contents: String, debug: bool) {
-    let p = stack_vm::parser1::parse_Program(contents.as_str());
-    let mut compiler = stack_vm::compiler::Compiler::new();
-    let instructions = compiler.generate_instructions(p.unwrap());
-    let mut assembler = stack_vm::assembler::Assembler::new(instructions);
-    assembler.resolve_labels();
-    let mut cpu = stack_vm::CPU::new(assembler.generate_op_codes());
+    let mut cpu = stack_vm::cpu::CPU::new(stack_vm::compiler::compile(contents.as_str()));
     cpu.debug = debug;
     cpu.run();
 }

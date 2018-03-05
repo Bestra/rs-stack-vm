@@ -1,6 +1,8 @@
 // auto-generated: "lalrpop 0.14.0"
 use std::str::FromStr;
 use ast::{Expr, Statement};
+use value::Value;
+use std::collections::HashMap;
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
 
@@ -9,6 +11,8 @@ mod __parse__Program {
 
     use std::str::FromStr;
     use ast::{Expr, Statement};
+    use value::Value;
+    use std::collections::HashMap;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     use super::__intern_token::Token;
@@ -39,7 +43,7 @@ mod __parse__Program {
         NtFactor(Box<Expr>),
         NtFactorOp(String),
         NtIdentifier(&'input str),
-        NtNum(i32),
+        NtNum(usize),
         NtPrintStatement(Statement),
         NtProgram(::std::vec::Vec<Statement>),
         NtStatement(Statement),
@@ -338,7 +342,10 @@ mod __parse__Program {
     #[allow(dead_code)]
     pub fn parse_Program<
         'input,
+        'c,
     >(
+        constants: &'c mut HashMap<String, usize>,
+        constant_pool: &'c mut Vec<Value>,
         input: &'input str,
     ) -> Result<::std::vec::Vec<Statement>, __lalrpop_util::ParseError<usize, Token<'input>, &'static str>>
     {
@@ -431,7 +438,7 @@ mod __parse__Program {
                     __symbols.push((__lookahead.0, __symbol, __lookahead.2));
                     continue '__shift;
                 } else if __action < 0 {
-                    if let Some(r) = __reduce(input, __action, Some(&__lookahead.0), &mut __states, &mut __symbols, ::std::marker::PhantomData::<()>) {
+                    if let Some(r) = __reduce(constants, constant_pool, input, __action, Some(&__lookahead.0), &mut __states, &mut __symbols, ::std::marker::PhantomData::<()>) {
                         if r.is_err() {
                             return r;
                         }
@@ -453,7 +460,7 @@ mod __parse__Program {
             let __state = *__states.last().unwrap() as usize;
             let __action = __EOF_ACTION[__state];
             if __action < 0 {
-                if let Some(r) = __reduce(input, __action, None, &mut __states, &mut __symbols, ::std::marker::PhantomData::<()>) {
+                if let Some(r) = __reduce(constants, constant_pool, input, __action, None, &mut __states, &mut __symbols, ::std::marker::PhantomData::<()>) {
                     return r;
                 }
             } else {
@@ -470,7 +477,10 @@ mod __parse__Program {
     }
     pub fn __reduce<
         'input,
+        'c,
     >(
+        constants: &'c mut HashMap<String, usize>,
+        constant_pool: &'c mut Vec<Value>,
         input: &'input str,
         __action: i32,
         __lookahead_start: Option<&usize>,
@@ -486,7 +496,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22_3d_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action28::<>(input, __sym0, __sym1);
+                let __nt = super::__action28::<>(constants, constant_pool, input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cExpr_3e_29(__nt), __end));
@@ -498,7 +508,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22_3d_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action33::<>(input, __sym0, __sym1);
+                let __nt = super::__action33::<>(constants, constant_pool, input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cExpr_3e_29_3f(__nt), __end));
@@ -508,7 +518,7 @@ mod __parse__Program {
                 // ("=" <Expr>)? =  => ActionFn(27);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action27::<>(input, &__start, &__end);
+                let __nt = super::__action27::<>(constants, constant_pool, input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cExpr_3e_29_3f(__nt), __end));
@@ -521,7 +531,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtIdentifier(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym2.2.clone();
-                let __nt = super::__action10::<>(input, __sym0, __sym1, __sym2);
+                let __nt = super::__action10::<>(constants, constant_pool, input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtAssignment(__nt), __end));
@@ -532,7 +542,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtExpr(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action11::<>(input, __sym0);
+                let __nt = super::__action11::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtAssignment(__nt), __end));
@@ -543,7 +553,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtVariableDeclaration(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action2::<>(input, __sym0);
+                let __nt = super::__action2::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtDeclaration(__nt), __end));
@@ -554,7 +564,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtStatement(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action3::<>(input, __sym0);
+                let __nt = super::__action3::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtDeclaration(__nt), __end));
@@ -564,7 +574,7 @@ mod __parse__Program {
                 // Declaration* =  => ActionFn(29);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action29::<>(input, &__start, &__end);
+                let __nt = super::__action29::<>(constants, constant_pool, input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtDeclaration_2a(__nt), __end));
@@ -575,7 +585,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtDeclaration_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action30::<>(input, __sym0);
+                let __nt = super::__action30::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtDeclaration_2a(__nt), __end));
@@ -586,7 +596,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtDeclaration(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action31::<>(input, __sym0);
+                let __nt = super::__action31::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtDeclaration_2b(__nt), __end));
@@ -598,7 +608,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtDeclaration_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action32::<>(input, __sym0, __sym1);
+                let __nt = super::__action32::<>(constants, constant_pool, input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::NtDeclaration_2b(__nt), __end));
@@ -609,7 +619,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtTier_3cExprOp_2c_20Factor_3e(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action12::<>(input, __sym0);
+                let __nt = super::__action12::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtExpr(__nt), __end));
@@ -620,7 +630,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22_2b_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action14::<>(input, __sym0);
+                let __nt = super::__action14::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtExprOp(__nt), __end));
@@ -631,7 +641,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22_2d_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action15::<>(input, __sym0);
+                let __nt = super::__action15::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtExprOp(__nt), __end));
@@ -643,7 +653,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtExpression(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action7::<>(input, __sym0, __sym1);
+                let __nt = super::__action7::<>(constants, constant_pool, input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::NtExprStatement(__nt), __end));
@@ -654,7 +664,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtAssignment(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action9::<>(input, __sym0);
+                let __nt = super::__action9::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtExpression(__nt), __end));
@@ -665,7 +675,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtTier_3cFactorOp_2c_20Term_3e(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action13::<>(input, __sym0);
+                let __nt = super::__action13::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtFactor(__nt), __end));
@@ -676,7 +686,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22_2a_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action16::<>(input, __sym0);
+                let __nt = super::__action16::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtFactorOp(__nt), __end));
@@ -687,7 +697,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action21::<>(input, __sym0);
+                let __nt = super::__action21::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtIdentifier(__nt), __end));
@@ -698,7 +708,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action20::<>(input, __sym0);
+                let __nt = super::__action20::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtNum(__nt), __end));
@@ -711,7 +721,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22print_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym2.2.clone();
-                let __nt = super::__action8::<>(input, __sym0, __sym1, __sym2);
+                let __nt = super::__action8::<>(constants, constant_pool, input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtPrintStatement(__nt), __end));
@@ -721,7 +731,7 @@ mod __parse__Program {
                 // Program =  => ActionFn(36);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action36::<>(input, &__start, &__end);
+                let __nt = super::__action36::<>(constants, constant_pool, input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
@@ -732,7 +742,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtDeclaration_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action37::<>(input, __sym0);
+                let __nt = super::__action37::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
@@ -743,7 +753,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtExprStatement(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action5::<>(input, __sym0);
+                let __nt = super::__action5::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtStatement(__nt), __end));
@@ -754,7 +764,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtPrintStatement(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action6::<>(input, __sym0);
+                let __nt = super::__action6::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtStatement(__nt), __end));
@@ -765,7 +775,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtNum(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action17::<>(input, __sym0);
+                let __nt = super::__action17::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtTerm(__nt), __end));
@@ -776,7 +786,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtIdentifier(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action18::<>(input, __sym0);
+                let __nt = super::__action18::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtTerm(__nt), __end));
@@ -789,7 +799,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22_28_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym2.2.clone();
-                let __nt = super::__action19::<>(input, __sym0, __sym1, __sym2);
+                let __nt = super::__action19::<>(constants, constant_pool, input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtTerm(__nt), __end));
@@ -802,7 +812,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtTier_3cExprOp_2c_20Factor_3e(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym2.2.clone();
-                let __nt = super::__action24::<>(input, __sym0, __sym1, __sym2);
+                let __nt = super::__action24::<>(constants, constant_pool, input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtTier_3cExprOp_2c_20Factor_3e(__nt), __end));
@@ -813,7 +823,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtFactor(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action25::<>(input, __sym0);
+                let __nt = super::__action25::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtTier_3cExprOp_2c_20Factor_3e(__nt), __end));
@@ -826,7 +836,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtTier_3cFactorOp_2c_20Term_3e(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym2.2.clone();
-                let __nt = super::__action22::<>(input, __sym0, __sym1, __sym2);
+                let __nt = super::__action22::<>(constants, constant_pool, input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtTier_3cFactorOp_2c_20Term_3e(__nt), __end));
@@ -837,7 +847,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtTerm(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action23::<>(input, __sym0);
+                let __nt = super::__action23::<>(constants, constant_pool, input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtTier_3cFactorOp_2c_20Term_3e(__nt), __end));
@@ -852,7 +862,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22var_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym4.2.clone();
-                let __nt = super::__action34::<>(input, __sym0, __sym1, __sym2, __sym3, __sym4);
+                let __nt = super::__action34::<>(constants, constant_pool, input, __sym0, __sym1, __sym2, __sym3, __sym4);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 5);
                 __symbols.push((__start, __Symbol::NtVariableDeclaration(__nt), __end));
@@ -865,7 +875,7 @@ mod __parse__Program {
                 let __sym0 = __pop_Term_22var_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym2.2.clone();
-                let __nt = super::__action35::<>(input, __sym0, __sym1, __sym2);
+                let __nt = super::__action35::<>(constants, constant_pool, input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtVariableDeclaration(__nt), __end));
@@ -876,7 +886,7 @@ mod __parse__Program {
                 let __sym0 = __pop_NtProgram(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action0::<>(input, __sym0);
+                let __nt = super::__action0::<>(constants, constant_pool, input, __sym0);
                 return Some(Ok(__nt));
             }
             _ => panic!("invalid action code {}", __action)
@@ -1154,7 +1164,7 @@ mod __parse__Program {
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, i32, usize)
+    ) -> (usize, usize, usize)
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::NtNum(__v), __r) => (__l, __v, __r),
@@ -1255,6 +1265,8 @@ mod __intern_token {
     #![allow(unused_imports)]
     use std::str::FromStr;
     use ast::{Expr, Statement};
+    use value::Value;
+    use std::collections::HashMap;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     extern crate regex as __regex;
@@ -1359,7 +1371,10 @@ pub use self::__intern_token::Token;
 #[allow(unused_variables)]
 fn __action0<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, ::std::vec::Vec<Statement>, usize),
 ) -> ::std::vec::Vec<Statement>
@@ -1370,7 +1385,10 @@ fn __action0<
 #[allow(unused_variables)]
 fn __action1<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, ::std::vec::Vec<Statement>, usize),
 ) -> ::std::vec::Vec<Statement>
@@ -1381,7 +1399,10 @@ fn __action1<
 #[allow(unused_variables)]
 fn __action2<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Statement, usize),
 ) -> Statement
@@ -1392,7 +1413,10 @@ fn __action2<
 #[allow(unused_variables)]
 fn __action3<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Statement, usize),
 ) -> Statement
@@ -1403,7 +1427,10 @@ fn __action3<
 #[allow(unused_variables)]
 fn __action4<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
     (_, i, _): (usize, &'input str, usize),
@@ -1420,7 +1447,10 @@ fn __action4<
 #[allow(unused_variables)]
 fn __action5<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Statement, usize),
 ) -> Statement
@@ -1431,7 +1461,10 @@ fn __action5<
 #[allow(unused_variables)]
 fn __action6<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Statement, usize),
 ) -> Statement
@@ -1442,7 +1475,10 @@ fn __action6<
 #[allow(unused_variables)]
 fn __action7<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, expression, _): (usize, Box<Expr>, usize),
     (_, _, _): (usize, &'input str, usize),
@@ -1454,7 +1490,10 @@ fn __action7<
 #[allow(unused_variables)]
 fn __action8<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
     (_, expression, _): (usize, Box<Expr>, usize),
@@ -1467,7 +1506,10 @@ fn __action8<
 #[allow(unused_variables)]
 fn __action9<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Box<Expr>, usize),
 ) -> Box<Expr>
@@ -1478,7 +1520,10 @@ fn __action9<
 #[allow(unused_variables)]
 fn __action10<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, name, _): (usize, &'input str, usize),
     (_, _, _): (usize, &'input str, usize),
@@ -1493,7 +1538,10 @@ fn __action10<
 #[allow(unused_variables)]
 fn __action11<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Box<Expr>, usize),
 ) -> Box<Expr>
@@ -1504,7 +1552,10 @@ fn __action11<
 #[allow(unused_variables)]
 fn __action12<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Box<Expr>, usize),
 ) -> Box<Expr>
@@ -1515,7 +1566,10 @@ fn __action12<
 #[allow(unused_variables)]
 fn __action13<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Box<Expr>, usize),
 ) -> Box<Expr>
@@ -1526,7 +1580,10 @@ fn __action13<
 #[allow(unused_variables)]
 fn __action14<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, &'input str, usize),
 ) -> String
@@ -1537,7 +1594,10 @@ fn __action14<
 #[allow(unused_variables)]
 fn __action15<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, &'input str, usize),
 ) -> String
@@ -1548,7 +1608,10 @@ fn __action15<
 #[allow(unused_variables)]
 fn __action16<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, &'input str, usize),
 ) -> String
@@ -1559,9 +1622,12 @@ fn __action16<
 #[allow(unused_variables)]
 fn __action17<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
-    (_, __0, _): (usize, i32, usize),
+    (_, __0, _): (usize, usize, usize),
 ) -> Box<Expr>
 {
     Box::new(Expr::Literal{value: __0})
@@ -1570,7 +1636,10 @@ fn __action17<
 #[allow(unused_variables)]
 fn __action18<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, i, _): (usize, &'input str, usize),
 ) -> Box<Expr>
@@ -1581,7 +1650,10 @@ fn __action18<
 #[allow(unused_variables)]
 fn __action19<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
     (_, __0, _): (usize, Box<Expr>, usize),
@@ -1594,18 +1666,32 @@ fn __action19<
 #[allow(unused_variables)]
 fn __action20<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
-    (_, __0, _): (usize, &'input str, usize),
-) -> i32
+    (_, s, _): (usize, &'input str, usize),
+) -> usize
 {
-    i32::from_str(__0).unwrap()
+    {
+        let idx = constants.entry(s.to_string()).or_insert_with(|| {
+            let v = Value::Number(i32::from_str(s).unwrap());
+            let i = constant_pool.len();
+            constant_pool.push(v);
+            i
+        });
+        *idx
+    }
 }
 
 #[allow(unused_variables)]
 fn __action21<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, &'input str, usize),
 ) -> &'input str
@@ -1616,7 +1702,10 @@ fn __action21<
 #[allow(unused_variables)]
 fn __action22<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, left, _): (usize, Box<Expr>, usize),
     (_, operator, _): (usize, String, usize),
@@ -1629,7 +1718,10 @@ fn __action22<
 #[allow(unused_variables)]
 fn __action23<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Box<Expr>, usize),
 ) -> Box<Expr>
@@ -1640,7 +1732,10 @@ fn __action23<
 #[allow(unused_variables)]
 fn __action24<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, left, _): (usize, Box<Expr>, usize),
     (_, operator, _): (usize, String, usize),
@@ -1653,7 +1748,10 @@ fn __action24<
 #[allow(unused_variables)]
 fn __action25<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Box<Expr>, usize),
 ) -> Box<Expr>
@@ -1664,7 +1762,10 @@ fn __action25<
 #[allow(unused_variables)]
 fn __action26<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Box<Expr>, usize),
 ) -> ::std::option::Option<Box<Expr>>
@@ -1675,7 +1776,10 @@ fn __action26<
 #[allow(unused_variables)]
 fn __action27<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     __lookbehind: &usize,
     __lookahead: &usize,
@@ -1687,7 +1791,10 @@ fn __action27<
 #[allow(unused_variables)]
 fn __action28<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
     (_, __0, _): (usize, Box<Expr>, usize),
@@ -1699,7 +1806,10 @@ fn __action28<
 #[allow(unused_variables)]
 fn __action29<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     __lookbehind: &usize,
     __lookahead: &usize,
@@ -1711,7 +1821,10 @@ fn __action29<
 #[allow(unused_variables)]
 fn __action30<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, v, _): (usize, ::std::vec::Vec<Statement>, usize),
 ) -> ::std::vec::Vec<Statement>
@@ -1722,7 +1835,10 @@ fn __action30<
 #[allow(unused_variables)]
 fn __action31<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, __0, _): (usize, Statement, usize),
 ) -> ::std::vec::Vec<Statement>
@@ -1733,7 +1849,10 @@ fn __action31<
 #[allow(unused_variables)]
 fn __action32<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     (_, v, _): (usize, ::std::vec::Vec<Statement>, usize),
     (_, e, _): (usize, Statement, usize),
@@ -1745,7 +1864,10 @@ fn __action32<
 #[allow(unused_variables)]
 fn __action33<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     __0: (usize, &'input str, usize),
     __1: (usize, Box<Expr>, usize),
@@ -1754,12 +1876,16 @@ fn __action33<
     let __start0 = __0.0.clone();
     let __end0 = __1.2.clone();
     let __temp0 = __action28(
+        constants,
+        constant_pool,
         input,
         __0,
         __1,
     );
     let __temp0 = (__start0, __temp0, __end0);
     __action26(
+        constants,
+        constant_pool,
         input,
         __temp0,
     )
@@ -1768,7 +1894,10 @@ fn __action33<
 #[allow(unused_variables)]
 fn __action34<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     __0: (usize, &'input str, usize),
     __1: (usize, &'input str, usize),
@@ -1780,12 +1909,16 @@ fn __action34<
     let __start0 = __2.0.clone();
     let __end0 = __3.2.clone();
     let __temp0 = __action33(
+        constants,
+        constant_pool,
         input,
         __2,
         __3,
     );
     let __temp0 = (__start0, __temp0, __end0);
     __action4(
+        constants,
+        constant_pool,
         input,
         __0,
         __1,
@@ -1797,7 +1930,10 @@ fn __action34<
 #[allow(unused_variables)]
 fn __action35<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     __0: (usize, &'input str, usize),
     __1: (usize, &'input str, usize),
@@ -1807,12 +1943,16 @@ fn __action35<
     let __start0 = __1.2.clone();
     let __end0 = __2.0.clone();
     let __temp0 = __action27(
+        constants,
+        constant_pool,
         input,
         &__start0,
         &__end0,
     );
     let __temp0 = (__start0, __temp0, __end0);
     __action4(
+        constants,
+        constant_pool,
         input,
         __0,
         __1,
@@ -1824,7 +1964,10 @@ fn __action35<
 #[allow(unused_variables)]
 fn __action36<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     __lookbehind: &usize,
     __lookahead: &usize,
@@ -1833,12 +1976,16 @@ fn __action36<
     let __start0 = __lookbehind.clone();
     let __end0 = __lookahead.clone();
     let __temp0 = __action29(
+        constants,
+        constant_pool,
         input,
         &__start0,
         &__end0,
     );
     let __temp0 = (__start0, __temp0, __end0);
     __action1(
+        constants,
+        constant_pool,
         input,
         __temp0,
     )
@@ -1847,7 +1994,10 @@ fn __action36<
 #[allow(unused_variables)]
 fn __action37<
     'input,
+    'c,
 >(
+    constants: &'c mut HashMap<String, usize>,
+    constant_pool: &'c mut Vec<Value>,
     input: &'input str,
     __0: (usize, ::std::vec::Vec<Statement>, usize),
 ) -> ::std::vec::Vec<Statement>
@@ -1855,28 +2005,32 @@ fn __action37<
     let __start0 = __0.0.clone();
     let __end0 = __0.2.clone();
     let __temp0 = __action30(
+        constants,
+        constant_pool,
         input,
         __0,
     );
     let __temp0 = (__start0, __temp0, __end0);
     __action1(
+        constants,
+        constant_pool,
         input,
         __temp0,
     )
 }
 
-pub trait __ToTriple<'input, > {
+pub trait __ToTriple<'input, 'c, > {
     type Error;
     fn to_triple(value: Self) -> Result<(usize,Token<'input>,usize),Self::Error>;
 }
 
-impl<'input, > __ToTriple<'input, > for (usize, Token<'input>, usize) {
+impl<'input, 'c, > __ToTriple<'input, 'c, > for (usize, Token<'input>, usize) {
     type Error = &'static str;
     fn to_triple(value: Self) -> Result<(usize,Token<'input>,usize),&'static str> {
         Ok(value)
     }
 }
-impl<'input, > __ToTriple<'input, > for Result<(usize, Token<'input>, usize),&'static str> {
+impl<'input, 'c, > __ToTriple<'input, 'c, > for Result<(usize, Token<'input>, usize),&'static str> {
     type Error = &'static str;
     fn to_triple(value: Self) -> Result<(usize,Token<'input>,usize),&'static str> {
         value

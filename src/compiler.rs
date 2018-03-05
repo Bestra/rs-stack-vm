@@ -2,6 +2,8 @@ use ast::{Expr, Statement};
 use instruction::{Instruction, OpCode};
 use std::collections::HashMap;
 use value::Value;
+use parser1::parse_Program;
+use assembler::{Assembler, AssemblyProgram};
 
 pub struct Scope {
     index: usize,
@@ -26,10 +28,24 @@ impl Scope {
     }
 }
 
+pub fn compile(program: &str) -> AssemblyProgram {
+    let mut constants = HashMap::new();
+    let mut constant_pool = Vec::new();
+    let p = parse_Program(&mut constants, &mut constant_pool, program);
+    println!("{:?}", constants);
+    let mut compiler = Compiler::new();
+    let instructions = compiler.generate_instructions(p.unwrap());
+    let mut assembler = Assembler::new(instructions);
+    assembler.resolve_labels();
+    AssemblyProgram {
+            op_codes: assembler.generate_op_codes(),
+            constant_pool: constant_pool,
+    }
+}
+
 pub struct Compiler {
     instructions: Vec<Instruction>,
     scope: Scope,
-    constant_pool: HashMap<String, Value>,
 }
 
 impl Compiler {
@@ -37,7 +53,6 @@ impl Compiler {
         Compiler {
             instructions: Vec::new(),
             scope: Scope::new(),
-            constant_pool: HashMap::new(),
         }
     }
 
@@ -71,7 +86,7 @@ impl Compiler {
     fn process_expr(&mut self, n: Expr) {
         match n {
             Expr::Literal { value: i } => {
-                self.instructions.push(Instruction::OpCode(OpCode::Push(i)))
+                self.instructions.push(Instruction::OpCode(OpCode::Constant(i)))
             }
             Expr::Variable { name } => {
                 let i = self.scope.get(name);

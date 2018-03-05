@@ -1,5 +1,6 @@
 use std::str::FromStr;
 use instruction::{Instruction, Ref, OpCode};
+use value::Value;
 
 grammar;
 
@@ -46,6 +47,6 @@ Op: Instruction = {
     "RET" => Instruction::OpCode(OpCode::Ret),
 };
 
-Integer: i32 = <s:r"[0-9]+"> => i32::from_str(s).unwrap();
+Integer: Value = <s:r"[0-9]+"> => Value::Number(i32::from_str(s).unwrap());
 Address: usize = <s:r"[0-9]+"> => usize::from_str(s).unwrap();
 Identifier: &'input str = r"[a-zA-Z][a-zA-Z0-9_]*" => <>;

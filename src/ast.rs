@@ -17,7 +17,7 @@ pub enum Expr {
     //     expression: Box<Expr>,
     // },
     Literal {
-        value: i32,
+        value: usize,
     },
     // Logical {
     //     left: Box<Expr>,

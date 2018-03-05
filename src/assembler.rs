@@ -1,5 +1,11 @@
 use std::collections::HashMap;
 use instruction::{Instruction, OpCode, Ref};
+use value::Value;
+
+pub struct AssemblyProgram {
+    pub op_codes: Vec<OpCode>,
+    pub constant_pool: Vec<Value>,
+}
 
 pub struct Assembler {
     program: Vec<Instruction>,

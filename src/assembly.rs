@@ -1,6 +1,7 @@
 // auto-generated: "lalrpop 0.14.0"
 use std::str::FromStr;
 use instruction::{Instruction, Ref, OpCode};
+use value::Value;
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
 
@@ -9,6 +10,7 @@ mod __parse__Comment {
 
     use std::str::FromStr;
     use instruction::{Instruction, Ref, OpCode};
+    use value::Value;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     use super::__intern_token::Token;
@@ -43,7 +45,7 @@ mod __parse__Comment {
         NtAddress(usize),
         NtComment(Instruction),
         NtIdentifier(&'input str),
-        NtInteger(i32),
+        NtInteger(Value),
         NtLabel(Instruction),
         NtLine(Instruction),
         NtLine_2a(::std::vec::Vec<Instruction>),
@@ -1105,7 +1107,7 @@ mod __parse__Comment {
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, i32, usize)
+    ) -> (usize, Value, usize)
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::NtInteger(__v), __r) => (__l, __v, __r),
@@ -1252,6 +1254,7 @@ mod __parse__Label {
 
     use std::str::FromStr;
     use instruction::{Instruction, Ref, OpCode};
+    use value::Value;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     use super::__intern_token::Token;
@@ -1286,7 +1289,7 @@ mod __parse__Label {
         NtAddress(usize),
         NtComment(Instruction),
         NtIdentifier(&'input str),
-        NtInteger(i32),
+        NtInteger(Value),
         NtLabel(Instruction),
         NtLine(Instruction),
         NtLine_2a(::std::vec::Vec<Instruction>),
@@ -2360,7 +2363,7 @@ mod __parse__Label {
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, i32, usize)
+    ) -> (usize, Value, usize)
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::NtInteger(__v), __r) => (__l, __v, __r),
@@ -2507,6 +2510,7 @@ mod __parse__Line {
 
     use std::str::FromStr;
     use instruction::{Instruction, Ref, OpCode};
+    use value::Value;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     use super::__intern_token::Token;
@@ -2541,7 +2545,7 @@ mod __parse__Line {
         NtAddress(usize),
         NtComment(Instruction),
         NtIdentifier(&'input str),
-        NtInteger(i32),
+        NtInteger(Value),
         NtLabel(Instruction),
         NtLine(Instruction),
         NtLine_2a(::std::vec::Vec<Instruction>),
@@ -3819,7 +3823,7 @@ mod __parse__Line {
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, i32, usize)
+    ) -> (usize, Value, usize)
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::NtInteger(__v), __r) => (__l, __v, __r),
@@ -3966,6 +3970,7 @@ mod __parse__Program {
 
     use std::str::FromStr;
     use instruction::{Instruction, Ref, OpCode};
+    use value::Value;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     use super::__intern_token::Token;
@@ -4000,7 +4005,7 @@ mod __parse__Program {
         NtAddress(usize),
         NtComment(Instruction),
         NtIdentifier(&'input str),
-        NtInteger(i32),
+        NtInteger(Value),
         NtLabel(Instruction),
         NtLine(Instruction),
         NtLine_2a(::std::vec::Vec<Instruction>),
@@ -5296,7 +5301,7 @@ mod __parse__Program {
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, i32, usize)
+    ) -> (usize, Value, usize)
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::NtInteger(__v), __r) => (__l, __v, __r),
@@ -5443,6 +5448,7 @@ mod __parse__Ref {
 
     use std::str::FromStr;
     use instruction::{Instruction, Ref, OpCode};
+    use value::Value;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     use super::__intern_token::Token;
@@ -5477,7 +5483,7 @@ mod __parse__Ref {
         NtAddress(usize),
         NtComment(Instruction),
         NtIdentifier(&'input str),
-        NtInteger(i32),
+        NtInteger(Value),
         NtLabel(Instruction),
         NtLine(Instruction),
         NtLine_2a(::std::vec::Vec<Instruction>),
@@ -6575,7 +6581,7 @@ mod __parse__Ref {
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, i32, usize)
+    ) -> (usize, Value, usize)
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::NtInteger(__v), __r) => (__l, __v, __r),
@@ -6720,6 +6726,7 @@ mod __intern_token {
     #![allow(unused_imports)]
     use std::str::FromStr;
     use instruction::{Instruction, Ref, OpCode};
+    use value::Value;
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     extern crate regex as __regex;
@@ -7046,7 +7053,7 @@ fn __action17<
 >(
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
-    (_, i, _): (usize, i32, usize),
+    (_, i, _): (usize, Value, usize),
 ) -> Instruction
 {
     Instruction::OpCode(OpCode::Push(i))
@@ -7225,9 +7232,9 @@ fn __action33<
 >(
     input: &'input str,
     (_, s, _): (usize, &'input str, usize),
-) -> i32
+) -> Value
 {
-    i32::from_str(s).unwrap()
+    Value::Number(i32::from_str(s).unwrap())
 }
 
 #[allow(unused_variables)]
