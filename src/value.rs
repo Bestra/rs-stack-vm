@@ -1,6 +1,7 @@
 use std::ops::Add;
 use std::ops::Sub;
 use std::ops::Mul;
+use std::fmt;
 
 #[derive(PartialEq,PartialOrd,Debug,Clone)]
 pub enum Value {
@@ -40,6 +41,16 @@ impl Mul for Value {
         match (&self, &other) {
             (&Value::Number(a), &Value::Number(b)) => Value::Number(a * b),
             _ => panic!("Unable to multiply types {:?} and {:?}", self, other)
+        }
+    }
+}
+
+impl fmt::Display for Value {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            &Value::Number(a) => write!(f, "{}", a),
+            &Value::String(ref a) => write!(f, "{}", a),
+            &Value::Bool(a) => write!(f, "{}", a),
         }
     }
 }

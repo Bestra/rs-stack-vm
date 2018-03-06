@@ -25,8 +25,8 @@ pub enum OpCode {
     Print,
     DebugPrint,
     Call(usize),
-    // PushFrame,
-    // PopFrame,
+    PushFrame,
+    PopFrame,
     Constant(usize),
     Ret,
 }

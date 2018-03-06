@@ -38,6 +38,7 @@ VariableDeclaration: Statement = {
 Statement = {
     ExprStatement,
     PrintStatement,
+    Block,
 };
 
 ExprStatement: Statement = {
@@ -48,6 +49,9 @@ PrintStatement: Statement = {
     "print" <expression: Expression> ";" => Statement::Print{<>}
 };
 
+Block: Statement = {
+    "{" <statements: Declaration*> "}" => Statement::Block{<>}
+};
 
 Expression = {
     Assignment

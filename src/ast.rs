@@ -35,9 +35,9 @@ pub enum Expr {
 
 #[derive(Debug, Clone)]
 pub enum Statement {
-    // Block {
-    //     statements: Vec<Statement>,
-    // },
+    Block {
+        statements: Vec<Statement>,
+    },
     Expression {
         expression: Box<Expr>,
     },

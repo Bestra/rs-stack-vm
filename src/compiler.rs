@@ -29,6 +29,10 @@ impl Scope {
     pub fn get(&self, symbol: String) -> usize {
         *self.table.get(&symbol).unwrap()
     }
+
+    pub fn defines(&self, symbol: String) -> bool {
+        self.table.contains_key(&symbol)
+    }
 }
 
 fn new_scope() -> Rc<RefCell<Scope>> {
@@ -61,11 +65,20 @@ impl Environment {
         (idx, scope.borrow_mut().define(name))
     }
 
-    pub fn get(&mut self, name: String) -> (usize, usize) {
-        let scope = self.scopes.last().unwrap();
-        let idx = self.scopes.len() - 1;
+    fn find_scope_for_var(&mut self, name: &str) -> Option<(usize, usize)> {
+        for (idx, scope) in self.scopes.iter().enumerate().rev() {
+            if scope.borrow_mut().defines(name.to_string()) {
+                return Some((idx, scope.borrow_mut().get(name.to_string())));
+            }
+        }
+        None
+    }
 
-        (idx, scope.borrow_mut().get(name))
+    pub fn get(&mut self, name: String) -> (usize, usize) {
+        match self.find_scope_for_var(&name) {
+            Some((idx, i)) => (idx, i),
+            None => panic!("No scope found for variable {}", name)
+        }
     }
 }
 
@@ -109,6 +122,14 @@ impl Compiler {
             Statement::Print { expression } => {
                 self.process_expr(*expression);
                 self.instructions.push(Instruction::OpCode(OpCode::Print));
+            }
+
+            Statement::Block { statements } => {
+                self.instructions.push(Instruction::OpCode(OpCode::PushFrame));
+                self.environment.push();
+                self.process_statements(statements);
+                self.instructions.push(Instruction::OpCode(OpCode::PopFrame));
+                self.environment.pop();
             }
 
             Statement::Var { name, initializer } => {
@@ -310,6 +331,68 @@ mod tests {
                 Instruction::OpCode(OpCode::Constant(1)),
                 Instruction::OpCode(OpCode::Dup), //assignment returns the value
                 Instruction::OpCode(OpCode::Store(0, 0)),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_empty_block() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "{}");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::PushFrame),
+                Instruction::OpCode(OpCode::PopFrame),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_block_without_closure() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
+        "var a = 1; { var b = 2; }");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::Local("a".to_string(), 0),
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Store(0, 0)),
+                Instruction::OpCode(OpCode::PushFrame),
+                Instruction::Local("b".to_string(), 0),
+                Instruction::OpCode(OpCode::Constant(1)),
+                Instruction::OpCode(OpCode::Store(1, 0)),
+                Instruction::OpCode(OpCode::PopFrame),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_block_with_closure() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
+                              "var a = 1; { a = 2; }");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::Local("a".to_string(), 0),
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Store(0, 0)),
+                Instruction::OpCode(OpCode::PushFrame),
+                Instruction::OpCode(OpCode::Constant(1)),
+                Instruction::OpCode(OpCode::Dup),
+                Instruction::OpCode(OpCode::Store(0, 0)),
+                Instruction::OpCode(OpCode::PopFrame),
                 Instruction::OpCode(OpCode::Halt),
             ]
         );

@@ -231,7 +231,7 @@ impl CPU {
 
             OpCode::Print => {
                 let k = self.stack.pop().unwrap();
-                println!("{:?}", k);
+                println!("{}", k);
             }
 
             OpCode::DebugPrint => {
@@ -244,6 +244,16 @@ impl CPU {
                 self.frames.push(Frame::new(self.instruction_address));
                 self.current_frame_idx += 1;
                 self.instruction_address = i;
+            }
+
+            OpCode::PushFrame => {
+                self.frames.push(Frame::new(0));
+                self.current_frame_idx += 1;
+            }
+
+            OpCode::PopFrame => {
+                self.frames.pop();
+                self.current_frame_idx -= 1;
             }
 
             OpCode::Ret => {
@@ -526,5 +536,28 @@ mod tests {
         cpu.run();
         assert_halted_at(&cpu, 3);
         assert_eq!(cpu.stack, vec![Value::Number(6)]);
+    }
+
+    #[test]
+    fn push_frame() {
+        let mut cpu = CPU::with_op_codes(vec![
+            OpCode::PushFrame,
+            OpCode::Halt,
+        ]);
+        cpu.run();
+        assert_halted_at(&cpu, 2);
+        assert_eq!(cpu.frames.len(), 2);
+    }
+
+    #[test]
+    fn pop_frame() {
+        let mut cpu = CPU::with_op_codes(vec![
+            OpCode::PushFrame,
+            OpCode::PopFrame,
+            OpCode::Halt,
+        ]);
+        cpu.run();
+        assert_halted_at(&cpu, 3);
+        assert_eq!(cpu.frames.len(), 1);
     }
 }
