@@ -6,7 +6,7 @@ use std::ops::Mul;
 pub enum Value {
     Number(i32),
     Bool(bool),
-    // String(String),
+    String(String),
     // Float(f64),
 }
 

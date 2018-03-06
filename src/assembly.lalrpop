@@ -29,7 +29,7 @@ pub Ref: Instruction = {
 Op: Instruction = {
     "ADD" => Instruction::OpCode(OpCode::Add),
     "HALT" => Instruction::OpCode(OpCode::Halt),
-    "PUSH" <i: Integer> => Instruction::OpCode(OpCode::Push(i)),
+    "PUSH" <v: Value> => Instruction::OpCode(OpCode::Push(v)),
     "SUB" => Instruction::OpCode(OpCode::Subtract),
     "MULT" => Instruction::OpCode(OpCode::Multiply),
     "NOT" => Instruction::OpCode(OpCode::Not),
@@ -47,6 +47,21 @@ Op: Instruction = {
     "RET" => Instruction::OpCode(OpCode::Ret),
 };
 
-Integer: Value = <s:r"[0-9]+"> => Value::Number(i32::from_str(s).unwrap());
+Value = {
+  Number,
+  Bool,
+  String,
+};
+
+Number: Value = <s:r"[0-9]+"> => Value::Number(i32::from_str(s).unwrap());
+String: Value = <s:r#""[^"]*""#> => {
+    let literal = s[1..s.len()-1].to_string();
+    Value::String(literal)
+};
+
+Bool: Value = {
+  "true" => Value::Bool(true),
+  "false" => Value::Bool(false),
+};
 Address: usize = <s:r"[0-9]+"> => usize::from_str(s).unwrap();
 Identifier: &'input str = r"[a-zA-Z][a-zA-Z0-9_]*" => <>;

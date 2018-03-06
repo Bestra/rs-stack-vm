@@ -113,6 +113,7 @@ RET
 main:
 PUSH 6
 PUSH 4
+PUSH \"HEY\"
 CALL double
 ");
 
