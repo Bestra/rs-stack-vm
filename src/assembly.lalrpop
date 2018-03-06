@@ -41,8 +41,10 @@ Op: Instruction = {
     "ISGT" => Instruction::OpCode(OpCode::IsGt),
     "ISGE" => Instruction::OpCode(OpCode::IsGe),
     "ISLT" => Instruction::OpCode(OpCode::IsLt),
-    "LOAD" <i: Address> => Instruction::OpCode(OpCode::Load(i)),
-    "STORE" <i: Address> => Instruction::OpCode(OpCode::Store(i)),
+    "LOAD_LOCAL" <i: Address> => Instruction::OpCode(OpCode::LoadLocal(i)),
+    "STORE_LOCAL" <i: Address> => Instruction::OpCode(OpCode::StoreLocal(i)),
+    "LOAD" <idx: Address> <i: Address> => Instruction::OpCode(OpCode::Load(idx, i)),
+    "STORE" <idx: Address> <i: Address> => Instruction::OpCode(OpCode::Store(idx, i)),
     "PRINT" => Instruction::OpCode(OpCode::Print),
     "RET" => Instruction::OpCode(OpCode::Ret),
 };

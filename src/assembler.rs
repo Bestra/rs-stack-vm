@@ -95,19 +95,19 @@ fn assembly_1() {
 CALL main
 
 double:
-STORE 1
-STORE 0
-LOAD 1
-LOAD 0
+STORE_LOCAL 1
+STORE_LOCAL 0
+LOAD_LOCAL 1
+LOAD_LOCAL 0
 PRINT
 ISGE
 PRINT
 JIF double_a
-LOAD 1
+LOAD_LOCAL 1
 RET
 
 double_a:
-LOAD 0
+LOAD_LOCAL 0
 RET
 
 main:

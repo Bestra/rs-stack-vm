@@ -1,6 +1,9 @@
+use std::collections::HashMap;
+use std::cell::RefCell;
+use std::rc::Rc;
+
 use ast::{Expr, Statement};
 use instruction::{Instruction, OpCode};
-use std::collections::HashMap;
 use value::Value;
 use parser1::parse_Program;
 use assembler::{Assembler, AssemblyProgram};
@@ -28,6 +31,44 @@ impl Scope {
     }
 }
 
+fn new_scope() -> Rc<RefCell<Scope>> {
+    Rc::new(RefCell::new(Scope::new()))
+}
+
+pub struct Environment {
+    scopes: Vec<Rc<RefCell<Scope>>>,
+}
+
+impl Environment {
+    pub fn new() -> Environment {
+        Environment {
+            scopes: vec![new_scope()],
+        }
+    }
+
+    pub fn push(&mut self) {
+       self.scopes.push(new_scope())
+    }
+
+    pub fn pop(&mut self) {
+        self.scopes.pop();
+    }
+
+    pub fn define(&mut self, name: String) -> (usize, usize) {
+        let scope = self.scopes.last().unwrap();
+        let idx = self.scopes.len() - 1;
+
+        (idx, scope.borrow_mut().define(name))
+    }
+
+    pub fn get(&mut self, name: String) -> (usize, usize) {
+        let scope = self.scopes.last().unwrap();
+        let idx = self.scopes.len() - 1;
+
+        (idx, scope.borrow_mut().get(name))
+    }
+}
+
 pub fn compile(program: &str) -> AssemblyProgram {
     let mut constants = HashMap::new();
     let mut constant_pool = Vec::new();
@@ -45,14 +86,14 @@ pub fn compile(program: &str) -> AssemblyProgram {
 
 pub struct Compiler {
     instructions: Vec<Instruction>,
-    scope: Scope,
+    environment: Environment,
 }
 
 impl Compiler {
     pub fn new() -> Compiler {
         Compiler {
             instructions: Vec::new(),
-            scope: Scope::new(),
+            environment: Environment::new(),
         }
     }
 
@@ -71,13 +112,13 @@ impl Compiler {
             }
 
             Statement::Var { name, initializer } => {
-                let idx = self.scope.define(name.clone());
+                let (frame_idx, idx) = self.environment.define(name.clone());
                 self.instructions.push(Instruction::Local(name, idx));
                 if let Some(i) = initializer {
                     // if there's an initializer first we put its value on the stack...
                     self.process_expr(*i);
                     // and then store it
-                    self.instructions.push(Instruction::OpCode(OpCode::Store(idx)));
+                    self.instructions.push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
                 }
             }
         }
@@ -89,8 +130,8 @@ impl Compiler {
                 self.instructions.push(Instruction::OpCode(OpCode::Constant(i)))
             }
             Expr::Variable { name } => {
-                let i = self.scope.get(name);
-                self.instructions.push(Instruction::OpCode(OpCode::Load(i)))
+                let (frame_idx, i) = self.environment.get(name);
+                self.instructions.push(Instruction::OpCode(OpCode::Load(frame_idx, i)))
             }
             Expr::Binary {
                 left,
@@ -112,12 +153,12 @@ impl Compiler {
                 name,
                 value
             } => {
-                let idx = self.scope.get(name);
+                let (frame_idx, idx) = self.environment.get(name);
                 self.process_expr(*value);
                 // TODO: See if these semantics are correct. It works for
                 // something like "print a = 3;" but might be silly elsewhere
                 self.instructions.push(Instruction::OpCode(OpCode::Dup));
-                self.instructions.push(Instruction::OpCode(OpCode::Store(idx)));
+                self.instructions.push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
             }
         }
     }
@@ -229,7 +270,7 @@ mod tests {
             vec![
                 Instruction::Local("a".to_string(), 0),
                 Instruction::OpCode(OpCode::Constant(0)),
-                Instruction::OpCode(OpCode::Store(0)),
+                Instruction::OpCode(OpCode::Store(0, 0)),
                 Instruction::OpCode(OpCode::Halt),
             ]
         );
@@ -246,8 +287,8 @@ mod tests {
             vec![
                 Instruction::Local("a".to_string(), 0),
                 Instruction::OpCode(OpCode::Constant(0)),
-                Instruction::OpCode(OpCode::Store(0)),
-                Instruction::OpCode(OpCode::Load(0)),
+                Instruction::OpCode(OpCode::Store(0, 0)),
+                Instruction::OpCode(OpCode::Load(0, 0)),
                 Instruction::OpCode(OpCode::Print),
                 Instruction::OpCode(OpCode::Halt),
             ]
@@ -265,10 +306,10 @@ mod tests {
             vec![
                 Instruction::Local("a".to_string(), 0),
                 Instruction::OpCode(OpCode::Constant(0)),
-                Instruction::OpCode(OpCode::Store(0)),
+                Instruction::OpCode(OpCode::Store(0, 0)),
                 Instruction::OpCode(OpCode::Constant(1)),
                 Instruction::OpCode(OpCode::Dup), //assignment returns the value
-                Instruction::OpCode(OpCode::Store(0)),
+                Instruction::OpCode(OpCode::Store(0, 0)),
                 Instruction::OpCode(OpCode::Halt),
             ]
         );

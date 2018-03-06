@@ -30,6 +30,7 @@ mod __parse__Comment {
         Term_22JIF_22(&'input str),
         Term_22JMP_22(&'input str),
         Term_22LOAD_22(&'input str),
+        Term_22LOAD__LOCAL_22(&'input str),
         Term_22MULT_22(&'input str),
         Term_22NOT_22(&'input str),
         Term_22OR_22(&'input str),
@@ -38,6 +39,7 @@ mod __parse__Comment {
         Term_22PUSH_22(&'input str),
         Term_22RET_22(&'input str),
         Term_22STORE_22(&'input str),
+        Term_22STORE__LOCAL_22(&'input str),
         Term_22SUB_22(&'input str),
         Term_22false_22(&'input str),
         Term_22true_22(&'input str),
@@ -67,17 +69,17 @@ mod __parse__Comment {
     }
     const __ACTION: &'static [i32] = &[
         // State 0
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
         // State 1
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 2
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     const __EOF_ACTION: &'static [i32] = &[
         // State 0
         0,
         // State 1
-        -43,
+        -45,
         // State 2
         -4,
     ];
@@ -104,6 +106,7 @@ mod __parse__Comment {
             r###""JIF""###,
             r###""JMP""###,
             r###""LOAD""###,
+            r###""LOAD_LOCAL""###,
             r###""MULT""###,
             r###""NOT""###,
             r###""OR""###,
@@ -112,6 +115,7 @@ mod __parse__Comment {
             r###""PUSH""###,
             r###""RET""###,
             r###""STORE""###,
+            r###""STORE_LOCAL""###,
             r###""SUB""###,
             r###""false""###,
             r###""true""###,
@@ -120,7 +124,7 @@ mod __parse__Comment {
             r###"r#"[0-9]+"#"###,
             r###"r#"[a-zA-Z][a-zA-Z0-9_]*"#"###,
         ];
-        __ACTION[(__state * 28)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
+        __ACTION[(__state * 30)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
             if state == 0 {
                 None
             } else {
@@ -173,10 +177,12 @@ mod __parse__Comment {
                 Token(25, _) if true => 21,
                 Token(26, _) if true => 22,
                 Token(27, _) if true => 23,
-                Token(0, _) if true => 24,
-                Token(1, _) if true => 25,
-                Token(2, _) if true => 26,
-                Token(3, _) if true => 27,
+                Token(28, _) if true => 24,
+                Token(29, _) if true => 25,
+                Token(0, _) if true => 26,
+                Token(1, _) if true => 27,
+                Token(2, _) if true => 28,
+                Token(3, _) if true => 29,
                 _ => {
                     let __state = *__states.last().unwrap() as usize;
                     let __error = __lalrpop_util::ParseError::UnrecognizedToken {
@@ -188,7 +194,7 @@ mod __parse__Comment {
             };
             '__inner: loop {
                 let __state = *__states.last().unwrap() as usize;
-                let __action = __ACTION[__state * 28 + __integer];
+                let __action = __ACTION[__state * 30 + __integer];
                 if __action > 0 {
                     let __symbol = match __integer {
                         0 => match __lookahead.1 {
@@ -244,62 +250,70 @@ mod __parse__Comment {
                             _ => unreachable!(),
                         },
                         13 => match __lookahead.1 {
-                            Token(17, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
+                            Token(17, __tok0) => __Symbol::Term_22LOAD__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         14 => match __lookahead.1 {
-                            Token(18, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
+                            Token(18, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         15 => match __lookahead.1 {
-                            Token(19, __tok0) => __Symbol::Term_22OR_22((__tok0)),
+                            Token(19, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         16 => match __lookahead.1 {
-                            Token(20, __tok0) => __Symbol::Term_22POP_22((__tok0)),
+                            Token(20, __tok0) => __Symbol::Term_22OR_22((__tok0)),
                             _ => unreachable!(),
                         },
                         17 => match __lookahead.1 {
-                            Token(21, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
+                            Token(21, __tok0) => __Symbol::Term_22POP_22((__tok0)),
                             _ => unreachable!(),
                         },
                         18 => match __lookahead.1 {
-                            Token(22, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
+                            Token(22, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         19 => match __lookahead.1 {
-                            Token(23, __tok0) => __Symbol::Term_22RET_22((__tok0)),
+                            Token(23, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
                             _ => unreachable!(),
                         },
                         20 => match __lookahead.1 {
-                            Token(24, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
+                            Token(24, __tok0) => __Symbol::Term_22RET_22((__tok0)),
                             _ => unreachable!(),
                         },
                         21 => match __lookahead.1 {
-                            Token(25, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
+                            Token(25, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
                             _ => unreachable!(),
                         },
                         22 => match __lookahead.1 {
-                            Token(26, __tok0) => __Symbol::Term_22false_22((__tok0)),
+                            Token(26, __tok0) => __Symbol::Term_22STORE__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         23 => match __lookahead.1 {
-                            Token(27, __tok0) => __Symbol::Term_22true_22((__tok0)),
+                            Token(27, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
                             _ => unreachable!(),
                         },
                         24 => match __lookahead.1 {
-                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
+                            Token(28, __tok0) => __Symbol::Term_22false_22((__tok0)),
                             _ => unreachable!(),
                         },
                         25 => match __lookahead.1 {
-                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            Token(29, __tok0) => __Symbol::Term_22true_22((__tok0)),
                             _ => unreachable!(),
                         },
                         26 => match __lookahead.1 {
-                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
                             _ => unreachable!(),
                         },
                         27 => match __lookahead.1 {
+                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        28 => match __lookahead.1 {
+                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        29 => match __lookahead.1 {
                             Token(3, __tok0) => __Symbol::Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23((__tok0)),
                             _ => unreachable!(),
                         },
@@ -359,33 +373,33 @@ mod __parse__Comment {
     {
         let __nonterminal = match -__action {
             1 => {
-                // Address = r#"[0-9]+"# => ActionFn(40);
+                // Address = r#"[0-9]+"# => ActionFn(42);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action40::<>(input, __sym0);
+                let __nt = super::__action42::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtAddress(__nt), __end));
                 0
             }
             2 => {
-                // Bool = "true" => ActionFn(38);
+                // Bool = "true" => ActionFn(40);
                 let __sym0 = __pop_Term_22true_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action38::<>(input, __sym0);
+                let __nt = super::__action40::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
                 1
             }
             3 => {
-                // Bool = "false" => ActionFn(39);
+                // Bool = "false" => ActionFn(41);
                 let __sym0 = __pop_Term_22false_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action39::<>(input, __sym0);
+                let __nt = super::__action41::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
@@ -403,11 +417,11 @@ mod __parse__Comment {
                 2
             }
             5 => {
-                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(41);
+                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(43);
                 let __sym0 = __pop_Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action41::<>(input, __sym0);
+                let __nt = super::__action43::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtIdentifier(__nt), __end));
@@ -470,55 +484,55 @@ mod __parse__Comment {
                 5
             }
             11 => {
-                // Line* =  => ActionFn(42);
+                // Line* =  => ActionFn(44);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action42::<>(input, &__start, &__end);
+                let __nt = super::__action44::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             12 => {
-                // Line* = Line+ => ActionFn(43);
+                // Line* = Line+ => ActionFn(45);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action43::<>(input, __sym0);
+                let __nt = super::__action45::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             13 => {
-                // Line+ = Line => ActionFn(44);
+                // Line+ = Line => ActionFn(46);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action44::<>(input, __sym0);
+                let __nt = super::__action46::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             14 => {
-                // Line+ = Line+, Line => ActionFn(45);
+                // Line+ = Line+, Line => ActionFn(47);
                 let __sym1 = __pop_NtLine(__symbols);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action45::<>(input, __sym0, __sym1);
+                let __nt = super::__action47::<>(input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             15 => {
-                // Number = r#"[0-9]+"# => ActionFn(36);
+                // Number = r#"[0-9]+"# => ActionFn(38);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action36::<>(input, __sym0);
+                let __nt = super::__action38::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtNumber(__nt), __end));
@@ -680,9 +694,9 @@ mod __parse__Comment {
                 9
             }
             30 => {
-                // Op = "LOAD", Address => ActionFn(29);
+                // Op = "LOAD_LOCAL", Address => ActionFn(29);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22LOAD_22(__symbols);
+                let __sym0 = __pop_Term_22LOAD__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action29::<>(input, __sym0, __sym1);
@@ -692,9 +706,9 @@ mod __parse__Comment {
                 9
             }
             31 => {
-                // Op = "STORE", Address => ActionFn(30);
+                // Op = "STORE_LOCAL", Address => ActionFn(30);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __sym0 = __pop_Term_22STORE__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action30::<>(input, __sym0, __sym1);
@@ -704,49 +718,75 @@ mod __parse__Comment {
                 9
             }
             32 => {
-                // Op = "PRINT" => ActionFn(31);
-                let __sym0 = __pop_Term_22PRINT_22(__symbols);
+                // Op = "LOAD", Address, Address => ActionFn(31);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22LOAD_22(__symbols);
                 let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action31::<>(input, __sym0);
+                let __end = __sym2.2.clone();
+                let __nt = super::__action31::<>(input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
+                __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
             33 => {
-                // Op = "RET" => ActionFn(32);
-                let __sym0 = __pop_Term_22RET_22(__symbols);
+                // Op = "STORE", Address, Address => ActionFn(32);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym2.2.clone();
+                let __nt = super::__action32::<>(input, __sym0, __sym1, __sym2);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 3);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            34 => {
+                // Op = "PRINT" => ActionFn(33);
+                let __sym0 = __pop_Term_22PRINT_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action32::<>(input, __sym0);
+                let __nt = super::__action33::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
-            34 => {
-                // Program =  => ActionFn(46);
+            35 => {
+                // Op = "RET" => ActionFn(34);
+                let __sym0 = __pop_Term_22RET_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action34::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            36 => {
+                // Program =  => ActionFn(48);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action46::<>(input, &__start, &__end);
+                let __nt = super::__action48::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            35 => {
-                // Program = Line+ => ActionFn(47);
+            37 => {
+                // Program = Line+ => ActionFn(49);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action47::<>(input, __sym0);
+                let __nt = super::__action49::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            36 => {
+            38 => {
                 // Ref = "CALL", Identifier => ActionFn(12);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22CALL_22(__symbols);
@@ -758,7 +798,7 @@ mod __parse__Comment {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            37 => {
+            39 => {
                 // Ref = "JMP", Identifier => ActionFn(13);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JMP_22(__symbols);
@@ -770,7 +810,7 @@ mod __parse__Comment {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            38 => {
+            40 => {
                 // Ref = "JIF", Identifier => ActionFn(14);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JIF_22(__symbols);
@@ -782,42 +822,20 @@ mod __parse__Comment {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            39 => {
-                // String = r#"\"[^\"]*\""# => ActionFn(37);
+            41 => {
+                // String = r#"\"[^\"]*\""# => ActionFn(39);
                 let __sym0 = __pop_Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action37::<>(input, __sym0);
+                let __nt = super::__action39::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtString(__nt), __end));
                 12
             }
-            40 => {
-                // Value = Number => ActionFn(33);
-                let __sym0 = __pop_NtNumber(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action33::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
-            41 => {
-                // Value = Bool => ActionFn(34);
-                let __sym0 = __pop_NtBool(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action34::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
             42 => {
-                // Value = String => ActionFn(35);
-                let __sym0 = __pop_NtString(__symbols);
+                // Value = Number => ActionFn(35);
+                let __sym0 = __pop_NtNumber(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
                 let __nt = super::__action35::<>(input, __sym0);
@@ -827,6 +845,28 @@ mod __parse__Comment {
                 13
             }
             43 => {
+                // Value = Bool => ActionFn(36);
+                let __sym0 = __pop_NtBool(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action36::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            44 => {
+                // Value = String => ActionFn(37);
+                let __sym0 = __pop_NtString(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action37::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            45 => {
                 // __Comment = Comment => ActionFn(3);
                 let __sym0 = __pop_NtComment(__symbols);
                 let __start = __sym0.0.clone();
@@ -834,7 +874,7 @@ mod __parse__Comment {
                 let __nt = super::__action3::<>(input, __sym0);
                 return Some(Ok(__nt));
             }
-            44 => {
+            46 => {
                 // __Label = Label => ActionFn(2);
                 let __sym0 = __pop_NtLabel(__symbols);
                 let __start = __sym0.0.clone();
@@ -845,7 +885,7 @@ mod __parse__Comment {
                 __symbols.push((__start, __Symbol::Nt____Label(__nt), __end));
                 15
             }
-            45 => {
+            47 => {
                 // __Line = Line => ActionFn(1);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
@@ -856,7 +896,7 @@ mod __parse__Comment {
                 __symbols.push((__start, __Symbol::Nt____Line(__nt), __end));
                 16
             }
-            46 => {
+            48 => {
                 // __Program = Program => ActionFn(0);
                 let __sym0 = __pop_NtProgram(__symbols);
                 let __start = __sym0.0.clone();
@@ -867,7 +907,7 @@ mod __parse__Comment {
                 __symbols.push((__start, __Symbol::Nt____Program(__nt), __end));
                 17
             }
-            47 => {
+            49 => {
                 // __Ref = Ref => ActionFn(4);
                 let __sym0 = __pop_NtRef(__symbols);
                 let __start = __sym0.0.clone();
@@ -1028,6 +1068,17 @@ mod __parse__Comment {
             _ => panic!("symbol type mismatch")
         }
     }
+    fn __pop_Term_22LOAD__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22LOAD__LOCAL_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
     fn __pop_Term_22MULT_22<
       'input,
     >(
@@ -1113,6 +1164,17 @@ mod __parse__Comment {
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::Term_22STORE_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
+    fn __pop_Term_22STORE__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22STORE__LOCAL_22(__v), __r) => (__l, __v, __r),
             _ => panic!("symbol type mismatch")
         }
     }
@@ -1430,6 +1492,7 @@ mod __parse__Label {
         Term_22JIF_22(&'input str),
         Term_22JMP_22(&'input str),
         Term_22LOAD_22(&'input str),
+        Term_22LOAD__LOCAL_22(&'input str),
         Term_22MULT_22(&'input str),
         Term_22NOT_22(&'input str),
         Term_22OR_22(&'input str),
@@ -1438,6 +1501,7 @@ mod __parse__Label {
         Term_22PUSH_22(&'input str),
         Term_22RET_22(&'input str),
         Term_22STORE_22(&'input str),
+        Term_22STORE__LOCAL_22(&'input str),
         Term_22SUB_22(&'input str),
         Term_22false_22(&'input str),
         Term_22true_22(&'input str),
@@ -1467,15 +1531,15 @@ mod __parse__Label {
     }
     const __ACTION: &'static [i32] = &[
         // State 0
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
         // State 1
-        5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 2
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 3
-        -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 4
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     const __EOF_ACTION: &'static [i32] = &[
         // State 0
@@ -1483,7 +1547,7 @@ mod __parse__Label {
         // State 1
         0,
         // State 2
-        -44,
+        -46,
         // State 3
         0,
         // State 4
@@ -1516,6 +1580,7 @@ mod __parse__Label {
             r###""JIF""###,
             r###""JMP""###,
             r###""LOAD""###,
+            r###""LOAD_LOCAL""###,
             r###""MULT""###,
             r###""NOT""###,
             r###""OR""###,
@@ -1524,6 +1589,7 @@ mod __parse__Label {
             r###""PUSH""###,
             r###""RET""###,
             r###""STORE""###,
+            r###""STORE_LOCAL""###,
             r###""SUB""###,
             r###""false""###,
             r###""true""###,
@@ -1532,7 +1598,7 @@ mod __parse__Label {
             r###"r#"[0-9]+"#"###,
             r###"r#"[a-zA-Z][a-zA-Z0-9_]*"#"###,
         ];
-        __ACTION[(__state * 28)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
+        __ACTION[(__state * 30)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
             if state == 0 {
                 None
             } else {
@@ -1585,10 +1651,12 @@ mod __parse__Label {
                 Token(25, _) if true => 21,
                 Token(26, _) if true => 22,
                 Token(27, _) if true => 23,
-                Token(0, _) if true => 24,
-                Token(1, _) if true => 25,
-                Token(2, _) if true => 26,
-                Token(3, _) if true => 27,
+                Token(28, _) if true => 24,
+                Token(29, _) if true => 25,
+                Token(0, _) if true => 26,
+                Token(1, _) if true => 27,
+                Token(2, _) if true => 28,
+                Token(3, _) if true => 29,
                 _ => {
                     let __state = *__states.last().unwrap() as usize;
                     let __error = __lalrpop_util::ParseError::UnrecognizedToken {
@@ -1600,7 +1668,7 @@ mod __parse__Label {
             };
             '__inner: loop {
                 let __state = *__states.last().unwrap() as usize;
-                let __action = __ACTION[__state * 28 + __integer];
+                let __action = __ACTION[__state * 30 + __integer];
                 if __action > 0 {
                     let __symbol = match __integer {
                         0 => match __lookahead.1 {
@@ -1656,62 +1724,70 @@ mod __parse__Label {
                             _ => unreachable!(),
                         },
                         13 => match __lookahead.1 {
-                            Token(17, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
+                            Token(17, __tok0) => __Symbol::Term_22LOAD__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         14 => match __lookahead.1 {
-                            Token(18, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
+                            Token(18, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         15 => match __lookahead.1 {
-                            Token(19, __tok0) => __Symbol::Term_22OR_22((__tok0)),
+                            Token(19, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         16 => match __lookahead.1 {
-                            Token(20, __tok0) => __Symbol::Term_22POP_22((__tok0)),
+                            Token(20, __tok0) => __Symbol::Term_22OR_22((__tok0)),
                             _ => unreachable!(),
                         },
                         17 => match __lookahead.1 {
-                            Token(21, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
+                            Token(21, __tok0) => __Symbol::Term_22POP_22((__tok0)),
                             _ => unreachable!(),
                         },
                         18 => match __lookahead.1 {
-                            Token(22, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
+                            Token(22, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         19 => match __lookahead.1 {
-                            Token(23, __tok0) => __Symbol::Term_22RET_22((__tok0)),
+                            Token(23, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
                             _ => unreachable!(),
                         },
                         20 => match __lookahead.1 {
-                            Token(24, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
+                            Token(24, __tok0) => __Symbol::Term_22RET_22((__tok0)),
                             _ => unreachable!(),
                         },
                         21 => match __lookahead.1 {
-                            Token(25, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
+                            Token(25, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
                             _ => unreachable!(),
                         },
                         22 => match __lookahead.1 {
-                            Token(26, __tok0) => __Symbol::Term_22false_22((__tok0)),
+                            Token(26, __tok0) => __Symbol::Term_22STORE__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         23 => match __lookahead.1 {
-                            Token(27, __tok0) => __Symbol::Term_22true_22((__tok0)),
+                            Token(27, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
                             _ => unreachable!(),
                         },
                         24 => match __lookahead.1 {
-                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
+                            Token(28, __tok0) => __Symbol::Term_22false_22((__tok0)),
                             _ => unreachable!(),
                         },
                         25 => match __lookahead.1 {
-                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            Token(29, __tok0) => __Symbol::Term_22true_22((__tok0)),
                             _ => unreachable!(),
                         },
                         26 => match __lookahead.1 {
-                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
                             _ => unreachable!(),
                         },
                         27 => match __lookahead.1 {
+                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        28 => match __lookahead.1 {
+                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        29 => match __lookahead.1 {
                             Token(3, __tok0) => __Symbol::Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23((__tok0)),
                             _ => unreachable!(),
                         },
@@ -1771,33 +1847,33 @@ mod __parse__Label {
     {
         let __nonterminal = match -__action {
             1 => {
-                // Address = r#"[0-9]+"# => ActionFn(40);
+                // Address = r#"[0-9]+"# => ActionFn(42);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action40::<>(input, __sym0);
+                let __nt = super::__action42::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtAddress(__nt), __end));
                 0
             }
             2 => {
-                // Bool = "true" => ActionFn(38);
+                // Bool = "true" => ActionFn(40);
                 let __sym0 = __pop_Term_22true_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action38::<>(input, __sym0);
+                let __nt = super::__action40::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
                 1
             }
             3 => {
-                // Bool = "false" => ActionFn(39);
+                // Bool = "false" => ActionFn(41);
                 let __sym0 = __pop_Term_22false_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action39::<>(input, __sym0);
+                let __nt = super::__action41::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
@@ -1815,11 +1891,11 @@ mod __parse__Label {
                 2
             }
             5 => {
-                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(41);
+                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(43);
                 let __sym0 = __pop_Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action41::<>(input, __sym0);
+                let __nt = super::__action43::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtIdentifier(__nt), __end));
@@ -1882,55 +1958,55 @@ mod __parse__Label {
                 5
             }
             11 => {
-                // Line* =  => ActionFn(42);
+                // Line* =  => ActionFn(44);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action42::<>(input, &__start, &__end);
+                let __nt = super::__action44::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             12 => {
-                // Line* = Line+ => ActionFn(43);
+                // Line* = Line+ => ActionFn(45);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action43::<>(input, __sym0);
+                let __nt = super::__action45::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             13 => {
-                // Line+ = Line => ActionFn(44);
+                // Line+ = Line => ActionFn(46);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action44::<>(input, __sym0);
+                let __nt = super::__action46::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             14 => {
-                // Line+ = Line+, Line => ActionFn(45);
+                // Line+ = Line+, Line => ActionFn(47);
                 let __sym1 = __pop_NtLine(__symbols);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action45::<>(input, __sym0, __sym1);
+                let __nt = super::__action47::<>(input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             15 => {
-                // Number = r#"[0-9]+"# => ActionFn(36);
+                // Number = r#"[0-9]+"# => ActionFn(38);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action36::<>(input, __sym0);
+                let __nt = super::__action38::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtNumber(__nt), __end));
@@ -2092,9 +2168,9 @@ mod __parse__Label {
                 9
             }
             30 => {
-                // Op = "LOAD", Address => ActionFn(29);
+                // Op = "LOAD_LOCAL", Address => ActionFn(29);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22LOAD_22(__symbols);
+                let __sym0 = __pop_Term_22LOAD__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action29::<>(input, __sym0, __sym1);
@@ -2104,9 +2180,9 @@ mod __parse__Label {
                 9
             }
             31 => {
-                // Op = "STORE", Address => ActionFn(30);
+                // Op = "STORE_LOCAL", Address => ActionFn(30);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __sym0 = __pop_Term_22STORE__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action30::<>(input, __sym0, __sym1);
@@ -2116,49 +2192,75 @@ mod __parse__Label {
                 9
             }
             32 => {
-                // Op = "PRINT" => ActionFn(31);
-                let __sym0 = __pop_Term_22PRINT_22(__symbols);
+                // Op = "LOAD", Address, Address => ActionFn(31);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22LOAD_22(__symbols);
                 let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action31::<>(input, __sym0);
+                let __end = __sym2.2.clone();
+                let __nt = super::__action31::<>(input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
+                __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
             33 => {
-                // Op = "RET" => ActionFn(32);
-                let __sym0 = __pop_Term_22RET_22(__symbols);
+                // Op = "STORE", Address, Address => ActionFn(32);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym2.2.clone();
+                let __nt = super::__action32::<>(input, __sym0, __sym1, __sym2);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 3);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            34 => {
+                // Op = "PRINT" => ActionFn(33);
+                let __sym0 = __pop_Term_22PRINT_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action32::<>(input, __sym0);
+                let __nt = super::__action33::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
-            34 => {
-                // Program =  => ActionFn(46);
+            35 => {
+                // Op = "RET" => ActionFn(34);
+                let __sym0 = __pop_Term_22RET_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action34::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            36 => {
+                // Program =  => ActionFn(48);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action46::<>(input, &__start, &__end);
+                let __nt = super::__action48::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            35 => {
-                // Program = Line+ => ActionFn(47);
+            37 => {
+                // Program = Line+ => ActionFn(49);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action47::<>(input, __sym0);
+                let __nt = super::__action49::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            36 => {
+            38 => {
                 // Ref = "CALL", Identifier => ActionFn(12);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22CALL_22(__symbols);
@@ -2170,7 +2272,7 @@ mod __parse__Label {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            37 => {
+            39 => {
                 // Ref = "JMP", Identifier => ActionFn(13);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JMP_22(__symbols);
@@ -2182,7 +2284,7 @@ mod __parse__Label {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            38 => {
+            40 => {
                 // Ref = "JIF", Identifier => ActionFn(14);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JIF_22(__symbols);
@@ -2194,42 +2296,20 @@ mod __parse__Label {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            39 => {
-                // String = r#"\"[^\"]*\""# => ActionFn(37);
+            41 => {
+                // String = r#"\"[^\"]*\""# => ActionFn(39);
                 let __sym0 = __pop_Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action37::<>(input, __sym0);
+                let __nt = super::__action39::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtString(__nt), __end));
                 12
             }
-            40 => {
-                // Value = Number => ActionFn(33);
-                let __sym0 = __pop_NtNumber(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action33::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
-            41 => {
-                // Value = Bool => ActionFn(34);
-                let __sym0 = __pop_NtBool(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action34::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
             42 => {
-                // Value = String => ActionFn(35);
-                let __sym0 = __pop_NtString(__symbols);
+                // Value = Number => ActionFn(35);
+                let __sym0 = __pop_NtNumber(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
                 let __nt = super::__action35::<>(input, __sym0);
@@ -2239,6 +2319,28 @@ mod __parse__Label {
                 13
             }
             43 => {
+                // Value = Bool => ActionFn(36);
+                let __sym0 = __pop_NtBool(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action36::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            44 => {
+                // Value = String => ActionFn(37);
+                let __sym0 = __pop_NtString(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action37::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            45 => {
                 // __Comment = Comment => ActionFn(3);
                 let __sym0 = __pop_NtComment(__symbols);
                 let __start = __sym0.0.clone();
@@ -2249,7 +2351,7 @@ mod __parse__Label {
                 __symbols.push((__start, __Symbol::Nt____Comment(__nt), __end));
                 14
             }
-            44 => {
+            46 => {
                 // __Label = Label => ActionFn(2);
                 let __sym0 = __pop_NtLabel(__symbols);
                 let __start = __sym0.0.clone();
@@ -2257,7 +2359,7 @@ mod __parse__Label {
                 let __nt = super::__action2::<>(input, __sym0);
                 return Some(Ok(__nt));
             }
-            45 => {
+            47 => {
                 // __Line = Line => ActionFn(1);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
@@ -2268,7 +2370,7 @@ mod __parse__Label {
                 __symbols.push((__start, __Symbol::Nt____Line(__nt), __end));
                 16
             }
-            46 => {
+            48 => {
                 // __Program = Program => ActionFn(0);
                 let __sym0 = __pop_NtProgram(__symbols);
                 let __start = __sym0.0.clone();
@@ -2279,7 +2381,7 @@ mod __parse__Label {
                 __symbols.push((__start, __Symbol::Nt____Program(__nt), __end));
                 17
             }
-            47 => {
+            49 => {
                 // __Ref = Ref => ActionFn(4);
                 let __sym0 = __pop_NtRef(__symbols);
                 let __start = __sym0.0.clone();
@@ -2440,6 +2542,17 @@ mod __parse__Label {
             _ => panic!("symbol type mismatch")
         }
     }
+    fn __pop_Term_22LOAD__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22LOAD__LOCAL_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
     fn __pop_Term_22MULT_22<
       'input,
     >(
@@ -2525,6 +2638,17 @@ mod __parse__Label {
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::Term_22STORE_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
+    fn __pop_Term_22STORE__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22STORE__LOCAL_22(__v), __r) => (__l, __v, __r),
             _ => panic!("symbol type mismatch")
         }
     }
@@ -2842,6 +2966,7 @@ mod __parse__Line {
         Term_22JIF_22(&'input str),
         Term_22JMP_22(&'input str),
         Term_22LOAD_22(&'input str),
+        Term_22LOAD__LOCAL_22(&'input str),
         Term_22MULT_22(&'input str),
         Term_22NOT_22(&'input str),
         Term_22OR_22(&'input str),
@@ -2850,6 +2975,7 @@ mod __parse__Line {
         Term_22PUSH_22(&'input str),
         Term_22RET_22(&'input str),
         Term_22STORE_22(&'input str),
+        Term_22STORE__LOCAL_22(&'input str),
         Term_22SUB_22(&'input str),
         Term_22false_22(&'input str),
         Term_22true_22(&'input str),
@@ -2879,95 +3005,107 @@ mod __parse__Line {
     }
     const __ACTION: &'static [i32] = &[
         // State 0
-        0, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 0, 0, 0, 29, 0, 30,
+        0, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 0, 0, 0, 31, 0, 32,
         // State 1
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 2
-        31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 3
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 4
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 5
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 6
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 7
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 8
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 9
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
         // State 10
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 11
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 12
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 13
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 14
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 15
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 16
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
         // State 17
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
         // State 18
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0,
         // State 19
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0,
         // State 20
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 21
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 22
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 23
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 24
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 42, 43, 0, 44, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 25
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 45, 46, 0, 47, 0,
         // State 26
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 27
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0,
         // State 28
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0,
         // State 29
-        -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 30
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 31
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 32
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 33
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 34
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 35
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 36
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0,
         // State 37
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0,
         // State 38
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 39
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 40
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 41
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 42
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 43
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 44
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 45
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 46
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 47
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0,
+        // State 48
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 49
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 50
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     const __EOF_ACTION: &'static [i32] = &[
         // State 0
@@ -2979,7 +3117,7 @@ mod __parse__Line {
         // State 3
         -7,
         // State 4
-        -45,
+        -47,
         // State 5
         -8,
         // State 6
@@ -3009,57 +3147,69 @@ mod __parse__Line {
         // State 18
         0,
         // State 19
-        -20,
+        0,
         // State 20
-        -21,
+        -20,
         // State 21
-        -23,
+        -21,
         // State 22
-        -24,
+        -23,
         // State 23
-        -32,
+        -24,
         // State 24
-        0,
+        -34,
         // State 25
-        -33,
-        // State 26
         0,
+        // State 26
+        -35,
         // State 27
-        -19,
+        0,
         // State 28
-        -4,
+        0,
         // State 29
-        -5,
+        -19,
         // State 30
-        -6,
+        -4,
         // State 31
-        -36,
+        -5,
         // State 32
-        -38,
+        -6,
         // State 33
-        -37,
+        -38,
         // State 34
-        -30,
-        // State 35
-        -1,
-        // State 36
-        -41,
-        // State 37
         -40,
-        // State 38
-        -42,
-        // State 39
-        -18,
-        // State 40
-        -3,
-        // State 41
-        -2,
-        // State 42
+        // State 35
         -39,
+        // State 36
+        0,
+        // State 37
+        -1,
+        // State 38
+        -30,
+        // State 39
+        -43,
+        // State 40
+        -42,
+        // State 41
+        -44,
+        // State 42
+        -18,
         // State 43
-        -15,
+        -3,
         // State 44
+        -2,
+        // State 45
+        -41,
+        // State 46
+        -15,
+        // State 47
+        0,
+        // State 48
         -31,
+        // State 49
+        -32,
+        // State 50
+        -33,
     ];
     const __GOTO: &'static [i32] = &[
         // State 0
@@ -3081,7 +3231,7 @@ mod __parse__Line {
         // State 8
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 9
-        0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 10
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 11
@@ -3095,13 +3245,13 @@ mod __parse__Line {
         // State 15
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 16
-        0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 17
-        0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 18
-        35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 19
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 20
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 21
@@ -3111,15 +3261,15 @@ mod __parse__Line {
         // State 23
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 24
-        0, 37, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 39, 40, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 25
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 40, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 42, 43, 0, 0, 0, 0, 0,
         // State 26
-        45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 27
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 28
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 29
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 30
@@ -3135,7 +3285,7 @@ mod __parse__Line {
         // State 35
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 36
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 37
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 38
@@ -3151,6 +3301,18 @@ mod __parse__Line {
         // State 43
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 44
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 45
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 46
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 47
+        51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 48
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 49
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 50
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     fn __expected_tokens(__state: usize) -> Vec<::std::string::String> {
@@ -3168,6 +3330,7 @@ mod __parse__Line {
             r###""JIF""###,
             r###""JMP""###,
             r###""LOAD""###,
+            r###""LOAD_LOCAL""###,
             r###""MULT""###,
             r###""NOT""###,
             r###""OR""###,
@@ -3176,6 +3339,7 @@ mod __parse__Line {
             r###""PUSH""###,
             r###""RET""###,
             r###""STORE""###,
+            r###""STORE_LOCAL""###,
             r###""SUB""###,
             r###""false""###,
             r###""true""###,
@@ -3184,7 +3348,7 @@ mod __parse__Line {
             r###"r#"[0-9]+"#"###,
             r###"r#"[a-zA-Z][a-zA-Z0-9_]*"#"###,
         ];
-        __ACTION[(__state * 28)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
+        __ACTION[(__state * 30)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
             if state == 0 {
                 None
             } else {
@@ -3237,10 +3401,12 @@ mod __parse__Line {
                 Token(25, _) if true => 21,
                 Token(26, _) if true => 22,
                 Token(27, _) if true => 23,
-                Token(0, _) if true => 24,
-                Token(1, _) if true => 25,
-                Token(2, _) if true => 26,
-                Token(3, _) if true => 27,
+                Token(28, _) if true => 24,
+                Token(29, _) if true => 25,
+                Token(0, _) if true => 26,
+                Token(1, _) if true => 27,
+                Token(2, _) if true => 28,
+                Token(3, _) if true => 29,
                 _ => {
                     let __state = *__states.last().unwrap() as usize;
                     let __error = __lalrpop_util::ParseError::UnrecognizedToken {
@@ -3252,7 +3418,7 @@ mod __parse__Line {
             };
             '__inner: loop {
                 let __state = *__states.last().unwrap() as usize;
-                let __action = __ACTION[__state * 28 + __integer];
+                let __action = __ACTION[__state * 30 + __integer];
                 if __action > 0 {
                     let __symbol = match __integer {
                         0 => match __lookahead.1 {
@@ -3308,62 +3474,70 @@ mod __parse__Line {
                             _ => unreachable!(),
                         },
                         13 => match __lookahead.1 {
-                            Token(17, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
+                            Token(17, __tok0) => __Symbol::Term_22LOAD__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         14 => match __lookahead.1 {
-                            Token(18, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
+                            Token(18, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         15 => match __lookahead.1 {
-                            Token(19, __tok0) => __Symbol::Term_22OR_22((__tok0)),
+                            Token(19, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         16 => match __lookahead.1 {
-                            Token(20, __tok0) => __Symbol::Term_22POP_22((__tok0)),
+                            Token(20, __tok0) => __Symbol::Term_22OR_22((__tok0)),
                             _ => unreachable!(),
                         },
                         17 => match __lookahead.1 {
-                            Token(21, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
+                            Token(21, __tok0) => __Symbol::Term_22POP_22((__tok0)),
                             _ => unreachable!(),
                         },
                         18 => match __lookahead.1 {
-                            Token(22, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
+                            Token(22, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         19 => match __lookahead.1 {
-                            Token(23, __tok0) => __Symbol::Term_22RET_22((__tok0)),
+                            Token(23, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
                             _ => unreachable!(),
                         },
                         20 => match __lookahead.1 {
-                            Token(24, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
+                            Token(24, __tok0) => __Symbol::Term_22RET_22((__tok0)),
                             _ => unreachable!(),
                         },
                         21 => match __lookahead.1 {
-                            Token(25, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
+                            Token(25, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
                             _ => unreachable!(),
                         },
                         22 => match __lookahead.1 {
-                            Token(26, __tok0) => __Symbol::Term_22false_22((__tok0)),
+                            Token(26, __tok0) => __Symbol::Term_22STORE__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         23 => match __lookahead.1 {
-                            Token(27, __tok0) => __Symbol::Term_22true_22((__tok0)),
+                            Token(27, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
                             _ => unreachable!(),
                         },
                         24 => match __lookahead.1 {
-                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
+                            Token(28, __tok0) => __Symbol::Term_22false_22((__tok0)),
                             _ => unreachable!(),
                         },
                         25 => match __lookahead.1 {
-                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            Token(29, __tok0) => __Symbol::Term_22true_22((__tok0)),
                             _ => unreachable!(),
                         },
                         26 => match __lookahead.1 {
-                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
                             _ => unreachable!(),
                         },
                         27 => match __lookahead.1 {
+                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        28 => match __lookahead.1 {
+                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        29 => match __lookahead.1 {
                             Token(3, __tok0) => __Symbol::Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23((__tok0)),
                             _ => unreachable!(),
                         },
@@ -3423,33 +3597,33 @@ mod __parse__Line {
     {
         let __nonterminal = match -__action {
             1 => {
-                // Address = r#"[0-9]+"# => ActionFn(40);
+                // Address = r#"[0-9]+"# => ActionFn(42);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action40::<>(input, __sym0);
+                let __nt = super::__action42::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtAddress(__nt), __end));
                 0
             }
             2 => {
-                // Bool = "true" => ActionFn(38);
+                // Bool = "true" => ActionFn(40);
                 let __sym0 = __pop_Term_22true_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action38::<>(input, __sym0);
+                let __nt = super::__action40::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
                 1
             }
             3 => {
-                // Bool = "false" => ActionFn(39);
+                // Bool = "false" => ActionFn(41);
                 let __sym0 = __pop_Term_22false_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action39::<>(input, __sym0);
+                let __nt = super::__action41::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
@@ -3467,11 +3641,11 @@ mod __parse__Line {
                 2
             }
             5 => {
-                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(41);
+                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(43);
                 let __sym0 = __pop_Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action41::<>(input, __sym0);
+                let __nt = super::__action43::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtIdentifier(__nt), __end));
@@ -3534,55 +3708,55 @@ mod __parse__Line {
                 5
             }
             11 => {
-                // Line* =  => ActionFn(42);
+                // Line* =  => ActionFn(44);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action42::<>(input, &__start, &__end);
+                let __nt = super::__action44::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             12 => {
-                // Line* = Line+ => ActionFn(43);
+                // Line* = Line+ => ActionFn(45);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action43::<>(input, __sym0);
+                let __nt = super::__action45::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             13 => {
-                // Line+ = Line => ActionFn(44);
+                // Line+ = Line => ActionFn(46);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action44::<>(input, __sym0);
+                let __nt = super::__action46::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             14 => {
-                // Line+ = Line+, Line => ActionFn(45);
+                // Line+ = Line+, Line => ActionFn(47);
                 let __sym1 = __pop_NtLine(__symbols);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action45::<>(input, __sym0, __sym1);
+                let __nt = super::__action47::<>(input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             15 => {
-                // Number = r#"[0-9]+"# => ActionFn(36);
+                // Number = r#"[0-9]+"# => ActionFn(38);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action36::<>(input, __sym0);
+                let __nt = super::__action38::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtNumber(__nt), __end));
@@ -3744,9 +3918,9 @@ mod __parse__Line {
                 9
             }
             30 => {
-                // Op = "LOAD", Address => ActionFn(29);
+                // Op = "LOAD_LOCAL", Address => ActionFn(29);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22LOAD_22(__symbols);
+                let __sym0 = __pop_Term_22LOAD__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action29::<>(input, __sym0, __sym1);
@@ -3756,9 +3930,9 @@ mod __parse__Line {
                 9
             }
             31 => {
-                // Op = "STORE", Address => ActionFn(30);
+                // Op = "STORE_LOCAL", Address => ActionFn(30);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __sym0 = __pop_Term_22STORE__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action30::<>(input, __sym0, __sym1);
@@ -3768,49 +3942,75 @@ mod __parse__Line {
                 9
             }
             32 => {
-                // Op = "PRINT" => ActionFn(31);
-                let __sym0 = __pop_Term_22PRINT_22(__symbols);
+                // Op = "LOAD", Address, Address => ActionFn(31);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22LOAD_22(__symbols);
                 let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action31::<>(input, __sym0);
+                let __end = __sym2.2.clone();
+                let __nt = super::__action31::<>(input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
+                __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
             33 => {
-                // Op = "RET" => ActionFn(32);
-                let __sym0 = __pop_Term_22RET_22(__symbols);
+                // Op = "STORE", Address, Address => ActionFn(32);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym2.2.clone();
+                let __nt = super::__action32::<>(input, __sym0, __sym1, __sym2);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 3);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            34 => {
+                // Op = "PRINT" => ActionFn(33);
+                let __sym0 = __pop_Term_22PRINT_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action32::<>(input, __sym0);
+                let __nt = super::__action33::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
-            34 => {
-                // Program =  => ActionFn(46);
+            35 => {
+                // Op = "RET" => ActionFn(34);
+                let __sym0 = __pop_Term_22RET_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action34::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            36 => {
+                // Program =  => ActionFn(48);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action46::<>(input, &__start, &__end);
+                let __nt = super::__action48::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            35 => {
-                // Program = Line+ => ActionFn(47);
+            37 => {
+                // Program = Line+ => ActionFn(49);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action47::<>(input, __sym0);
+                let __nt = super::__action49::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            36 => {
+            38 => {
                 // Ref = "CALL", Identifier => ActionFn(12);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22CALL_22(__symbols);
@@ -3822,7 +4022,7 @@ mod __parse__Line {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            37 => {
+            39 => {
                 // Ref = "JMP", Identifier => ActionFn(13);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JMP_22(__symbols);
@@ -3834,7 +4034,7 @@ mod __parse__Line {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            38 => {
+            40 => {
                 // Ref = "JIF", Identifier => ActionFn(14);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JIF_22(__symbols);
@@ -3846,42 +4046,20 @@ mod __parse__Line {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            39 => {
-                // String = r#"\"[^\"]*\""# => ActionFn(37);
+            41 => {
+                // String = r#"\"[^\"]*\""# => ActionFn(39);
                 let __sym0 = __pop_Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action37::<>(input, __sym0);
+                let __nt = super::__action39::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtString(__nt), __end));
                 12
             }
-            40 => {
-                // Value = Number => ActionFn(33);
-                let __sym0 = __pop_NtNumber(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action33::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
-            41 => {
-                // Value = Bool => ActionFn(34);
-                let __sym0 = __pop_NtBool(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action34::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
             42 => {
-                // Value = String => ActionFn(35);
-                let __sym0 = __pop_NtString(__symbols);
+                // Value = Number => ActionFn(35);
+                let __sym0 = __pop_NtNumber(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
                 let __nt = super::__action35::<>(input, __sym0);
@@ -3891,6 +4069,28 @@ mod __parse__Line {
                 13
             }
             43 => {
+                // Value = Bool => ActionFn(36);
+                let __sym0 = __pop_NtBool(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action36::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            44 => {
+                // Value = String => ActionFn(37);
+                let __sym0 = __pop_NtString(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action37::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            45 => {
                 // __Comment = Comment => ActionFn(3);
                 let __sym0 = __pop_NtComment(__symbols);
                 let __start = __sym0.0.clone();
@@ -3901,7 +4101,7 @@ mod __parse__Line {
                 __symbols.push((__start, __Symbol::Nt____Comment(__nt), __end));
                 14
             }
-            44 => {
+            46 => {
                 // __Label = Label => ActionFn(2);
                 let __sym0 = __pop_NtLabel(__symbols);
                 let __start = __sym0.0.clone();
@@ -3912,7 +4112,7 @@ mod __parse__Line {
                 __symbols.push((__start, __Symbol::Nt____Label(__nt), __end));
                 15
             }
-            45 => {
+            47 => {
                 // __Line = Line => ActionFn(1);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
@@ -3920,7 +4120,7 @@ mod __parse__Line {
                 let __nt = super::__action1::<>(input, __sym0);
                 return Some(Ok(__nt));
             }
-            46 => {
+            48 => {
                 // __Program = Program => ActionFn(0);
                 let __sym0 = __pop_NtProgram(__symbols);
                 let __start = __sym0.0.clone();
@@ -3931,7 +4131,7 @@ mod __parse__Line {
                 __symbols.push((__start, __Symbol::Nt____Program(__nt), __end));
                 17
             }
-            47 => {
+            49 => {
                 // __Ref = Ref => ActionFn(4);
                 let __sym0 = __pop_NtRef(__symbols);
                 let __start = __sym0.0.clone();
@@ -4092,6 +4292,17 @@ mod __parse__Line {
             _ => panic!("symbol type mismatch")
         }
     }
+    fn __pop_Term_22LOAD__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22LOAD__LOCAL_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
     fn __pop_Term_22MULT_22<
       'input,
     >(
@@ -4177,6 +4388,17 @@ mod __parse__Line {
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::Term_22STORE_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
+    fn __pop_Term_22STORE__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22STORE__LOCAL_22(__v), __r) => (__l, __v, __r),
             _ => panic!("symbol type mismatch")
         }
     }
@@ -4494,6 +4716,7 @@ mod __parse__Program {
         Term_22JIF_22(&'input str),
         Term_22JMP_22(&'input str),
         Term_22LOAD_22(&'input str),
+        Term_22LOAD__LOCAL_22(&'input str),
         Term_22MULT_22(&'input str),
         Term_22NOT_22(&'input str),
         Term_22OR_22(&'input str),
@@ -4502,6 +4725,7 @@ mod __parse__Program {
         Term_22PUSH_22(&'input str),
         Term_22RET_22(&'input str),
         Term_22STORE_22(&'input str),
+        Term_22STORE__LOCAL_22(&'input str),
         Term_22SUB_22(&'input str),
         Term_22false_22(&'input str),
         Term_22true_22(&'input str),
@@ -4531,105 +4755,117 @@ mod __parse__Program {
     }
     const __ACTION: &'static [i32] = &[
         // State 0
-        0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 0, 0, 0, 31, 0, 32,
+        0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 0, 0, 0, 33, 0, 34,
         // State 1
-        0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 0, 0, 0, -10, 0, -10,
+        0, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 0, 0, 0, -10, 0, -10,
         // State 2
-        33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 3
-        0, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 0, 0, 0, -7, 0, -7,
+        0, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 0, 0, 0, -7, 0, -7,
         // State 4
-        0, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, 0, 0, 0, -13, 0, -13,
+        0, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, -13, 0, 0, 0, -13, 0, -13,
         // State 5
-        0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 0, 0, 0, 31, 0, 32,
+        0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 0, 0, 0, 33, 0, 34,
         // State 6
-        0, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, 0, 0, 0, -8, 0, -8,
+        0, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, -8, 0, 0, 0, -8, 0, -8,
         // State 7
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 8
-        0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, 0, 0, 0, -9, 0, -9,
+        0, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, 0, 0, 0, -9, 0, -9,
         // State 9
-        0, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, 0, 0, 0, -16, 0, -16,
+        0, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, -16, 0, 0, 0, -16, 0, -16,
         // State 10
-        0, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, 0, 0, 0, -22, 0, -22,
+        0, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, -22, 0, 0, 0, -22, 0, -22,
         // State 11
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
         // State 12
-        0, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, 0, 0, 0, -25, 0, -25,
+        0, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, -25, 0, 0, 0, -25, 0, -25,
         // State 13
-        0, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, 0, 0, 0, -17, 0, -17,
+        0, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, -17, 0, 0, 0, -17, 0, -17,
         // State 14
-        0, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, 0, 0, 0, -26, 0, -26,
+        0, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, 0, 0, 0, -26, 0, -26,
         // State 15
-        0, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, 0, 0, 0, -28, 0, -28,
+        0, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, -28, 0, 0, 0, -28, 0, -28,
         // State 16
-        0, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, 0, 0, 0, -27, 0, -27,
+        0, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, -27, 0, 0, 0, -27, 0, -27,
         // State 17
-        0, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, 0, 0, 0, -29, 0, -29,
+        0, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, 0, 0, 0, -29, 0, -29,
         // State 18
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
         // State 19
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
         // State 20
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0,
         // State 21
-        0, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, 0, 0, 0, -20, 0, -20,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0,
         // State 22
-        0, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, 0, 0, 0, -21, 0, -21,
+        0, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, -20, 0, 0, 0, -20, 0, -20,
         // State 23
-        0, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, 0, 0, 0, -23, 0, -23,
+        0, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, -21, 0, 0, 0, -21, 0, -21,
         // State 24
-        0, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, 0, 0, 0, -24, 0, -24,
+        0, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, -23, 0, 0, 0, -23, 0, -23,
         // State 25
-        0, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, 0, 0, 0, -32, 0, -32,
+        0, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, -24, 0, 0, 0, -24, 0, -24,
         // State 26
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 45, 46, 0, 47, 0,
+        0, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, -34, 0, 0, 0, -34, 0, -34,
         // State 27
-        0, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, 0, 0, 0, -33, 0, -33,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 48, 49, 0, 50, 0,
         // State 28
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 0,
+        0, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, -35, 0, 0, 0, -35, 0, -35,
         // State 29
-        0, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, 0, 0, 0, -19, 0, -19,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0,
         // State 30
-        0, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, 0, 0, 0, -4, 0, -4,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0,
         // State 31
-        -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, 0, 0, 0, -5, 0, -5,
+        0, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, -19, 0, 0, 0, -19, 0, -19,
         // State 32
-        0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0, 0, -6, 0, -6,
+        0, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, 0, 0, 0, -4, 0, -4,
         // State 33
-        0, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, 0, 0, 0, -14, 0, -14,
+        -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, 0, 0, 0, -5, 0, -5,
         // State 34
-        0, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, -36, 0, 0, 0, -36, 0, -36,
+        0, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0, 0, -6, 0, -6,
         // State 35
-        0, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, 0, 0, 0, -38, 0, -38,
+        0, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, -14, 0, 0, 0, -14, 0, -14,
         // State 36
-        0, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, -37, 0, 0, 0, -37, 0, -37,
+        0, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, -38, 0, 0, 0, -38, 0, -38,
         // State 37
-        0, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, 0, 0, 0, -30, 0, -30,
+        0, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, 0, 0, 0, -40, 0, -40,
         // State 38
-        0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, -1, 0, -1,
+        0, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, 0, 0, 0, -39, 0, -39,
         // State 39
-        0, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, 0, 0, 0, -41, 0, -41,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0,
         // State 40
-        0, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, 0, 0, 0, -40, 0, -40,
+        0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, -1, -1, -1,
         // State 41
-        0, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, 0, 0, 0, -42, 0, -42,
+        0, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, 0, 0, 0, -30, 0, -30,
         // State 42
-        0, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, 0, 0, 0, -18, 0, -18,
+        0, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, -43, 0, 0, 0, -43, 0, -43,
         // State 43
-        0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, 0, 0, 0, -3, 0, -3,
+        0, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, -42, 0, 0, 0, -42, 0, -42,
         // State 44
-        0, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, 0, 0, 0, -2, 0, -2,
+        0, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, -44, 0, 0, 0, -44, 0, -44,
         // State 45
-        0, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, -39, 0, 0, 0, -39, 0, -39,
+        0, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, -18, 0, 0, 0, -18, 0, -18,
         // State 46
-        0, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, 0, 0, 0, -15, 0, -15,
+        0, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3, 0, 0, 0, -3, 0, -3,
         // State 47
-        0, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, 0, 0, 0, -31, 0, -31,
+        0, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, 0, 0, 0, -2, 0, -2,
+        // State 48
+        0, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, 0, 0, 0, -41, 0, -41,
+        // State 49
+        0, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, -15, 0, 0, 0, -15, 0, -15,
+        // State 50
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0,
+        // State 51
+        0, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, -31, 0, 0, 0, -31, 0, -31,
+        // State 52
+        0, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, -32, 0, 0, 0, -32, 0, -32,
+        // State 53
+        0, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, -33, 0, 0, 0, -33, 0, -33,
     ];
     const __EOF_ACTION: &'static [i32] = &[
         // State 0
-        -34,
+        -36,
         // State 1
         -10,
         // State 2
@@ -4639,11 +4875,11 @@ mod __parse__Program {
         // State 4
         -13,
         // State 5
-        -35,
+        -37,
         // State 6
         -8,
         // State 7
-        -46,
+        -48,
         // State 8
         -9,
         // State 9
@@ -4671,59 +4907,71 @@ mod __parse__Program {
         // State 20
         0,
         // State 21
-        -20,
+        0,
         // State 22
-        -21,
+        -20,
         // State 23
-        -23,
+        -21,
         // State 24
-        -24,
+        -23,
         // State 25
-        -32,
+        -24,
         // State 26
-        0,
+        -34,
         // State 27
-        -33,
-        // State 28
         0,
+        // State 28
+        -35,
         // State 29
-        -19,
+        0,
         // State 30
-        -4,
+        0,
         // State 31
-        -5,
+        -19,
         // State 32
-        -6,
+        -4,
         // State 33
-        -14,
+        -5,
         // State 34
-        -36,
+        -6,
         // State 35
-        -38,
+        -14,
         // State 36
-        -37,
+        -38,
         // State 37
-        -30,
-        // State 38
-        -1,
-        // State 39
-        -41,
-        // State 40
         -40,
-        // State 41
-        -42,
-        // State 42
-        -18,
-        // State 43
-        -3,
-        // State 44
-        -2,
-        // State 45
+        // State 38
         -39,
+        // State 39
+        0,
+        // State 40
+        -1,
+        // State 41
+        -30,
+        // State 42
+        -43,
+        // State 43
+        -42,
+        // State 44
+        -44,
+        // State 45
+        -18,
         // State 46
-        -15,
+        -3,
         // State 47
+        -2,
+        // State 48
+        -41,
+        // State 49
+        -15,
+        // State 50
+        0,
+        // State 51
         -31,
+        // State 52
+        -32,
+        // State 53
+        -33,
     ];
     const __GOTO: &'static [i32] = &[
         // State 0
@@ -4737,7 +4985,7 @@ mod __parse__Program {
         // State 4
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 5
-        0, 0, 2, 3, 4, 34, 0, 0, 0, 7, 0, 9, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 2, 3, 4, 36, 0, 0, 0, 7, 0, 9, 0, 0, 0, 0, 0, 0, 0,
         // State 6
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 7
@@ -4749,7 +4997,7 @@ mod __parse__Program {
         // State 10
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 11
-        0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 12
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 13
@@ -4763,13 +5011,13 @@ mod __parse__Program {
         // State 17
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 18
-        0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 19
-        0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 20
-        38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 21
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 22
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 23
@@ -4779,15 +5027,15 @@ mod __parse__Program {
         // State 25
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 26
-        0, 40, 0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 42, 43, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 27
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 43, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 45, 46, 0, 0, 0, 0, 0,
         // State 28
-        48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 29
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 30
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 31
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 32
@@ -4805,7 +5053,7 @@ mod __parse__Program {
         // State 38
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 39
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 40
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 41
@@ -4821,6 +5069,18 @@ mod __parse__Program {
         // State 46
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 47
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 48
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 49
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 50
+        54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 51
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 52
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 53
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     fn __expected_tokens(__state: usize) -> Vec<::std::string::String> {
@@ -4838,6 +5098,7 @@ mod __parse__Program {
             r###""JIF""###,
             r###""JMP""###,
             r###""LOAD""###,
+            r###""LOAD_LOCAL""###,
             r###""MULT""###,
             r###""NOT""###,
             r###""OR""###,
@@ -4846,6 +5107,7 @@ mod __parse__Program {
             r###""PUSH""###,
             r###""RET""###,
             r###""STORE""###,
+            r###""STORE_LOCAL""###,
             r###""SUB""###,
             r###""false""###,
             r###""true""###,
@@ -4854,7 +5116,7 @@ mod __parse__Program {
             r###"r#"[0-9]+"#"###,
             r###"r#"[a-zA-Z][a-zA-Z0-9_]*"#"###,
         ];
-        __ACTION[(__state * 28)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
+        __ACTION[(__state * 30)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
             if state == 0 {
                 None
             } else {
@@ -4907,10 +5169,12 @@ mod __parse__Program {
                 Token(25, _) if true => 21,
                 Token(26, _) if true => 22,
                 Token(27, _) if true => 23,
-                Token(0, _) if true => 24,
-                Token(1, _) if true => 25,
-                Token(2, _) if true => 26,
-                Token(3, _) if true => 27,
+                Token(28, _) if true => 24,
+                Token(29, _) if true => 25,
+                Token(0, _) if true => 26,
+                Token(1, _) if true => 27,
+                Token(2, _) if true => 28,
+                Token(3, _) if true => 29,
                 _ => {
                     let __state = *__states.last().unwrap() as usize;
                     let __error = __lalrpop_util::ParseError::UnrecognizedToken {
@@ -4922,7 +5186,7 @@ mod __parse__Program {
             };
             '__inner: loop {
                 let __state = *__states.last().unwrap() as usize;
-                let __action = __ACTION[__state * 28 + __integer];
+                let __action = __ACTION[__state * 30 + __integer];
                 if __action > 0 {
                     let __symbol = match __integer {
                         0 => match __lookahead.1 {
@@ -4978,62 +5242,70 @@ mod __parse__Program {
                             _ => unreachable!(),
                         },
                         13 => match __lookahead.1 {
-                            Token(17, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
+                            Token(17, __tok0) => __Symbol::Term_22LOAD__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         14 => match __lookahead.1 {
-                            Token(18, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
+                            Token(18, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         15 => match __lookahead.1 {
-                            Token(19, __tok0) => __Symbol::Term_22OR_22((__tok0)),
+                            Token(19, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         16 => match __lookahead.1 {
-                            Token(20, __tok0) => __Symbol::Term_22POP_22((__tok0)),
+                            Token(20, __tok0) => __Symbol::Term_22OR_22((__tok0)),
                             _ => unreachable!(),
                         },
                         17 => match __lookahead.1 {
-                            Token(21, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
+                            Token(21, __tok0) => __Symbol::Term_22POP_22((__tok0)),
                             _ => unreachable!(),
                         },
                         18 => match __lookahead.1 {
-                            Token(22, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
+                            Token(22, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         19 => match __lookahead.1 {
-                            Token(23, __tok0) => __Symbol::Term_22RET_22((__tok0)),
+                            Token(23, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
                             _ => unreachable!(),
                         },
                         20 => match __lookahead.1 {
-                            Token(24, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
+                            Token(24, __tok0) => __Symbol::Term_22RET_22((__tok0)),
                             _ => unreachable!(),
                         },
                         21 => match __lookahead.1 {
-                            Token(25, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
+                            Token(25, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
                             _ => unreachable!(),
                         },
                         22 => match __lookahead.1 {
-                            Token(26, __tok0) => __Symbol::Term_22false_22((__tok0)),
+                            Token(26, __tok0) => __Symbol::Term_22STORE__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         23 => match __lookahead.1 {
-                            Token(27, __tok0) => __Symbol::Term_22true_22((__tok0)),
+                            Token(27, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
                             _ => unreachable!(),
                         },
                         24 => match __lookahead.1 {
-                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
+                            Token(28, __tok0) => __Symbol::Term_22false_22((__tok0)),
                             _ => unreachable!(),
                         },
                         25 => match __lookahead.1 {
-                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            Token(29, __tok0) => __Symbol::Term_22true_22((__tok0)),
                             _ => unreachable!(),
                         },
                         26 => match __lookahead.1 {
-                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
                             _ => unreachable!(),
                         },
                         27 => match __lookahead.1 {
+                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        28 => match __lookahead.1 {
+                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        29 => match __lookahead.1 {
                             Token(3, __tok0) => __Symbol::Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23((__tok0)),
                             _ => unreachable!(),
                         },
@@ -5093,33 +5365,33 @@ mod __parse__Program {
     {
         let __nonterminal = match -__action {
             1 => {
-                // Address = r#"[0-9]+"# => ActionFn(40);
+                // Address = r#"[0-9]+"# => ActionFn(42);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action40::<>(input, __sym0);
+                let __nt = super::__action42::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtAddress(__nt), __end));
                 0
             }
             2 => {
-                // Bool = "true" => ActionFn(38);
+                // Bool = "true" => ActionFn(40);
                 let __sym0 = __pop_Term_22true_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action38::<>(input, __sym0);
+                let __nt = super::__action40::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
                 1
             }
             3 => {
-                // Bool = "false" => ActionFn(39);
+                // Bool = "false" => ActionFn(41);
                 let __sym0 = __pop_Term_22false_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action39::<>(input, __sym0);
+                let __nt = super::__action41::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
@@ -5137,11 +5409,11 @@ mod __parse__Program {
                 2
             }
             5 => {
-                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(41);
+                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(43);
                 let __sym0 = __pop_Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action41::<>(input, __sym0);
+                let __nt = super::__action43::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtIdentifier(__nt), __end));
@@ -5204,55 +5476,55 @@ mod __parse__Program {
                 5
             }
             11 => {
-                // Line* =  => ActionFn(42);
+                // Line* =  => ActionFn(44);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action42::<>(input, &__start, &__end);
+                let __nt = super::__action44::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             12 => {
-                // Line* = Line+ => ActionFn(43);
+                // Line* = Line+ => ActionFn(45);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action43::<>(input, __sym0);
+                let __nt = super::__action45::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             13 => {
-                // Line+ = Line => ActionFn(44);
+                // Line+ = Line => ActionFn(46);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action44::<>(input, __sym0);
+                let __nt = super::__action46::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             14 => {
-                // Line+ = Line+, Line => ActionFn(45);
+                // Line+ = Line+, Line => ActionFn(47);
                 let __sym1 = __pop_NtLine(__symbols);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action45::<>(input, __sym0, __sym1);
+                let __nt = super::__action47::<>(input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             15 => {
-                // Number = r#"[0-9]+"# => ActionFn(36);
+                // Number = r#"[0-9]+"# => ActionFn(38);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action36::<>(input, __sym0);
+                let __nt = super::__action38::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtNumber(__nt), __end));
@@ -5414,9 +5686,9 @@ mod __parse__Program {
                 9
             }
             30 => {
-                // Op = "LOAD", Address => ActionFn(29);
+                // Op = "LOAD_LOCAL", Address => ActionFn(29);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22LOAD_22(__symbols);
+                let __sym0 = __pop_Term_22LOAD__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action29::<>(input, __sym0, __sym1);
@@ -5426,9 +5698,9 @@ mod __parse__Program {
                 9
             }
             31 => {
-                // Op = "STORE", Address => ActionFn(30);
+                // Op = "STORE_LOCAL", Address => ActionFn(30);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __sym0 = __pop_Term_22STORE__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action30::<>(input, __sym0, __sym1);
@@ -5438,49 +5710,75 @@ mod __parse__Program {
                 9
             }
             32 => {
-                // Op = "PRINT" => ActionFn(31);
-                let __sym0 = __pop_Term_22PRINT_22(__symbols);
+                // Op = "LOAD", Address, Address => ActionFn(31);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22LOAD_22(__symbols);
                 let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action31::<>(input, __sym0);
+                let __end = __sym2.2.clone();
+                let __nt = super::__action31::<>(input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
+                __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
             33 => {
-                // Op = "RET" => ActionFn(32);
-                let __sym0 = __pop_Term_22RET_22(__symbols);
+                // Op = "STORE", Address, Address => ActionFn(32);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym2.2.clone();
+                let __nt = super::__action32::<>(input, __sym0, __sym1, __sym2);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 3);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            34 => {
+                // Op = "PRINT" => ActionFn(33);
+                let __sym0 = __pop_Term_22PRINT_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action32::<>(input, __sym0);
+                let __nt = super::__action33::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
-            34 => {
-                // Program =  => ActionFn(46);
+            35 => {
+                // Op = "RET" => ActionFn(34);
+                let __sym0 = __pop_Term_22RET_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action34::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            36 => {
+                // Program =  => ActionFn(48);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action46::<>(input, &__start, &__end);
+                let __nt = super::__action48::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            35 => {
-                // Program = Line+ => ActionFn(47);
+            37 => {
+                // Program = Line+ => ActionFn(49);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action47::<>(input, __sym0);
+                let __nt = super::__action49::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            36 => {
+            38 => {
                 // Ref = "CALL", Identifier => ActionFn(12);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22CALL_22(__symbols);
@@ -5492,7 +5790,7 @@ mod __parse__Program {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            37 => {
+            39 => {
                 // Ref = "JMP", Identifier => ActionFn(13);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JMP_22(__symbols);
@@ -5504,7 +5802,7 @@ mod __parse__Program {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            38 => {
+            40 => {
                 // Ref = "JIF", Identifier => ActionFn(14);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JIF_22(__symbols);
@@ -5516,42 +5814,20 @@ mod __parse__Program {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            39 => {
-                // String = r#"\"[^\"]*\""# => ActionFn(37);
+            41 => {
+                // String = r#"\"[^\"]*\""# => ActionFn(39);
                 let __sym0 = __pop_Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action37::<>(input, __sym0);
+                let __nt = super::__action39::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtString(__nt), __end));
                 12
             }
-            40 => {
-                // Value = Number => ActionFn(33);
-                let __sym0 = __pop_NtNumber(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action33::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
-            41 => {
-                // Value = Bool => ActionFn(34);
-                let __sym0 = __pop_NtBool(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action34::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
             42 => {
-                // Value = String => ActionFn(35);
-                let __sym0 = __pop_NtString(__symbols);
+                // Value = Number => ActionFn(35);
+                let __sym0 = __pop_NtNumber(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
                 let __nt = super::__action35::<>(input, __sym0);
@@ -5561,6 +5837,28 @@ mod __parse__Program {
                 13
             }
             43 => {
+                // Value = Bool => ActionFn(36);
+                let __sym0 = __pop_NtBool(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action36::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            44 => {
+                // Value = String => ActionFn(37);
+                let __sym0 = __pop_NtString(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action37::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            45 => {
                 // __Comment = Comment => ActionFn(3);
                 let __sym0 = __pop_NtComment(__symbols);
                 let __start = __sym0.0.clone();
@@ -5571,7 +5869,7 @@ mod __parse__Program {
                 __symbols.push((__start, __Symbol::Nt____Comment(__nt), __end));
                 14
             }
-            44 => {
+            46 => {
                 // __Label = Label => ActionFn(2);
                 let __sym0 = __pop_NtLabel(__symbols);
                 let __start = __sym0.0.clone();
@@ -5582,7 +5880,7 @@ mod __parse__Program {
                 __symbols.push((__start, __Symbol::Nt____Label(__nt), __end));
                 15
             }
-            45 => {
+            47 => {
                 // __Line = Line => ActionFn(1);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
@@ -5593,7 +5891,7 @@ mod __parse__Program {
                 __symbols.push((__start, __Symbol::Nt____Line(__nt), __end));
                 16
             }
-            46 => {
+            48 => {
                 // __Program = Program => ActionFn(0);
                 let __sym0 = __pop_NtProgram(__symbols);
                 let __start = __sym0.0.clone();
@@ -5601,7 +5899,7 @@ mod __parse__Program {
                 let __nt = super::__action0::<>(input, __sym0);
                 return Some(Ok(__nt));
             }
-            47 => {
+            49 => {
                 // __Ref = Ref => ActionFn(4);
                 let __sym0 = __pop_NtRef(__symbols);
                 let __start = __sym0.0.clone();
@@ -5762,6 +6060,17 @@ mod __parse__Program {
             _ => panic!("symbol type mismatch")
         }
     }
+    fn __pop_Term_22LOAD__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22LOAD__LOCAL_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
     fn __pop_Term_22MULT_22<
       'input,
     >(
@@ -5847,6 +6156,17 @@ mod __parse__Program {
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::Term_22STORE_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
+    fn __pop_Term_22STORE__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22STORE__LOCAL_22(__v), __r) => (__l, __v, __r),
             _ => panic!("symbol type mismatch")
         }
     }
@@ -6164,6 +6484,7 @@ mod __parse__Ref {
         Term_22JIF_22(&'input str),
         Term_22JMP_22(&'input str),
         Term_22LOAD_22(&'input str),
+        Term_22LOAD__LOCAL_22(&'input str),
         Term_22MULT_22(&'input str),
         Term_22NOT_22(&'input str),
         Term_22OR_22(&'input str),
@@ -6172,6 +6493,7 @@ mod __parse__Ref {
         Term_22PUSH_22(&'input str),
         Term_22RET_22(&'input str),
         Term_22STORE_22(&'input str),
+        Term_22STORE__LOCAL_22(&'input str),
         Term_22SUB_22(&'input str),
         Term_22false_22(&'input str),
         Term_22true_22(&'input str),
@@ -6201,29 +6523,29 @@ mod __parse__Ref {
     }
     const __ACTION: &'static [i32] = &[
         // State 0
-        0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 1
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 2
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
         // State 3
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
         // State 4
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
         // State 5
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 6
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 7
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 8
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     const __EOF_ACTION: &'static [i32] = &[
         // State 0
         0,
         // State 1
-        -47,
+        -49,
         // State 2
         0,
         // State 3
@@ -6231,13 +6553,13 @@ mod __parse__Ref {
         // State 4
         0,
         // State 5
-        -36,
+        -38,
         // State 6
         -5,
         // State 7
-        -38,
+        -40,
         // State 8
-        -37,
+        -39,
     ];
     const __GOTO: &'static [i32] = &[
         // State 0
@@ -6274,6 +6596,7 @@ mod __parse__Ref {
             r###""JIF""###,
             r###""JMP""###,
             r###""LOAD""###,
+            r###""LOAD_LOCAL""###,
             r###""MULT""###,
             r###""NOT""###,
             r###""OR""###,
@@ -6282,6 +6605,7 @@ mod __parse__Ref {
             r###""PUSH""###,
             r###""RET""###,
             r###""STORE""###,
+            r###""STORE_LOCAL""###,
             r###""SUB""###,
             r###""false""###,
             r###""true""###,
@@ -6290,7 +6614,7 @@ mod __parse__Ref {
             r###"r#"[0-9]+"#"###,
             r###"r#"[a-zA-Z][a-zA-Z0-9_]*"#"###,
         ];
-        __ACTION[(__state * 28)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
+        __ACTION[(__state * 30)..].iter().zip(__TERMINAL).filter_map(|(&state, terminal)| {
             if state == 0 {
                 None
             } else {
@@ -6343,10 +6667,12 @@ mod __parse__Ref {
                 Token(25, _) if true => 21,
                 Token(26, _) if true => 22,
                 Token(27, _) if true => 23,
-                Token(0, _) if true => 24,
-                Token(1, _) if true => 25,
-                Token(2, _) if true => 26,
-                Token(3, _) if true => 27,
+                Token(28, _) if true => 24,
+                Token(29, _) if true => 25,
+                Token(0, _) if true => 26,
+                Token(1, _) if true => 27,
+                Token(2, _) if true => 28,
+                Token(3, _) if true => 29,
                 _ => {
                     let __state = *__states.last().unwrap() as usize;
                     let __error = __lalrpop_util::ParseError::UnrecognizedToken {
@@ -6358,7 +6684,7 @@ mod __parse__Ref {
             };
             '__inner: loop {
                 let __state = *__states.last().unwrap() as usize;
-                let __action = __ACTION[__state * 28 + __integer];
+                let __action = __ACTION[__state * 30 + __integer];
                 if __action > 0 {
                     let __symbol = match __integer {
                         0 => match __lookahead.1 {
@@ -6414,62 +6740,70 @@ mod __parse__Ref {
                             _ => unreachable!(),
                         },
                         13 => match __lookahead.1 {
-                            Token(17, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
+                            Token(17, __tok0) => __Symbol::Term_22LOAD__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         14 => match __lookahead.1 {
-                            Token(18, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
+                            Token(18, __tok0) => __Symbol::Term_22MULT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         15 => match __lookahead.1 {
-                            Token(19, __tok0) => __Symbol::Term_22OR_22((__tok0)),
+                            Token(19, __tok0) => __Symbol::Term_22NOT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         16 => match __lookahead.1 {
-                            Token(20, __tok0) => __Symbol::Term_22POP_22((__tok0)),
+                            Token(20, __tok0) => __Symbol::Term_22OR_22((__tok0)),
                             _ => unreachable!(),
                         },
                         17 => match __lookahead.1 {
-                            Token(21, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
+                            Token(21, __tok0) => __Symbol::Term_22POP_22((__tok0)),
                             _ => unreachable!(),
                         },
                         18 => match __lookahead.1 {
-                            Token(22, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
+                            Token(22, __tok0) => __Symbol::Term_22PRINT_22((__tok0)),
                             _ => unreachable!(),
                         },
                         19 => match __lookahead.1 {
-                            Token(23, __tok0) => __Symbol::Term_22RET_22((__tok0)),
+                            Token(23, __tok0) => __Symbol::Term_22PUSH_22((__tok0)),
                             _ => unreachable!(),
                         },
                         20 => match __lookahead.1 {
-                            Token(24, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
+                            Token(24, __tok0) => __Symbol::Term_22RET_22((__tok0)),
                             _ => unreachable!(),
                         },
                         21 => match __lookahead.1 {
-                            Token(25, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
+                            Token(25, __tok0) => __Symbol::Term_22STORE_22((__tok0)),
                             _ => unreachable!(),
                         },
                         22 => match __lookahead.1 {
-                            Token(26, __tok0) => __Symbol::Term_22false_22((__tok0)),
+                            Token(26, __tok0) => __Symbol::Term_22STORE__LOCAL_22((__tok0)),
                             _ => unreachable!(),
                         },
                         23 => match __lookahead.1 {
-                            Token(27, __tok0) => __Symbol::Term_22true_22((__tok0)),
+                            Token(27, __tok0) => __Symbol::Term_22SUB_22((__tok0)),
                             _ => unreachable!(),
                         },
                         24 => match __lookahead.1 {
-                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
+                            Token(28, __tok0) => __Symbol::Term_22false_22((__tok0)),
                             _ => unreachable!(),
                         },
                         25 => match __lookahead.1 {
-                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            Token(29, __tok0) => __Symbol::Term_22true_22((__tok0)),
                             _ => unreachable!(),
                         },
                         26 => match __lookahead.1 {
-                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            Token(0, __tok0) => __Symbol::Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23((__tok0)),
                             _ => unreachable!(),
                         },
                         27 => match __lookahead.1 {
+                            Token(1, __tok0) => __Symbol::Termr_23_22_5c_27_5ba_2dz0_2d9_5d_2b_5c_27_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        28 => match __lookahead.1 {
+                            Token(2, __tok0) => __Symbol::Termr_23_22_5b0_2d9_5d_2b_22_23((__tok0)),
+                            _ => unreachable!(),
+                        },
+                        29 => match __lookahead.1 {
                             Token(3, __tok0) => __Symbol::Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23((__tok0)),
                             _ => unreachable!(),
                         },
@@ -6529,33 +6863,33 @@ mod __parse__Ref {
     {
         let __nonterminal = match -__action {
             1 => {
-                // Address = r#"[0-9]+"# => ActionFn(40);
+                // Address = r#"[0-9]+"# => ActionFn(42);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action40::<>(input, __sym0);
+                let __nt = super::__action42::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtAddress(__nt), __end));
                 0
             }
             2 => {
-                // Bool = "true" => ActionFn(38);
+                // Bool = "true" => ActionFn(40);
                 let __sym0 = __pop_Term_22true_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action38::<>(input, __sym0);
+                let __nt = super::__action40::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
                 1
             }
             3 => {
-                // Bool = "false" => ActionFn(39);
+                // Bool = "false" => ActionFn(41);
                 let __sym0 = __pop_Term_22false_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action39::<>(input, __sym0);
+                let __nt = super::__action41::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtBool(__nt), __end));
@@ -6573,11 +6907,11 @@ mod __parse__Ref {
                 2
             }
             5 => {
-                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(41);
+                // Identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(43);
                 let __sym0 = __pop_Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action41::<>(input, __sym0);
+                let __nt = super::__action43::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtIdentifier(__nt), __end));
@@ -6640,55 +6974,55 @@ mod __parse__Ref {
                 5
             }
             11 => {
-                // Line* =  => ActionFn(42);
+                // Line* =  => ActionFn(44);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action42::<>(input, &__start, &__end);
+                let __nt = super::__action44::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             12 => {
-                // Line* = Line+ => ActionFn(43);
+                // Line* = Line+ => ActionFn(45);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action43::<>(input, __sym0);
+                let __nt = super::__action45::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2a(__nt), __end));
                 6
             }
             13 => {
-                // Line+ = Line => ActionFn(44);
+                // Line+ = Line => ActionFn(46);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action44::<>(input, __sym0);
+                let __nt = super::__action46::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             14 => {
-                // Line+ = Line+, Line => ActionFn(45);
+                // Line+ = Line+, Line => ActionFn(47);
                 let __sym1 = __pop_NtLine(__symbols);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
-                let __nt = super::__action45::<>(input, __sym0, __sym1);
+                let __nt = super::__action47::<>(input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
                 __symbols.push((__start, __Symbol::NtLine_2b(__nt), __end));
                 7
             }
             15 => {
-                // Number = r#"[0-9]+"# => ActionFn(36);
+                // Number = r#"[0-9]+"# => ActionFn(38);
                 let __sym0 = __pop_Termr_23_22_5b0_2d9_5d_2b_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action36::<>(input, __sym0);
+                let __nt = super::__action38::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtNumber(__nt), __end));
@@ -6850,9 +7184,9 @@ mod __parse__Ref {
                 9
             }
             30 => {
-                // Op = "LOAD", Address => ActionFn(29);
+                // Op = "LOAD_LOCAL", Address => ActionFn(29);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22LOAD_22(__symbols);
+                let __sym0 = __pop_Term_22LOAD__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action29::<>(input, __sym0, __sym1);
@@ -6862,9 +7196,9 @@ mod __parse__Ref {
                 9
             }
             31 => {
-                // Op = "STORE", Address => ActionFn(30);
+                // Op = "STORE_LOCAL", Address => ActionFn(30);
                 let __sym1 = __pop_NtAddress(__symbols);
-                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __sym0 = __pop_Term_22STORE__LOCAL_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action30::<>(input, __sym0, __sym1);
@@ -6874,49 +7208,75 @@ mod __parse__Ref {
                 9
             }
             32 => {
-                // Op = "PRINT" => ActionFn(31);
-                let __sym0 = __pop_Term_22PRINT_22(__symbols);
+                // Op = "LOAD", Address, Address => ActionFn(31);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22LOAD_22(__symbols);
                 let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action31::<>(input, __sym0);
+                let __end = __sym2.2.clone();
+                let __nt = super::__action31::<>(input, __sym0, __sym1, __sym2);
                 let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
+                __states.truncate(__states_len - 3);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
             33 => {
-                // Op = "RET" => ActionFn(32);
-                let __sym0 = __pop_Term_22RET_22(__symbols);
+                // Op = "STORE", Address, Address => ActionFn(32);
+                let __sym2 = __pop_NtAddress(__symbols);
+                let __sym1 = __pop_NtAddress(__symbols);
+                let __sym0 = __pop_Term_22STORE_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym2.2.clone();
+                let __nt = super::__action32::<>(input, __sym0, __sym1, __sym2);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 3);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            34 => {
+                // Op = "PRINT" => ActionFn(33);
+                let __sym0 = __pop_Term_22PRINT_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action32::<>(input, __sym0);
+                let __nt = super::__action33::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtOp(__nt), __end));
                 9
             }
-            34 => {
-                // Program =  => ActionFn(46);
+            35 => {
+                // Op = "RET" => ActionFn(34);
+                let __sym0 = __pop_Term_22RET_22(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action34::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtOp(__nt), __end));
+                9
+            }
+            36 => {
+                // Program =  => ActionFn(48);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
-                let __nt = super::__action46::<>(input, &__start, &__end);
+                let __nt = super::__action48::<>(input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            35 => {
-                // Program = Line+ => ActionFn(47);
+            37 => {
+                // Program = Line+ => ActionFn(49);
                 let __sym0 = __pop_NtLine_2b(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action47::<>(input, __sym0);
+                let __nt = super::__action49::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtProgram(__nt), __end));
                 10
             }
-            36 => {
+            38 => {
                 // Ref = "CALL", Identifier => ActionFn(12);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22CALL_22(__symbols);
@@ -6928,7 +7288,7 @@ mod __parse__Ref {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            37 => {
+            39 => {
                 // Ref = "JMP", Identifier => ActionFn(13);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JMP_22(__symbols);
@@ -6940,7 +7300,7 @@ mod __parse__Ref {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            38 => {
+            40 => {
                 // Ref = "JIF", Identifier => ActionFn(14);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22JIF_22(__symbols);
@@ -6952,42 +7312,20 @@ mod __parse__Ref {
                 __symbols.push((__start, __Symbol::NtRef(__nt), __end));
                 11
             }
-            39 => {
-                // String = r#"\"[^\"]*\""# => ActionFn(37);
+            41 => {
+                // String = r#"\"[^\"]*\""# => ActionFn(39);
                 let __sym0 = __pop_Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
-                let __nt = super::__action37::<>(input, __sym0);
+                let __nt = super::__action39::<>(input, __sym0);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 1);
                 __symbols.push((__start, __Symbol::NtString(__nt), __end));
                 12
             }
-            40 => {
-                // Value = Number => ActionFn(33);
-                let __sym0 = __pop_NtNumber(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action33::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
-            41 => {
-                // Value = Bool => ActionFn(34);
-                let __sym0 = __pop_NtBool(__symbols);
-                let __start = __sym0.0.clone();
-                let __end = __sym0.2.clone();
-                let __nt = super::__action34::<>(input, __sym0);
-                let __states_len = __states.len();
-                __states.truncate(__states_len - 1);
-                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
-                13
-            }
             42 => {
-                // Value = String => ActionFn(35);
-                let __sym0 = __pop_NtString(__symbols);
+                // Value = Number => ActionFn(35);
+                let __sym0 = __pop_NtNumber(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym0.2.clone();
                 let __nt = super::__action35::<>(input, __sym0);
@@ -6997,6 +7335,28 @@ mod __parse__Ref {
                 13
             }
             43 => {
+                // Value = Bool => ActionFn(36);
+                let __sym0 = __pop_NtBool(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action36::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            44 => {
+                // Value = String => ActionFn(37);
+                let __sym0 = __pop_NtString(__symbols);
+                let __start = __sym0.0.clone();
+                let __end = __sym0.2.clone();
+                let __nt = super::__action37::<>(input, __sym0);
+                let __states_len = __states.len();
+                __states.truncate(__states_len - 1);
+                __symbols.push((__start, __Symbol::NtValue(__nt), __end));
+                13
+            }
+            45 => {
                 // __Comment = Comment => ActionFn(3);
                 let __sym0 = __pop_NtComment(__symbols);
                 let __start = __sym0.0.clone();
@@ -7007,7 +7367,7 @@ mod __parse__Ref {
                 __symbols.push((__start, __Symbol::Nt____Comment(__nt), __end));
                 14
             }
-            44 => {
+            46 => {
                 // __Label = Label => ActionFn(2);
                 let __sym0 = __pop_NtLabel(__symbols);
                 let __start = __sym0.0.clone();
@@ -7018,7 +7378,7 @@ mod __parse__Ref {
                 __symbols.push((__start, __Symbol::Nt____Label(__nt), __end));
                 15
             }
-            45 => {
+            47 => {
                 // __Line = Line => ActionFn(1);
                 let __sym0 = __pop_NtLine(__symbols);
                 let __start = __sym0.0.clone();
@@ -7029,7 +7389,7 @@ mod __parse__Ref {
                 __symbols.push((__start, __Symbol::Nt____Line(__nt), __end));
                 16
             }
-            46 => {
+            48 => {
                 // __Program = Program => ActionFn(0);
                 let __sym0 = __pop_NtProgram(__symbols);
                 let __start = __sym0.0.clone();
@@ -7040,7 +7400,7 @@ mod __parse__Ref {
                 __symbols.push((__start, __Symbol::Nt____Program(__nt), __end));
                 17
             }
-            47 => {
+            49 => {
                 // __Ref = Ref => ActionFn(4);
                 let __sym0 = __pop_NtRef(__symbols);
                 let __start = __sym0.0.clone();
@@ -7198,6 +7558,17 @@ mod __parse__Ref {
             _ => panic!("symbol type mismatch")
         }
     }
+    fn __pop_Term_22LOAD__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22LOAD__LOCAL_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
     fn __pop_Term_22MULT_22<
       'input,
     >(
@@ -7283,6 +7654,17 @@ mod __parse__Ref {
      {
         match __symbols.pop().unwrap() {
             (__l, __Symbol::Term_22STORE_22(__v), __r) => (__l, __v, __r),
+            _ => panic!("symbol type mismatch")
+        }
+    }
+    fn __pop_Term_22STORE__LOCAL_22<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, &'input str, usize)
+     {
+        match __symbols.pop().unwrap() {
+            (__l, __Symbol::Term_22STORE__LOCAL_22(__v), __r) => (__l, __v, __r),
             _ => panic!("symbol type mismatch")
         }
     }
@@ -7619,6 +8001,7 @@ mod __intern_token {
                 "^(?u:JIF)",
                 "^(?u:JMP)",
                 "^(?u:LOAD)",
+                "^(?u:LOAD_LOCAL)",
                 "^(?u:MULT)",
                 "^(?u:NOT)",
                 "^(?u:OR)",
@@ -7627,6 +8010,7 @@ mod __intern_token {
                 "^(?u:PUSH)",
                 "^(?u:RET)",
                 "^(?u:STORE)",
+                "^(?u:STORE_LOCAL)",
                 "^(?u:SUB)",
                 "^(?u:false)",
                 "^(?u:true)",
@@ -7650,6 +8034,7 @@ mod __intern_token {
                 __regex::Regex::new("^(?u:JIF)").unwrap(),
                 __regex::Regex::new("^(?u:JMP)").unwrap(),
                 __regex::Regex::new("^(?u:LOAD)").unwrap(),
+                __regex::Regex::new("^(?u:LOAD_LOCAL)").unwrap(),
                 __regex::Regex::new("^(?u:MULT)").unwrap(),
                 __regex::Regex::new("^(?u:NOT)").unwrap(),
                 __regex::Regex::new("^(?u:OR)").unwrap(),
@@ -7658,6 +8043,7 @@ mod __intern_token {
                 __regex::Regex::new("^(?u:PUSH)").unwrap(),
                 __regex::Regex::new("^(?u:RET)").unwrap(),
                 __regex::Regex::new("^(?u:STORE)").unwrap(),
+                __regex::Regex::new("^(?u:STORE_LOCAL)").unwrap(),
                 __regex::Regex::new("^(?u:SUB)").unwrap(),
                 __regex::Regex::new("^(?u:false)").unwrap(),
                 __regex::Regex::new("^(?u:true)").unwrap(),
@@ -7691,7 +8077,7 @@ mod __intern_token {
                 } else {
                     let mut __longest_match = 0;
                     let mut __index = 0;
-                    for __i in 0 .. 28 {
+                    for __i in 0 .. 30 {
                         if __matches.matched(__i) {
                             let __match = self.regex_vec[__i].find(__text).unwrap();
                             let __len = __match.end();
@@ -8047,7 +8433,7 @@ fn __action29<
     (_, i, _): (usize, usize, usize),
 ) -> Instruction
 {
-    Instruction::OpCode(OpCode::Load(i))
+    Instruction::OpCode(OpCode::LoadLocal(i))
 }
 
 #[allow(unused_variables)]
@@ -8059,11 +8445,37 @@ fn __action30<
     (_, i, _): (usize, usize, usize),
 ) -> Instruction
 {
-    Instruction::OpCode(OpCode::Store(i))
+    Instruction::OpCode(OpCode::StoreLocal(i))
 }
 
 #[allow(unused_variables)]
 fn __action31<
+    'input,
+>(
+    input: &'input str,
+    (_, _, _): (usize, &'input str, usize),
+    (_, idx, _): (usize, usize, usize),
+    (_, i, _): (usize, usize, usize),
+) -> Instruction
+{
+    Instruction::OpCode(OpCode::Load(idx, i))
+}
+
+#[allow(unused_variables)]
+fn __action32<
+    'input,
+>(
+    input: &'input str,
+    (_, _, _): (usize, &'input str, usize),
+    (_, idx, _): (usize, usize, usize),
+    (_, i, _): (usize, usize, usize),
+) -> Instruction
+{
+    Instruction::OpCode(OpCode::Store(idx, i))
+}
+
+#[allow(unused_variables)]
+fn __action33<
     'input,
 >(
     input: &'input str,
@@ -8074,7 +8486,7 @@ fn __action31<
 }
 
 #[allow(unused_variables)]
-fn __action32<
+fn __action34<
     'input,
 >(
     input: &'input str,
@@ -8082,28 +8494,6 @@ fn __action32<
 ) -> Instruction
 {
     Instruction::OpCode(OpCode::Ret)
-}
-
-#[allow(unused_variables)]
-fn __action33<
-    'input,
->(
-    input: &'input str,
-    (_, __0, _): (usize, Value, usize),
-) -> Value
-{
-    (__0)
-}
-
-#[allow(unused_variables)]
-fn __action34<
-    'input,
->(
-    input: &'input str,
-    (_, __0, _): (usize, Value, usize),
-) -> Value
-{
-    (__0)
 }
 
 #[allow(unused_variables)]
@@ -8122,6 +8512,28 @@ fn __action36<
     'input,
 >(
     input: &'input str,
+    (_, __0, _): (usize, Value, usize),
+) -> Value
+{
+    (__0)
+}
+
+#[allow(unused_variables)]
+fn __action37<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Value, usize),
+) -> Value
+{
+    (__0)
+}
+
+#[allow(unused_variables)]
+fn __action38<
+    'input,
+>(
+    input: &'input str,
     (_, s, _): (usize, &'input str, usize),
 ) -> Value
 {
@@ -8129,7 +8541,7 @@ fn __action36<
 }
 
 #[allow(unused_variables)]
-fn __action37<
+fn __action39<
     'input,
 >(
     input: &'input str,
@@ -8143,7 +8555,7 @@ fn __action37<
 }
 
 #[allow(unused_variables)]
-fn __action38<
+fn __action40<
     'input,
 >(
     input: &'input str,
@@ -8154,7 +8566,7 @@ fn __action38<
 }
 
 #[allow(unused_variables)]
-fn __action39<
+fn __action41<
     'input,
 >(
     input: &'input str,
@@ -8165,7 +8577,7 @@ fn __action39<
 }
 
 #[allow(unused_variables)]
-fn __action40<
+fn __action42<
     'input,
 >(
     input: &'input str,
@@ -8176,7 +8588,7 @@ fn __action40<
 }
 
 #[allow(unused_variables)]
-fn __action41<
+fn __action43<
     'input,
 >(
     input: &'input str,
@@ -8187,7 +8599,7 @@ fn __action41<
 }
 
 #[allow(unused_variables)]
-fn __action42<
+fn __action44<
     'input,
 >(
     input: &'input str,
@@ -8199,7 +8611,7 @@ fn __action42<
 }
 
 #[allow(unused_variables)]
-fn __action43<
+fn __action45<
     'input,
 >(
     input: &'input str,
@@ -8210,7 +8622,7 @@ fn __action43<
 }
 
 #[allow(unused_variables)]
-fn __action44<
+fn __action46<
     'input,
 >(
     input: &'input str,
@@ -8221,7 +8633,7 @@ fn __action44<
 }
 
 #[allow(unused_variables)]
-fn __action45<
+fn __action47<
     'input,
 >(
     input: &'input str,
@@ -8233,7 +8645,7 @@ fn __action45<
 }
 
 #[allow(unused_variables)]
-fn __action46<
+fn __action48<
     'input,
 >(
     input: &'input str,
@@ -8243,7 +8655,7 @@ fn __action46<
 {
     let __start0 = __lookbehind.clone();
     let __end0 = __lookahead.clone();
-    let __temp0 = __action42(
+    let __temp0 = __action44(
         input,
         &__start0,
         &__end0,
@@ -8256,7 +8668,7 @@ fn __action46<
 }
 
 #[allow(unused_variables)]
-fn __action47<
+fn __action49<
     'input,
 >(
     input: &'input str,
@@ -8265,7 +8677,7 @@ fn __action47<
 {
     let __start0 = __0.0.clone();
     let __end0 = __0.2.clone();
-    let __temp0 = __action43(
+    let __temp0 = __action45(
         input,
         __0,
     );

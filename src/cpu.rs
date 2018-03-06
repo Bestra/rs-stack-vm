@@ -56,6 +56,14 @@ impl CPU {
         CPU::new(a)
     }
 
+    pub fn get_frame(&self, idx: usize) -> &Frame {
+        self.frames.get(idx).unwrap()
+    }
+
+    pub fn get_frame_mut(&mut self, idx: usize) -> &mut Frame {
+        self.frames.get_mut(idx).unwrap()
+    }
+
     pub fn current_frame(&self) -> &Frame {
         self.frames.get(self.current_frame_idx).unwrap()
     }
@@ -193,7 +201,21 @@ impl CPU {
                 }
             }
 
-            OpCode::Store(var_pos) => {
+            OpCode::Store(frame_idx, var_pos) => {
+                assert!(
+                    self.stack.len() >= 1,
+                    "stack needs at least 1 value to store"
+                );
+                let k = self.stack.pop().unwrap();
+                self.get_frame_mut(frame_idx).set_variable(var_pos, k);
+            }
+
+            OpCode::Load(frame_idx, var_pos) => {
+                let v = self.get_frame(frame_idx).get_variable(var_pos);
+                self.stack.push(v);
+            }
+
+            OpCode::StoreLocal(var_pos) => {
                 assert!(
                     self.stack.len() >= 1,
                     "stack needs at least 1 value to store"
@@ -202,7 +224,7 @@ impl CPU {
                 self.current_frame_mut().set_variable(var_pos, k);
             }
 
-            OpCode::Load(var_pos) => {
+            OpCode::LoadLocal(var_pos) => {
                 let v = self.current_frame().get_variable(var_pos);
                 self.stack.push(v);
             }
@@ -437,7 +459,7 @@ mod tests {
     fn store_var() {
         let mut cpu = CPU::with_op_codes(vec![
             OpCode::Push(Value::Number(42)),
-            OpCode::Store(0),
+            OpCode::Store(0, 0),
             OpCode::Halt,
         ]);
         cpu.run();
@@ -447,7 +469,7 @@ mod tests {
 
     #[test]
     fn load_uninitialized_var() {
-        let mut cpu = CPU::with_op_codes(vec![OpCode::Load(0), OpCode::Halt]);
+        let mut cpu = CPU::with_op_codes(vec![OpCode::Load(0, 0), OpCode::Halt]);
         cpu.run();
         assert_eq!(cpu.stack, vec![Value::Number(0)]);
         assert_halted_at(&cpu, 2);
@@ -457,8 +479,8 @@ mod tests {
     fn load_stored_var() {
         let mut cpu = CPU::with_op_codes(vec![
             OpCode::Push(Value::Number(42)),
-            OpCode::Store(0),
-            OpCode::Load(0),
+            OpCode::Store(0, 0),
+            OpCode::Load(0, 0),
             OpCode::Halt,
         ]);
         cpu.run();
