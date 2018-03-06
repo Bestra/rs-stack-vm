@@ -73,12 +73,12 @@ FactorOp: String = {
 };
 
 Term: Box<Expr> = {
-    Num => Box::new(Expr::Literal{value: <>}),
+    Literal => Box::new(Expr::Literal{value: <>}),
     <i: Identifier> => Box::new(Expr::Variable{name: i.to_string()}),
     "(" <Expr> ")"
 };
 
-Num: usize = {
+Literal: usize = {
     <s: r"[0-9]+"> => {
         let idx = constants.entry(s.to_string()).or_insert_with(|| {
             let v = Value::Number(i32::from_str(<>).unwrap());
@@ -87,7 +87,36 @@ Num: usize = {
             i
         });
         *idx
-    }
+    },
+    <s:r#""[^"]*""#> => {
+        let literal = s[1..s.len()-1].to_string();
+        let idx = constants.entry(literal.clone()).or_insert_with(|| {
+            let v = Value::String(literal);
+            let i = constant_pool.len();
+            constant_pool.push(v);
+            i
+        });
+        *idx
+    },
+    "true" => {
+        let idx = constants.entry("true".to_string()).or_insert_with(|| {
+            let v = Value::Bool(true);
+            let i = constant_pool.len();
+            constant_pool.push(v);
+            i
+        });
+        *idx
+    },
+    "false" => {
+        let idx = constants.entry("false".to_string()).or_insert_with(|| {
+            let v = Value::Bool(false);
+            let i = constant_pool.len();
+            constant_pool.push(v);
+            i
+        });
+        *idx
+    },
 };
+
 
 Identifier: &'input str = r"[a-zA-Z][a-zA-Z0-9_]*" => <>;

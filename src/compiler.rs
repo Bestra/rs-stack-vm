@@ -156,6 +156,38 @@ mod tests {
     }
 
     #[test]
+    fn compiles_string_literal() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "print \"FOO\";");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Print),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_boolean_literal() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "print true;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Print),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
     fn compiles_print_statement() {
         let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "print 12;");
 
