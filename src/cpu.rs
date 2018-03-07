@@ -116,7 +116,7 @@ impl CPU {
         assert!(self.instruction_address < self.program.op_codes.len());
         let next_ins = &self.program.op_codes[self.instruction_address];
         if self.debug {
-            println!("{}: {:?} stack: {:?} locals: {:?}", self.instruction_address, next_ins, self.stack, self.current_frame());
+            println!("{:<3}: {:15} stack: {:?} locals: {:?}", self.instruction_address, next_ins, self.stack, self.current_frame());
         }
         self.instruction_address += 1;
 
