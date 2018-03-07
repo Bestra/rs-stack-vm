@@ -59,6 +59,10 @@ impl CPU {
         CPU::new(a)
     }
 
+    pub fn print_buffer(&self) -> &Vec<String> {
+        &self.print_buffer
+    }
+
     pub fn get_frame(&self, idx: usize) -> &Frame {
         self.frames.get(idx).unwrap()
     }

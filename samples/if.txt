@@ -1,1 +1,3 @@
 if (false) print "t"; else print "f"; end
+
+if (true) print "also true"; end

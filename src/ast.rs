@@ -1,3 +1,8 @@
+#[derive(Debug, Clone, PartialEq)]
+pub enum LogicalOperator {
+    Or,
+    And,
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum BinaryOperator {
@@ -51,11 +56,11 @@ pub enum Expr {
     Literal {
         value: usize,
     },
-    // Logical {
-    //     left: Box<Expr>,
-    //     right: Box<Expr>,
-    //     operator: String,
-    // },
+    Logical {
+        left: Box<Expr>,
+        right: Box<Expr>,
+        operator: LogicalOperator,
+    },
     // Unary {
     //     right: Box<Expr>,
     //     operator: String,

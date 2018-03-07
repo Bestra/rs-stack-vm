@@ -42,7 +42,7 @@ fn run_file(filename: &str, debug: bool, assem_in: bool, assem_out: bool) {
     if assem_in {
         run_assembly(contents, debug);
     } else {
-        run_program(contents, debug, assem_out);
+        stack_vm::runtime::run_program(contents, debug, assem_out);
     }
 }
 
@@ -58,15 +58,4 @@ fn run_assembly(contents: String, debug: bool) {
     let mut cpu = stack_vm::cpu::CPU::new(program);
     cpu.debug = debug;
     cpu.run();
-}
-
-fn run_program(contents: String, debug: bool, assem_out: bool) {
-    let a = stack_vm::compiler::compile(contents.as_str());
-    if assem_out {
-        println!("{:#?}", a.instructions);
-    } else {
-        let mut cpu = stack_vm::cpu::CPU::new(a);
-        cpu.debug = debug;
-        cpu.run();
-    }
 }

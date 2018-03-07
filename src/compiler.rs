@@ -181,6 +181,7 @@ impl Compiler {
                 let (frame_idx, i) = self.environment.get(name);
                 self.instructions.push(Instruction::OpCode(OpCode::Load(frame_idx, i)))
             }
+
             Expr::Binary {
                 left,
                 operator,
@@ -203,6 +204,7 @@ impl Compiler {
                 };
                 self.instructions.push(Instruction::OpCode(op))
             }
+
             Expr::Assign {
                 name,
                 value
@@ -213,6 +215,45 @@ impl Compiler {
                 // something like "print a = 3;" but might be silly elsewhere
                 self.instructions.push(Instruction::OpCode(OpCode::Dup));
                 self.instructions.push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
+            }
+
+            Expr::Logical {
+                left,
+                right,
+                operator
+            } => {
+                use ast::LogicalOperator::*;
+                match operator {
+                    And => {
+                        self.process_expr(*left);
+                        let l = self.get_label_id();
+                        let true_label = self.generate_label("and", l);
+                        let false_label = self.generate_label("!and", l);
+                        self.instructions.push(Instruction::OpCode(OpCode::Dup));
+                        self.instructions.push(Instruction::Ref(Ref::JmpIf(true_label.clone())));
+                        self.instructions.push(Instruction::Ref(Ref::Jmp(false_label.clone())));
+
+                        self.instructions.push(Instruction::Label(true_label.clone()));
+                        self.process_expr(*right);
+
+                        self.instructions.push(Instruction::Label(false_label.clone()));
+                    }
+
+                    Or => {
+                        self.process_expr(*left);
+                        let l = self.get_label_id();
+                        let true_label = self.generate_label("or", l);
+                        let false_label = self.generate_label("!or", l);
+                        self.instructions.push(Instruction::OpCode(OpCode::Dup));
+                        self.instructions.push(Instruction::Ref(Ref::JmpIf(true_label.clone())));
+                        self.instructions.push(Instruction::Ref(Ref::Jmp(false_label.clone())));
+
+                        self.instructions.push(Instruction::Label(false_label.clone()));
+                        self.process_expr(*right);
+
+                        self.instructions.push(Instruction::Label(true_label.clone()));
+                    }
+                }
             }
         }
     }
@@ -426,6 +467,73 @@ mod tests {
                 Instruction::OpCode(OpCode::Dup),
                 Instruction::OpCode(OpCode::Store(0, 0)),
                 Instruction::OpCode(OpCode::PopFrame),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_logical_and() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
+                              "false && true;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Dup),
+                Instruction::Ref(Ref::JmpIf("and_1".to_string())),
+                Instruction::Ref(Ref::Jmp("!and_1".to_string())),
+                Instruction::Label("and_1".to_string()),
+                Instruction::OpCode(OpCode::Constant(1)),
+                Instruction::Label("!and_1".to_string()),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_logical_and_print() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
+                              "print false && true;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Dup),
+                Instruction::Ref(Ref::JmpIf("and_1".to_string())),
+                Instruction::Ref(Ref::Jmp("!and_1".to_string())),
+                Instruction::Label("and_1".to_string()),
+                Instruction::OpCode(OpCode::Constant(1)),
+                Instruction::Label("!and_1".to_string()),
+                Instruction::OpCode(OpCode::Print),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_logical_or() {
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
+                              "false || true;");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Dup),
+                Instruction::Ref(Ref::JmpIf("or_1".to_string())),
+                Instruction::Ref(Ref::Jmp("!or_1".to_string())),
+                Instruction::Label("!or_1".to_string()),
+                Instruction::OpCode(OpCode::Constant(1)),
+                Instruction::Label("or_1".to_string()),
                 Instruction::OpCode(OpCode::Halt),
             ]
         );

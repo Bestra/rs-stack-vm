@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use ast::{BinaryOperator, Expr, Statement};
+use ast::{BinaryOperator, Expr, LogicalOperator, Statement};
 use value::Value;
 use std::collections::HashMap;
 
@@ -16,8 +16,13 @@ Semi<T>: Vec<T> = { // (0)
     }
 };
 
-Tier<Op,NextTier>: Box<Expr> = {
-    <left: Tier<Op,NextTier>> <operator: Op> <right: NextTier> => Box::new(Expr::Binary{<>}),
+BinaryTier<Op,NextTier>: Box<Expr> = {
+    <left: BinaryTier<Op,NextTier>> <operator: Op> <right: NextTier> => Box::new(Expr::Binary{<>}),
+    NextTier
+};
+
+LogicTier<Op,NextTier>: Box<Expr> = {
+    <left: LogicTier<Op,NextTier>> <operator: Op> <right: NextTier> => Box::new(Expr::Logical{<>}),
     NextTier
 };
 
@@ -76,13 +81,23 @@ Assignment: Box<Expr> = {
     <name: Identifier> "=" <v: Assignment> => {
         Box::new(Expr::Assign {name: name.to_string(), value: v})
     },
-    Equality
+    LogicOr,
 };
 
-Equality = Tier<EqualityOp, Comparison>;
-Comparison = Tier<ComparisonOp, Addition>;
-Addition = Tier<AdditionOp, Multiplication>;
-Multiplication = Tier<MultiplicationOp, Term>;
+LogicOr = LogicTier<LogicOrOp, LogicAnd>;
+LogicAnd = LogicTier<LogicAndOp, Equality>;
+Equality = BinaryTier<EqualityOp, Comparison>;
+Comparison = BinaryTier<ComparisonOp, Addition>;
+Addition = BinaryTier<AdditionOp, Multiplication>;
+Multiplication = BinaryTier<MultiplicationOp, Term>;
+
+LogicOrOp: LogicalOperator = {
+    "||" => LogicalOperator::Or,
+};
+
+LogicAndOp: LogicalOperator = {
+    "&&" => LogicalOperator::And,
+};
 
 EqualityOp: BinaryOperator = {
     "!=" => BinaryOperator::BangEq,
