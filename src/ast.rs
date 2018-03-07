@@ -1,3 +1,35 @@
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum BinaryOperator {
+    Plus,
+    Minus,
+    Star,
+    Eq,
+    BangEq,
+    Lt,
+    Gt,
+    LtEq,
+    GtEq,
+}
+
+impl BinaryOperator {
+    pub fn from_str(s: &str) -> BinaryOperator {
+        use self::BinaryOperator::*;
+        match s {
+            "+" => Plus,
+            "-" => Minus,
+            "*" => Star,
+            "==" => Eq,
+            "!=" => BangEq,
+            "<" => Lt,
+            ">" => Gt,
+            "<=" => LtEq,
+            ">=" => GtEq,
+            s => panic!("unable to create operator from {}", s)
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub enum Expr {
     Assign {
@@ -7,7 +39,7 @@ pub enum Expr {
     Binary {
         left: Box<Expr>,
         right: Box<Expr>,
-        operator: String,
+        operator: BinaryOperator,
     },
     // Call {
     //     callee: Box<Expr>,
@@ -42,11 +74,11 @@ pub enum Statement {
         expression: Box<Expr>,
     },
     // Function(FunctionDeclaration),
-    // If {
-    //     condition: Box<Expr>,
-    //     then_branch: Box<Statement>,
-    //     else_branch: Option<Box<Statement>>,
-    // },
+    If {
+        condition: Box<Expr>,
+        then_branch: Box<Statement>,
+        else_branch: Option<Box<Statement>>,
+    },
     Print {
         expression: Box<Expr>,
     },

@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use ast::{Expr, Statement};
+use ast::{BinaryOperator, Expr, Statement};
 use value::Value;
 use std::collections::HashMap;
 
@@ -29,20 +29,35 @@ Declaration = {
 };
 
 VariableDeclaration: Statement = {
-    "var" <i: Identifier> <initializer:("=" <Expr> )?> ";" => {
+    "var" <i: Identifier> <initializer:("=" <Equality> )?> ";" => {
         let name = i.to_string();
         Statement::Var { name, initializer }
     }
 };
 
 Statement = {
-    ExprStatement,
     PrintStatement,
+    ExprStatement,
+    IfStatement,
     Block,
 };
 
 ExprStatement: Statement = {
     <expression: Expression> ";" => Statement::Expression{<>}
+};
+
+IfStatement: Statement = {
+    "if" "(" <i: Expression> ")" <t: Statement> <e:("else" <Statement>)?> "end" => {
+        let eb = match e {
+            Some(s) => Some(Box::new(s)),
+            None => None,
+        };
+        Statement::If {
+            condition: i,
+            then_branch: Box::new(t),
+            else_branch: eb,
+        }
+    }
 };
 
 PrintStatement: Statement = {
@@ -61,25 +76,39 @@ Assignment: Box<Expr> = {
     <name: Identifier> "=" <v: Assignment> => {
         Box::new(Expr::Assign {name: name.to_string(), value: v})
     },
-    Expr
+    Equality
 };
 
-Expr = Tier<ExprOp, Factor>;
-Factor = Tier<FactorOp, Term>;
+Equality = Tier<EqualityOp, Comparison>;
+Comparison = Tier<ComparisonOp, Addition>;
+Addition = Tier<AdditionOp, Multiplication>;
+Multiplication = Tier<MultiplicationOp, Term>;
 
-ExprOp: String = { // (3)
-    "+" => "+".to_string(),
-    "-" => "-".to_string(),
+EqualityOp: BinaryOperator = {
+    "!=" => BinaryOperator::BangEq,
+    "==" => BinaryOperator::Eq,
 };
 
-FactorOp: String = {
-    "*" => "*".to_string(),
+ComparisonOp: BinaryOperator = {
+    ">" => BinaryOperator::Gt,
+    ">=" => BinaryOperator::GtEq,
+    "<" => BinaryOperator::Lt,
+    "<=" => BinaryOperator::LtEq,
+};
+
+AdditionOp: BinaryOperator = {
+    "+" => BinaryOperator::Plus,
+    "-" => BinaryOperator::Minus,
+};
+
+MultiplicationOp: BinaryOperator = {
+    "*" => BinaryOperator::Star,
 };
 
 Term: Box<Expr> = {
     Literal => Box::new(Expr::Literal{value: <>}),
     <i: Identifier> => Box::new(Expr::Variable{name: i.to_string()}),
-    "(" <Expr> ")"
+    "(" <Equality> ")"
 };
 
 Literal: usize = {

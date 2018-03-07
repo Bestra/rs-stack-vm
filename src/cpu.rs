@@ -27,6 +27,7 @@ impl Frame {
 
 pub struct CPU {
     stack: Vec<Value>,
+    print_buffer: Vec<String>,
     program: AssemblyProgram,
     current_frame_idx: usize,
     frames: Vec<Frame>,
@@ -39,6 +40,7 @@ impl CPU {
     pub fn new(program: AssemblyProgram) -> CPU {
         CPU {
             stack: Vec::new(),
+            print_buffer: Vec::new(),
             program: program,
             current_frame_idx: 0,
             frames: vec![Frame::new(0)],
@@ -50,6 +52,7 @@ impl CPU {
 
     pub fn with_op_codes(v: Vec<OpCode>) -> CPU {
         let a = AssemblyProgram {
+            instructions: Vec::new(),
             op_codes: v,
                 constant_pool: Vec::new(),
         };
@@ -154,6 +157,10 @@ impl CPU {
                 self.bin_op(|top, bot| Value::Bool(top == bot));
             }
 
+            OpCode::NEq => {
+                self.bin_op(|top, bot| Value::Bool(top != bot));
+            }
+
             OpCode::IsGt => {
                 self.bin_op(|top, bot| Value::Bool(top > bot));
             }
@@ -164,6 +171,10 @@ impl CPU {
 
             OpCode::IsLt => {
                 self.bin_op(|top, bot| Value::Bool(top < bot));
+            }
+
+            OpCode::IsLe => {
+                self.bin_op(|top, bot| Value::Bool(top <= bot));
             }
 
             OpCode::Not => {
@@ -232,6 +243,7 @@ impl CPU {
             OpCode::Print => {
                 let k = self.stack.pop().unwrap();
                 println!("{}", k);
+                self.print_buffer.push(format!("{}", k))
             }
 
             OpCode::DebugPrint => {
@@ -314,6 +326,19 @@ mod tests {
             ],
             vec![Value::Number(42), Value::Number(68)],
         );
+    }
+
+    #[test]
+    fn print_buffer() {
+        let mut cpu = CPU::with_op_codes(vec![
+            OpCode::Push(Value::Number(42)),
+            OpCode::Print,
+            OpCode::Halt
+        ]);
+        cpu.run();
+        assert_halted_at(&cpu, 3);
+        assert_eq!(cpu.print_buffer, vec!["42"]);
+        assert_eq!(cpu.stack.len(), 0);
     }
 
     #[test]

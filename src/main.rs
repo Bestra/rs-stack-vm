@@ -13,7 +13,8 @@ fn main() {
         .args_from_usage(
             "-d 'Prints stack and frame information before running each opcode'
              -assembler 'Runs an assembly file'
-                              <INPUT>              'Sets the input file to use'
+             -o 'Prints out assembly code instead of running'
+             <INPUT>              'Sets the input file to use'
                                                                                ")
                           .get_matches();
 
@@ -22,21 +23,26 @@ fn main() {
         _ => true
     };
 
-    let assem = match matches.occurrences_of("assembler") {
+    let assem_in = match matches.occurrences_of("assembler") {
         0 => false,
         _ => true
     };
-    run_file(matches.value_of("INPUT").unwrap(), debug, assem);
+
+    let assem_out = match matches.occurrences_of("o") {
+        0 => false,
+        _ => true
+    };
+    run_file(matches.value_of("INPUT").unwrap(), debug, assem_in, assem_out);
 }
 
-fn run_file(filename: &str, debug: bool, assem: bool) {
+fn run_file(filename: &str, debug: bool, assem_in: bool, assem_out: bool) {
     let mut contents = String::new();
     let mut file = File::open(filename).unwrap();
     file.read_to_string(&mut contents).unwrap();
-    if assem {
+    if assem_in {
         run_assembly(contents, debug);
     } else {
-        run_program(contents, debug);
+        run_program(contents, debug, assem_out);
     }
 }
 
@@ -45,6 +51,7 @@ fn run_assembly(contents: String, debug: bool) {
     let mut assembler = stack_vm::assembler::Assembler::new(p.unwrap());
     assembler.resolve_labels();
     let program = stack_vm::assembler::AssemblyProgram {
+        instructions: Vec::new(),
         op_codes: assembler.generate_op_codes(),
         constant_pool: Vec::new(),
     };
@@ -53,8 +60,13 @@ fn run_assembly(contents: String, debug: bool) {
     cpu.run();
 }
 
-fn run_program(contents: String, debug: bool) {
-    let mut cpu = stack_vm::cpu::CPU::new(stack_vm::compiler::compile(contents.as_str()));
-    cpu.debug = debug;
-    cpu.run();
+fn run_program(contents: String, debug: bool, assem_out: bool) {
+    let a = stack_vm::compiler::compile(contents.as_str());
+    if assem_out {
+        println!("{:#?}", a.instructions);
+    } else {
+        let mut cpu = stack_vm::cpu::CPU::new(a);
+        cpu.debug = debug;
+        cpu.run();
+    }
 }

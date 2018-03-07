@@ -2,7 +2,9 @@ use std::collections::HashMap;
 use instruction::{Instruction, OpCode, Ref};
 use value::Value;
 
+#[derive(Debug)]
 pub struct AssemblyProgram {
+    pub instructions: Vec<Instruction>,
     pub op_codes: Vec<OpCode>,
     pub constant_pool: Vec<Value>,
 }

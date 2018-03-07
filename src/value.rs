@@ -17,6 +17,7 @@ impl Add for Value {
     fn add(self, other: Value) -> Value {
         match (&self, &other) {
             (&Value::Number(a), &Value::Number(b)) => Value::Number(a + b),
+            (&Value::String(ref a), &Value::String(ref b)) => Value::String(format!("{}{}", a, b)),
             _ => panic!("Unable to add types {:?} and {:?}", self, other)
         }
     }

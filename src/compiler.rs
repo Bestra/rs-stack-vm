@@ -3,8 +3,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use ast::{Expr, Statement};
-use instruction::{Instruction, OpCode};
-use value::Value;
+use instruction::{Instruction, OpCode, Ref};
 use parser1::parse_Program;
 use assembler::{Assembler, AssemblyProgram};
 
@@ -86,12 +85,12 @@ pub fn compile(program: &str) -> AssemblyProgram {
     let mut constants = HashMap::new();
     let mut constant_pool = Vec::new();
     let p = parse_Program(&mut constants, &mut constant_pool, program);
-    println!("{:?}", constants);
     let mut compiler = Compiler::new();
     let instructions = compiler.generate_instructions(p.unwrap());
-    let mut assembler = Assembler::new(instructions);
+    let mut assembler = Assembler::new(instructions.clone());
     assembler.resolve_labels();
     AssemblyProgram {
+            instructions: instructions,
             op_codes: assembler.generate_op_codes(),
             constant_pool: constant_pool,
     }
@@ -100,6 +99,7 @@ pub fn compile(program: &str) -> AssemblyProgram {
 pub struct Compiler {
     instructions: Vec<Instruction>,
     environment: Environment,
+    label_id: i32,
 }
 
 impl Compiler {
@@ -107,7 +107,16 @@ impl Compiler {
         Compiler {
             instructions: Vec::new(),
             environment: Environment::new(),
+            label_id: 0,
         }
+    }
+
+    fn get_label_id(&mut self) -> i32 {
+        self.label_id += 1;
+        self.label_id
+    }
+    fn generate_label(&mut self, prefix: &str, l: i32) -> String {
+        format!("{}_{}", prefix, l)
     }
 
     fn process_statements(&mut self, statements: Vec<Statement>) {
@@ -122,6 +131,24 @@ impl Compiler {
             Statement::Print { expression } => {
                 self.process_expr(*expression);
                 self.instructions.push(Instruction::OpCode(OpCode::Print));
+            }
+
+            Statement::If { condition, then_branch, else_branch } => {
+                self.process_expr(*condition);
+                let l = self.get_label_id();
+                let else_label = self.generate_label("else", l);
+                let then_label = self.generate_label("then", l);
+                let end_label = self.generate_label("if_end", l);
+                self.instructions.push(Instruction::Ref(Ref::JmpIf(then_label.clone())));
+                self.instructions.push(Instruction::Ref(Ref::Jmp(else_label.clone())));
+                self.instructions.push(Instruction::Label(then_label.clone()));
+                self.process_statement(*then_branch);
+                self.instructions.push(Instruction::Ref(Ref::Jmp(end_label.clone())));
+                self.instructions.push(Instruction::Label(else_label.clone()));
+                if let Some(b) = else_branch {
+                    self.process_statement(*b);
+                }
+                self.instructions.push(Instruction::Label(end_label.clone()));
             }
 
             Statement::Block { statements } => {
@@ -161,12 +188,18 @@ impl Compiler {
             } => {
                 self.process_expr(*left);
                 self.process_expr(*right);
+                use ast::BinaryOperator::*;
 
-                let op = match operator.as_str() {
-                    "+" => OpCode::Add,
-                    "-" => OpCode::Subtract,
-                    "*" => OpCode::Multiply,
-                    _ => panic!("invalid operator {}", operator),
+                let op = match operator {
+                    Plus => OpCode::Add,
+                    Minus => OpCode::Subtract,
+                    Star => OpCode::Multiply,
+                    Eq => OpCode::IsEq,
+                    BangEq => OpCode::NEq,
+                    Lt => OpCode::IsLt,
+                    Gt => OpCode::IsGt,
+                    LtEq => OpCode::IsLe,
+                    GtEq => OpCode::IsGe,
                 };
                 self.instructions.push(Instruction::OpCode(op))
             }

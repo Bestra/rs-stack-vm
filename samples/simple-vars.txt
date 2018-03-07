@@ -1,4 +1,11 @@
 var a = 3;
 var b = 6;
-
+{
+  var c = 9;
+  print "this is c";
+  print c;
+  print "a + c";
+  print a + c;
+}
 print a + b;
+
