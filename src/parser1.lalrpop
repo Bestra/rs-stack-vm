@@ -5,6 +5,7 @@ use std::collections::HashMap;
 
 grammar<'c>(constants: &'c mut HashMap<String, usize>, constant_pool: &'c mut Vec<Value>);
 
+// These are some helper macros, the actual grammar starts further down
 Semi<T>: Vec<T> = { // (0)
     <v:(<T> ";")*> <e:T?> => match e { // (1)
         None=> v,
@@ -26,6 +27,7 @@ LogicTier<Op,NextTier>: Box<Expr> = {
     NextTier
 };
 
+// This is the start of the actual grammar.
 pub Program = Declaration*;
 
 Declaration = {
@@ -44,6 +46,7 @@ Statement = {
     PrintStatement,
     ExprStatement,
     IfStatement,
+    WhileStatement,
     Block,
 };
 
@@ -61,6 +64,15 @@ IfStatement: Statement = {
             condition: i,
             then_branch: Box::new(t),
             else_branch: eb,
+        }
+    }
+};
+
+WhileStatement: Statement = {
+    "while" "(" <e: Expression> ")" <b: Statement> => {
+        Statement::While {
+            condition: e,
+            body: Box::new(b),
         }
     }
 };

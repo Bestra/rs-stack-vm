@@ -166,19 +166,19 @@ impl CPU {
             }
 
             OpCode::IsGt => {
-                self.bin_op(|top, bot| Value::Bool(top > bot));
+                self.bin_op(|top, bot| Value::Bool(bot > top));
             }
 
             OpCode::IsGe => {
-                self.bin_op(|top, bot| Value::Bool(top >= bot));
+                self.bin_op(|top, bot| Value::Bool(bot >= top));
             }
 
             OpCode::IsLt => {
-                self.bin_op(|top, bot| Value::Bool(top < bot));
+                self.bin_op(|top, bot| Value::Bool(bot < top));
             }
 
             OpCode::IsLe => {
-                self.bin_op(|top, bot| Value::Bool(top <= bot));
+                self.bin_op(|top, bot| Value::Bool(bot <= top));
             }
 
             OpCode::Not => {
@@ -431,8 +431,8 @@ mod tests {
     fn is_lt() {
         test_stack_for_instructions(
             vec![
-                OpCode::Push(Value::Number(3)),
                 OpCode::Push(Value::Number(4)),
+                OpCode::Push(Value::Number(3)),
                 OpCode::IsLt,
                 OpCode::Halt,
             ],
@@ -440,8 +440,8 @@ mod tests {
         );
         test_stack_for_instructions(
             vec![
-                OpCode::Push(Value::Number(5)),
                 OpCode::Push(Value::Number(3)),
+                OpCode::Push(Value::Number(5)),
                 OpCode::IsLt,
                 OpCode::Halt,
             ],
@@ -453,8 +453,8 @@ mod tests {
     fn is_gt() {
         test_stack_for_instructions(
             vec![
-                OpCode::Push(Value::Number(3)),
                 OpCode::Push(Value::Number(4)),
+                OpCode::Push(Value::Number(3)),
                 OpCode::IsGt,
                 OpCode::Halt,
             ],
@@ -462,8 +462,8 @@ mod tests {
         );
         test_stack_for_instructions(
             vec![
-                OpCode::Push(Value::Number(5)),
                 OpCode::Push(Value::Number(3)),
+                OpCode::Push(Value::Number(5)),
                 OpCode::IsGt,
                 OpCode::Halt,
             ],

@@ -151,6 +151,24 @@ impl Compiler {
                 self.instructions.push(Instruction::Label(end_label.clone()));
             }
 
+            Statement::While { condition, body } => {
+                let l = self.get_label_id();
+                let cond_label = self.generate_label("while_condition", l);
+                let body_label = self.generate_label("while_body", l);
+                let end_label = self.generate_label("while_end", l);
+
+                self.instructions.push(Instruction::Label(cond_label.clone()));
+                self.process_expr(*condition);
+
+                self.instructions.push(Instruction::Ref(Ref::JmpIf(body_label.clone())));
+                self.instructions.push(Instruction::Ref(Ref::Jmp(end_label.clone())));
+
+                self.instructions.push(Instruction::Label(body_label.clone()));
+                self.process_statement(*body);
+                self.instructions.push(Instruction::Ref(Ref::Jmp(cond_label.clone())));
+                self.instructions.push(Instruction::Label(end_label.clone()));
+            }
+
             Statement::Block { statements } => {
                 self.instructions.push(Instruction::OpCode(OpCode::PushFrame));
                 self.environment.push();

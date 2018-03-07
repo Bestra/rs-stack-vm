@@ -90,10 +90,10 @@ pub enum Statement {
     // Return {
     //     value: Option<Box<Expr>>,
     // },
-    // While {
-    //     condition: Box<Expr>,
-    //     body: Box<Statement>,
-    // },
+    While {
+        condition: Box<Expr>,
+        body: Box<Statement>,
+    },
     Var { // initializes a variable
         name: String,
         initializer: Option<Box<Expr>>,

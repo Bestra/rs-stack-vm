@@ -18,6 +18,20 @@ fn if_statement() {
 }
 
 #[test]
+fn logical_gt() {
+    test_output("print 1 > 2;", vec!["false"]);
+    test_output("print 2 > 2;", vec!["false"]);
+    test_output("print 3 > 2;", vec!["true"]);
+}
+
+#[test]
+fn logical_lt() {
+    test_output("print 1 < 2;", vec!["true"]);
+    test_output("print 2 < 2;", vec!["false"]);
+    test_output("print 3 < 2;", vec!["false"]);
+}
+
+#[test]
 fn logical_and_falls_through() {
     test_output("print true && \"t\";", vec!["t"]);
 }
@@ -25,4 +39,15 @@ fn logical_and_falls_through() {
 #[test]
 fn logical_and_short_circuits() {
     test_output("print false && \"t\";", vec!["false"]);
+}
+
+#[test]
+fn while_loop() {
+    test_output("
+  var i = 0;
+  while (i < 3) {
+    print i;
+    i = i + 1;
+  }
+", vec!["0", "1", "2"]);
 }
