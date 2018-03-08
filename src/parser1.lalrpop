@@ -36,7 +36,7 @@ Declaration = {
 };
 
 VariableDeclaration: Statement = {
-    "var" <i: Identifier> <initializer:("=" <Equality> )?> ";" => {
+    "var" <i: Identifier> <initializer:("=" <LogicOr> )?> ";" => {
         let name = i.to_string();
         Statement::Var { name, initializer }
     }
@@ -135,7 +135,7 @@ MultiplicationOp: BinaryOperator = {
 Term: Box<Expr> = {
     Literal => Box::new(Expr::Literal{value: <>}),
     <i: Identifier> => Box::new(Expr::Variable{name: i.to_string()}),
-    "(" <Equality> ")"
+    "(" <LogicOr> ")"
 };
 
 Literal: usize = {

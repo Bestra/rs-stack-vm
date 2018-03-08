@@ -37,6 +37,13 @@ fn logical_and_falls_through() {
 }
 
 #[test]
+fn logical_assignment() {
+    test_output("
+var a = true && \"t\";
+print a;", vec!["t"]);
+}
+
+#[test]
 fn logical_and_short_circuits() {
     test_output("print false && \"t\";", vec!["false"]);
 }

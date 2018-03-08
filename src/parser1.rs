@@ -47,8 +47,8 @@ mod __parse__Program {
         Termr_23_22_5c_22_5b_5e_5c_22_5d_2a_5c_22_22_23(&'input str),
         Termr_23_22_5b0_2d9_5d_2b_22_23(&'input str),
         Termr_23_22_5ba_2dzA_2dZ_5d_5ba_2dzA_2dZ0_2d9___5d_2a_22_23(&'input str),
-        Nt_28_22_3d_22_20_3cEquality_3e_29(Box<Expr>),
-        Nt_28_22_3d_22_20_3cEquality_3e_29_3f(::std::option::Option<Box<Expr>>),
+        Nt_28_22_3d_22_20_3cLogicOr_3e_29(Box<Expr>),
+        Nt_28_22_3d_22_20_3cLogicOr_3e_29_3f(::std::option::Option<Box<Expr>>),
         Nt_28_22else_22_20_3cStatement_3e_29(Statement),
         Nt_28_22else_22_20_3cStatement_3e_29_3f(::std::option::Option<Statement>),
         NtAddition(Box<Expr>),
@@ -207,9 +207,9 @@ mod __parse__Program {
         // State 58
         0, 0, -48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -48, 0, 0, -48, 0, 0, 0, 0, 0, -48, -48, -48,
         // State 59
-        0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        // State 60
         -64, -64, 0, -64, -64, -64, -64, -64, -64, -64, 0, -64, -64, -64, 0, 0, 0, 0, 0, 0, 0, 0, 0, -64, 0, 0, 0, 0,
+        // State 60
+        0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 61
         0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0, 33, 0, 0, 0, 0, 0, 37, 38, 39,
         // State 62
@@ -513,7 +513,7 @@ mod __parse__Program {
         // State 27
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 28
-        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 60, 0, 0, 0, 61, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
+        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 12, 0, 0, 0, 60, 0, 17, 18, 0, 61, 0, 20, 21, 22, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 29
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 30
@@ -535,13 +535,13 @@ mod __parse__Program {
         // State 38
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 39
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 0, 17, 0, 0, 0, 0, 0, 0, 68, 0, 0, 0, 0, 26, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 0, 17, 0, 0, 0, 0, 0, 0, 68, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 40
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 41
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 42
-        0, 0, 0, 0, 69, 0, 0, 4, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
+        0, 0, 0, 0, 69, 0, 0, 4, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 43
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 44
@@ -551,13 +551,13 @@ mod __parse__Program {
         // State 46
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 47
-        0, 0, 0, 0, 2, 0, 0, 4, 5, 0, 7, 0, 70, 0, 0, 0, 0, 0, 0, 0, 0, 61, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
+        0, 0, 0, 0, 2, 0, 0, 4, 5, 0, 7, 0, 70, 0, 0, 0, 0, 0, 0, 0, 0, 60, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 48
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 49
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 50
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 71, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 71, 0, 0, 0,
         // State 51
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 52
@@ -567,11 +567,11 @@ mod __parse__Program {
         // State 54
         0, 0, 0, 0, 2, 0, 72, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 12, 0, 0, 0, 15, 0, 17, 18, 0, 19, 0, 20, 21, 22, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 55
-        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 73, 0, 0, 0, 61, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
+        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 73, 0, 0, 0, 60, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 56
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 57
-        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 12, 0, 0, 0, 61, 0, 17, 74, 0, 0, 0, 20, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
+        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 12, 0, 0, 0, 60, 0, 17, 74, 0, 0, 0, 20, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 58
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 59
@@ -613,7 +613,7 @@ mod __parse__Program {
         // State 77
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 78
-        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 83, 0, 0, 0, 61, 0, 17, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 26, 0, 0, 0,
+        0, 0, 0, 0, 2, 0, 0, 4, 5, 6, 7, 0, 9, 0, 0, 0, 0, 12, 0, 0, 0, 60, 0, 17, 18, 0, 83, 0, 20, 21, 22, 0, 0, 0, 0, 26, 0, 0, 0,
         // State 79
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // State 80
@@ -915,37 +915,37 @@ mod __parse__Program {
     {
         let __nonterminal = match -__action {
             1 => {
-                // ("=" <Equality>) = "=", Equality => ActionFn(60);
-                let __sym1 = __pop_NtEquality(__symbols);
+                // ("=" <LogicOr>) = "=", LogicOr => ActionFn(60);
+                let __sym1 = __pop_NtLogicOr(__symbols);
                 let __sym0 = __pop_Term_22_3d_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action60::<>(constants, constant_pool, input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
-                __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cEquality_3e_29(__nt), __end));
+                __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cLogicOr_3e_29(__nt), __end));
                 0
             }
             2 => {
-                // ("=" <Equality>)? = "=", Equality => ActionFn(65);
-                let __sym1 = __pop_NtEquality(__symbols);
+                // ("=" <LogicOr>)? = "=", LogicOr => ActionFn(65);
+                let __sym1 = __pop_NtLogicOr(__symbols);
                 let __sym0 = __pop_Term_22_3d_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym1.2.clone();
                 let __nt = super::__action65::<>(constants, constant_pool, input, __sym0, __sym1);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 2);
-                __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cEquality_3e_29_3f(__nt), __end));
+                __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cLogicOr_3e_29_3f(__nt), __end));
                 1
             }
             3 => {
-                // ("=" <Equality>)? =  => ActionFn(59);
+                // ("=" <LogicOr>)? =  => ActionFn(59);
                 let __start = __symbols.last().map(|s| s.2.clone()).unwrap_or_default();
                 let __end = __lookahead_start.cloned().unwrap_or_else(|| __start.clone());
                 let __nt = super::__action59::<>(constants, constant_pool, input, &__start, &__end);
                 let __states_len = __states.len();
                 __states.truncate(__states_len - 0);
-                __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cEquality_3e_29_3f(__nt), __end));
+                __symbols.push((__start, __Symbol::Nt_28_22_3d_22_20_3cLogicOr_3e_29_3f(__nt), __end));
                 1
             }
             4 => {
@@ -1652,9 +1652,9 @@ mod __parse__Program {
                 35
             }
             65 => {
-                // Term = "(", Equality, ")" => ActionFn(37);
+                // Term = "(", LogicOr, ")" => ActionFn(37);
                 let __sym2 = __pop_Term_22_29_22(__symbols);
-                let __sym1 = __pop_NtEquality(__symbols);
+                let __sym1 = __pop_NtLogicOr(__symbols);
                 let __sym0 = __pop_Term_22_28_22(__symbols);
                 let __start = __sym0.0.clone();
                 let __end = __sym2.2.clone();
@@ -1665,9 +1665,9 @@ mod __parse__Program {
                 35
             }
             66 => {
-                // VariableDeclaration = "var", Identifier, "=", Equality, ";" => ActionFn(66);
+                // VariableDeclaration = "var", Identifier, "=", LogicOr, ";" => ActionFn(66);
                 let __sym4 = __pop_Term_22_3b_22(__symbols);
-                let __sym3 = __pop_NtEquality(__symbols);
+                let __sym3 = __pop_NtLogicOr(__symbols);
                 let __sym2 = __pop_Term_22_3d_22(__symbols);
                 let __sym1 = __pop_NtIdentifier(__symbols);
                 let __sym0 = __pop_Term_22var_22(__symbols);
@@ -2030,25 +2030,25 @@ mod __parse__Program {
             _ => panic!("symbol type mismatch")
         }
     }
-    fn __pop_Nt_28_22_3d_22_20_3cEquality_3e_29<
+    fn __pop_Nt_28_22_3d_22_20_3cLogicOr_3e_29<
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, Box<Expr>, usize)
      {
         match __symbols.pop().unwrap() {
-            (__l, __Symbol::Nt_28_22_3d_22_20_3cEquality_3e_29(__v), __r) => (__l, __v, __r),
+            (__l, __Symbol::Nt_28_22_3d_22_20_3cLogicOr_3e_29(__v), __r) => (__l, __v, __r),
             _ => panic!("symbol type mismatch")
         }
     }
-    fn __pop_Nt_28_22_3d_22_20_3cEquality_3e_29_3f<
+    fn __pop_Nt_28_22_3d_22_20_3cLogicOr_3e_29_3f<
       'input,
     >(
         __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, ::std::option::Option<Box<Expr>>, usize)
      {
         match __symbols.pop().unwrap() {
-            (__l, __Symbol::Nt_28_22_3d_22_20_3cEquality_3e_29_3f(__v), __r) => (__l, __v, __r),
+            (__l, __Symbol::Nt_28_22_3d_22_20_3cLogicOr_3e_29_3f(__v), __r) => (__l, __v, __r),
             _ => panic!("symbol type mismatch")
         }
     }
