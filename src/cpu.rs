@@ -112,6 +112,25 @@ impl CPU {
         assert!(self.frames.len() > 1, "Invalid Ret instruction: no current function call");
     }
 
+    pub fn load_constant(&mut self, idx: usize) {
+        let c = self.program.constant_pool.get(idx).unwrap().clone();
+        self.stack.push(c);
+    }
+
+    pub fn load_local(&mut self, frame_idx: usize, var_pos: usize) {
+            let v = self.get_frame(frame_idx).get_variable(var_pos);
+            self.stack.push(v);
+    }
+
+    pub fn store_local(&mut self, frame_idx: usize, var_pos: usize) {
+        assert!(
+            self.stack.len() >= 1,
+            "stack needs at least 1 value to store"
+        );
+        let k = self.stack.pop().unwrap();
+        self.get_frame_mut(frame_idx).set_variable(var_pos, k);
+    }
+
     fn decode_next_instruction(&mut self) {
         assert!(self.instruction_address < self.program.op_codes.len());
         let next_ins = &self.program.op_codes[self.instruction_address];
@@ -125,8 +144,7 @@ impl CPU {
             OpCode::NoOp => (), //no-op
             OpCode::Push(ref val) => self.stack.push(val.clone()),
             OpCode::Constant(i) => {
-                let c = self.program.constant_pool.get(i).unwrap().clone();
-                self.stack.push(c);
+                self.load_constant(i);
             }
             OpCode::Add => {
                 self.bin_op(|top, bot| top + bot);
@@ -217,17 +235,11 @@ impl CPU {
             }
 
             OpCode::Store(frame_idx, var_pos) => {
-                assert!(
-                    self.stack.len() >= 1,
-                    "stack needs at least 1 value to store"
-                );
-                let k = self.stack.pop().unwrap();
-                self.get_frame_mut(frame_idx).set_variable(var_pos, k);
+                self.store_local(frame_idx, var_pos);
             }
 
             OpCode::Load(frame_idx, var_pos) => {
-                let v = self.get_frame(frame_idx).get_variable(var_pos);
-                self.stack.push(v);
+                self.load_local(frame_idx, var_pos);
             }
 
             OpCode::StoreLocal(var_pos) => {

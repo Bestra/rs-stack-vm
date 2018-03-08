@@ -1,5 +1,6 @@
 var i = 0;
-while (i < 3) {
-  print i;
+while (i < 50000) {
   i = i + 1;
 }
+print i;
+print "done";
