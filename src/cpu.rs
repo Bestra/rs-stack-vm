@@ -13,13 +13,17 @@ impl Frame {
         self.variables.get(key).unwrap_or(&Value::Number(0)).clone()
     }
 
-    pub fn set_variable(&mut self, key: usize, val: Value) {
-        self.variables.insert(key, val);
+    pub fn set_variable(&mut self, pos: usize, val: Value) {
+        if self.variables.len() > pos {
+            self.variables[pos] = val;
+        } else {
+            self.variables.insert(pos, val)
+        }
     }
 
     pub fn new(return_address: usize) -> Frame {
         Frame {
-            variables: Vec::new(),
+            variables: Vec::with_capacity(8),
             return_address,
         }
     }
@@ -52,7 +56,7 @@ impl CPU {
 
     pub fn with_op_codes(v: Vec<OpCode>) -> CPU {
         let a = AssemblyProgram {
-            instructions: Vec::new(),
+            instructions: Vec::with_capacity(8),
             op_codes: v,
                 constant_pool: Vec::new(),
         };
