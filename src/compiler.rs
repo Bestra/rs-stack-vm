@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use ast::{Expr, Statement};
+use ast::{Expr, Statement, print_ast};
 use instruction::{Instruction, OpCode, Ref};
 use parser1::parse_Program;
 use assembler::{Assembler, AssemblyProgram};
@@ -84,9 +84,10 @@ impl Environment {
 pub fn compile(program: &str) -> AssemblyProgram {
     let mut constants = HashMap::new();
     let mut constant_pool = Vec::new();
-    let p = parse_Program(&mut constants, &mut constant_pool, program);
+    let p = parse_Program(&mut constants, &mut constant_pool, program).unwrap();
+    println!("{}", print_ast(&p).unwrap().join(";\n"));
     let mut compiler = Compiler::new();
-    let instructions = compiler.generate_instructions(p.unwrap());
+    let instructions = compiler.generate_instructions(p);
     let mut assembler = Assembler::new(instructions.clone());
     assembler.resolve_labels();
     AssemblyProgram {
@@ -127,6 +128,7 @@ impl Compiler {
 
     fn process_statement(&mut self, s: Statement) {
         match s {
+            Statement::Program { statements } => self.process_statements(statements),
             Statement::Expression { expression } => self.process_expr(*expression),
             Statement::Print { expression } => {
                 self.process_expr(*expression);
@@ -276,12 +278,14 @@ impl Compiler {
         }
     }
 
-    pub fn generate_instructions(&mut self, statements: Vec<Statement>) -> Vec<Instruction> {
-        self.process_statements(statements);
+    pub fn generate_instructions(&mut self, program: Statement) -> Vec<Instruction> {
+        self.process_statement(program);
         self.instructions.push(Instruction::OpCode(OpCode::Halt));
         self.instructions.clone()
     }
+
 }
+
 
 #[cfg(test)]
 mod tests {

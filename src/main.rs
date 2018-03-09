@@ -12,7 +12,7 @@ fn main() {
         .about("assembler stack vm built in rust (in progress)")
         .args_from_usage(
             "-d 'Prints stack and frame information before running each opcode'
-             -assembler 'Runs an assembly file'
+             -a 'Runs an assembly file'
              -o 'Prints out assembly code instead of running'
              <INPUT>              'Sets the input file to use'
                                                                                ")
@@ -23,7 +23,7 @@ fn main() {
         _ => true
     };
 
-    let assem_in = match matches.occurrences_of("assembler") {
+    let assem_in = match matches.occurrences_of("a") {
         0 => false,
         _ => true
     };
@@ -47,6 +47,8 @@ fn run_file(filename: &str, debug: bool, assem_in: bool, assem_out: bool) {
 }
 
 fn run_assembly(contents: String, debug: bool) {
+    println!("running assembly");
+    println!("{}", contents);
     let p = stack_vm::assembly::parse_Program(contents.as_str());
     let mut assembler = stack_vm::assembler::Assembler::new(p.unwrap());
     assembler.resolve_labels();

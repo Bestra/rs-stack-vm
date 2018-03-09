@@ -28,7 +28,9 @@ LogicTier<Op,NextTier>: Box<Expr> = {
 };
 
 // This is the start of the actual grammar.
-pub Program = Declaration*;
+pub Program: Statement = {
+    Declaration* => Statement::Program { statements: <> },
+};
 
 Declaration = {
     VariableDeclaration,
@@ -47,6 +49,7 @@ Statement = {
     ExprStatement,
     IfStatement,
     WhileStatement,
+    ForStatement,
     Block,
 };
 
@@ -75,6 +78,59 @@ WhileStatement: Statement = {
             body: Box::new(b),
         }
     }
+};
+
+ForStatement: Statement = {
+    "for" "("
+        <for_initializer: ForInitializer>
+        <for_condition: Expression?> ";"
+        <for_increment: Expression?> ")" <for_body: Statement> => {
+            let body = match for_increment {
+                Some(inc) => {
+                    Statement::Block {
+                        statements: vec![
+                            for_body,
+                            Statement::Expression { expression: inc }
+                        ]
+                    }
+                }
+
+                None => for_body,
+            };
+
+            let condition = match for_condition {
+                None => {
+                    let idx = constants.entry("true".to_string()).or_insert_with(|| {
+                        let v = Value::Bool(true);
+                        let i = constant_pool.len();
+                        constant_pool.push(v);
+                        i
+                    });
+                    Box::new(Expr::Literal { value: *idx })
+                }
+                Some(f) => f,
+            };
+
+            let while_body = Statement::While {
+                condition: condition,
+                body: Box::new(body),
+            };
+
+            let output_body = match for_initializer {
+                Some(i) => {
+                    Statement::Block { statements: vec![i, while_body] }
+                }
+                None => while_body,
+            };
+
+            output_body
+        }
+};
+
+ForInitializer: Option<Statement> = {
+    VariableDeclaration => Some(<>),
+    ExprStatement => Some(<>),
+    ";" => None,
 };
 
 PrintStatement: Statement = {

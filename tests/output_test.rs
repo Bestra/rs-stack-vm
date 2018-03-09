@@ -58,3 +58,25 @@ fn while_loop() {
   }
 ", vec!["0", "1", "2"]);
 }
+
+#[test]
+fn for_loop() {
+    test_output("
+for (var i = 0; i < 3; i = i + 1) print i;
+", vec!["0", "1", "2"]);
+}
+
+#[test]
+fn for_loop_block() {
+    test_output("
+for (var i = 0; i < 3; i = i + 1) { print i + 1; }
+", vec!["1", "2", "3"]);
+}
+
+#[test]
+fn for_loop_no_initializer() {
+    test_output("
+var i = 1;
+for (; i < 3; i = i + 1) { print i; }
+", vec!["1", "2"]);
+}

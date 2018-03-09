@@ -61,14 +61,14 @@ impl fmt::Display for OpCode {
             &LoadLocal(i) => format!("LOAD_LOCAL {}", i),
             &StoreLocal(i) => format!("STORE_LOCAL {}", i),
             &Load( idx, i) => format!("LOAD {} {}", idx, i),
-            &Store(idx, i) => format!("ADD {} {}", idx, i),
+            &Store(idx, i) => format!("STORE {} {}", idx, i),
             &Print => format!("PRINT"),
             &DebugPrint => format!("DEBUG_PRINT"),
             &Call(i) => format!("CALL {}", i),
             &PushFrame => format!("PUSH_FRAME"),
             &PopFrame => format!("POP_FRAME"),
             &Constant(i) => format!("CONSTANT {}", i),
-            &Ret => format!("ADD"),
+            &Ret => format!("RET"),
         };
         f.pad(s.as_str())
     }
