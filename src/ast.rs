@@ -48,10 +48,10 @@ pub enum Expr {
         right: Box<Expr>,
         operator: BinaryOperator,
     },
-    // Call {
-    //     callee: Box<Expr>,
-    //     arguments: Vec<Expr>,
-    // },
+    Call {
+        callee: Box<Expr>,
+        arguments: Vec<Expr>,
+    },
     // Grouping {
     //     expression: Box<Expr>,
     // },
@@ -234,10 +234,14 @@ fn print_expr(accum: GraphAccum, node: &Expr, parent_node: GraphNode) -> GraphAc
             let (e1, i1) = print_expr((edges, idx), &*left, p.clone());
             print_expr((e1, i1), &*right, p.clone())
         },
-        // // Call {
-        // //     callee: Box<Expr>,
-        // //     arguments: Vec<Expr>,
-        // // },
+        &Call {
+            callee: ref _callee,
+            arguments: ref _args,
+        } => {
+            let p = (idx, format!("Call"));
+            edges.push((parent_node.clone(), p.clone()));
+            (edges, idx)
+        },
         // // Grouping {
         // //     expression: Box<Expr>,
         // // },

@@ -237,6 +237,21 @@ impl Compiler {
                 self.instructions.push(Instruction::OpCode(op))
             }
 
+           Expr::Call {
+                callee,
+                arguments,
+            } => {
+
+                // push args for fn onto stack
+                for a in arguments.into_iter() {
+                    self.process_expr(a);
+                };
+
+                // evaluate the callee to put a FunctionDefinition on the stack
+                self.process_expr(*callee);
+                self.instructions.push(Instruction::OpCode(OpCode::CallFn))
+            }
+
             Expr::Assign {
                 name,
                 value

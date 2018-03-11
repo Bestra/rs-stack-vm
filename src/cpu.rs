@@ -278,6 +278,10 @@ impl CPU {
                 self.instruction_address = i;
             }
 
+            OpCode::CallFn => {
+                // TODO: implement
+            }
+
             OpCode::PushFrame => {
                 self.frames.push(Frame::new(0));
                 self.current_frame_idx += 1;

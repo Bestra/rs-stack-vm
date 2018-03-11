@@ -157,7 +157,7 @@ LogicAnd = LogicTier<LogicAndOp, Equality>;
 Equality = BinaryTier<EqualityOp, Comparison>;
 Comparison = BinaryTier<ComparisonOp, Addition>;
 Addition = BinaryTier<AdditionOp, Multiplication>;
-Multiplication = BinaryTier<MultiplicationOp, Term>;
+Multiplication = BinaryTier<MultiplicationOp, Primary>;
 
 LogicOrOp: LogicalOperator = {
     "||" => LogicalOperator::Or,
@@ -188,7 +188,7 @@ MultiplicationOp: BinaryOperator = {
     "*" => BinaryOperator::Star,
 };
 
-Term: Box<Expr> = {
+Primary: Box<Expr> = {
     Literal => Box::new(Expr::Literal{value: <>}),
     <i: Identifier> => Box::new(Expr::Variable{name: i.to_string()}),
     "(" <LogicOr> ")"
