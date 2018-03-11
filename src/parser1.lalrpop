@@ -201,7 +201,6 @@ MultiplicationOp: BinaryOperator = {
 };
 
 Call: Box<Expr> = {
-    // TODO: This can't be right
     <callee: Primary> <chained_calls:( <Arguments> )*> => {
         let mut e = callee;
         for args in chained_calls {
@@ -211,23 +210,15 @@ Call: Box<Expr> = {
     }
 };
 
-// Arguments: Vec<Expr> = {
-//     "(" <v:(<Expression> ",")*> <e:Expression?> ")" => match e {
-//         None => v,
-//         Some(e) => {
-//             let mut v = v;
-//             v.push(e);
-//             v
-//         }
-//     }
-// };
-
 Arguments: Vec<Box<Expr>> = {
-    "(" <EComma*> ")"
-};
-
-EComma: Box<Expr> = {
-    <Expression> "," => <>
+    "(" <v:(<Expression> ",")*> <e:Expression?> ")" => match e {
+        None => v,
+        Some(e) => {
+            let mut v = v;
+            v.push(e);
+            v
+        }
+    }
 };
 
 Primary: Box<Expr> = {

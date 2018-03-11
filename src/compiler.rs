@@ -5,7 +5,7 @@ use std::fs::File;
 use std::path::Path;
 use std::rc::Rc;
 
-use ast::{Expr, Statement, print_ast};
+use ast::{print_ast, Expr, Statement};
 use instruction::{Instruction, OpCode, Ref};
 use parser1::parse_Program;
 use assembler::{Assembler, AssemblyProgram};
@@ -17,7 +17,10 @@ pub struct Scope {
 
 impl Scope {
     pub fn new() -> Scope {
-        Scope { index: 0, table: HashMap::new() }
+        Scope {
+            index: 0,
+            table: HashMap::new(),
+        }
     }
 
     pub fn define(&mut self, symbol: String) -> usize {
@@ -53,7 +56,7 @@ impl Environment {
     }
 
     pub fn push(&mut self) {
-       self.scopes.push(new_scope())
+        self.scopes.push(new_scope())
     }
 
     pub fn pop(&mut self) {
@@ -79,7 +82,7 @@ impl Environment {
     pub fn get(&mut self, name: String) -> (usize, usize) {
         match self.find_scope_for_var(&name) {
             Some((idx, i)) => (idx, i),
-            None => panic!("No scope found for variable {}", name)
+            None => panic!("No scope found for variable {}", name),
         }
     }
 }
@@ -103,9 +106,9 @@ pub fn compile(program: &str) -> AssemblyProgram {
     let mut assembler = Assembler::new(instructions.clone());
     assembler.resolve_labels();
     AssemblyProgram {
-            instructions: instructions,
-            op_codes: assembler.generate_op_codes(),
-            constant_pool: constant_pool,
+        instructions: instructions,
+        op_codes: assembler.generate_op_codes(),
+        constant_pool: constant_pool,
     }
 }
 
@@ -147,22 +150,32 @@ impl Compiler {
                 self.instructions.push(Instruction::OpCode(OpCode::Print));
             }
 
-            Statement::If { condition, then_branch, else_branch } => {
+            Statement::If {
+                condition,
+                then_branch,
+                else_branch,
+            } => {
                 self.process_expr(*condition);
                 let l = self.get_label_id();
                 let else_label = self.generate_label("else", l);
                 let then_label = self.generate_label("then", l);
                 let end_label = self.generate_label("if_end", l);
-                self.instructions.push(Instruction::Ref(Ref::JmpIf(then_label.clone())));
-                self.instructions.push(Instruction::Ref(Ref::Jmp(else_label.clone())));
-                self.instructions.push(Instruction::Label(then_label.clone()));
+                self.instructions
+                    .push(Instruction::Ref(Ref::JmpIf(then_label.clone())));
+                self.instructions
+                    .push(Instruction::Ref(Ref::Jmp(else_label.clone())));
+                self.instructions
+                    .push(Instruction::Label(then_label.clone()));
                 self.process_statement(*then_branch);
-                self.instructions.push(Instruction::Ref(Ref::Jmp(end_label.clone())));
-                self.instructions.push(Instruction::Label(else_label.clone()));
+                self.instructions
+                    .push(Instruction::Ref(Ref::Jmp(end_label.clone())));
+                self.instructions
+                    .push(Instruction::Label(else_label.clone()));
                 if let Some(b) = else_branch {
                     self.process_statement(*b);
                 }
-                self.instructions.push(Instruction::Label(end_label.clone()));
+                self.instructions
+                    .push(Instruction::Label(end_label.clone()));
             }
 
             Statement::While { condition, body } => {
@@ -171,23 +184,31 @@ impl Compiler {
                 let body_label = self.generate_label("while_body", l);
                 let end_label = self.generate_label("while_end", l);
 
-                self.instructions.push(Instruction::Label(cond_label.clone()));
+                self.instructions
+                    .push(Instruction::Label(cond_label.clone()));
                 self.process_expr(*condition);
 
-                self.instructions.push(Instruction::Ref(Ref::JmpIf(body_label.clone())));
-                self.instructions.push(Instruction::Ref(Ref::Jmp(end_label.clone())));
+                self.instructions
+                    .push(Instruction::Ref(Ref::JmpIf(body_label.clone())));
+                self.instructions
+                    .push(Instruction::Ref(Ref::Jmp(end_label.clone())));
 
-                self.instructions.push(Instruction::Label(body_label.clone()));
+                self.instructions
+                    .push(Instruction::Label(body_label.clone()));
                 self.process_statement(*body);
-                self.instructions.push(Instruction::Ref(Ref::Jmp(cond_label.clone())));
-                self.instructions.push(Instruction::Label(end_label.clone()));
+                self.instructions
+                    .push(Instruction::Ref(Ref::Jmp(cond_label.clone())));
+                self.instructions
+                    .push(Instruction::Label(end_label.clone()));
             }
 
             Statement::Block { statements } => {
-                self.instructions.push(Instruction::OpCode(OpCode::PushFrame));
+                self.instructions
+                    .push(Instruction::OpCode(OpCode::PushFrame));
                 self.environment.push();
                 self.process_statements(statements);
-                self.instructions.push(Instruction::OpCode(OpCode::PopFrame));
+                self.instructions
+                    .push(Instruction::OpCode(OpCode::PopFrame));
                 self.environment.pop();
             }
 
@@ -198,7 +219,8 @@ impl Compiler {
                     // if there's an initializer first we put its value on the stack...
                     self.process_expr(*i);
                     // and then store it
-                    self.instructions.push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
+                    self.instructions
+                        .push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
                 }
             }
         }
@@ -206,12 +228,12 @@ impl Compiler {
 
     fn process_expr(&mut self, n: Expr) {
         match n {
-            Expr::Literal { value: i } => {
-                self.instructions.push(Instruction::OpCode(OpCode::Constant(i)))
-            }
+            Expr::Literal { value: i } => self.instructions
+                .push(Instruction::OpCode(OpCode::Constant(i))),
             Expr::Variable { name } => {
                 let (frame_idx, i) = self.environment.get(name);
-                self.instructions.push(Instruction::OpCode(OpCode::Load(frame_idx, i)))
+                self.instructions
+                    .push(Instruction::OpCode(OpCode::Load(frame_idx, i)))
             }
 
             Expr::Binary {
@@ -237,37 +259,31 @@ impl Compiler {
                 self.instructions.push(Instruction::OpCode(op))
             }
 
-           Expr::Call {
-                callee,
-                arguments,
-            } => {
-
+            Expr::Call { callee, arguments } => {
                 // push args for fn onto stack
                 for a in arguments.into_iter() {
                     self.process_expr(*a);
-                };
+                }
 
                 // evaluate the callee to put a FunctionDefinition on the stack
                 self.process_expr(*callee);
                 self.instructions.push(Instruction::OpCode(OpCode::CallFn))
             }
 
-            Expr::Assign {
-                name,
-                value
-            } => {
+            Expr::Assign { name, value } => {
                 let (frame_idx, idx) = self.environment.get(name);
                 self.process_expr(*value);
                 // TODO: See if these semantics are correct. It works for
                 // something like "print a = 3;" but might be silly elsewhere
                 self.instructions.push(Instruction::OpCode(OpCode::Dup));
-                self.instructions.push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
+                self.instructions
+                    .push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
             }
 
             Expr::Logical {
                 left,
                 right,
-                operator
+                operator,
             } => {
                 use ast::LogicalOperator::*;
                 match operator {
@@ -277,13 +293,17 @@ impl Compiler {
                         let true_label = self.generate_label("and", l);
                         let false_label = self.generate_label("!and", l);
                         self.instructions.push(Instruction::OpCode(OpCode::Dup));
-                        self.instructions.push(Instruction::Ref(Ref::JmpIf(true_label.clone())));
-                        self.instructions.push(Instruction::Ref(Ref::Jmp(false_label.clone())));
+                        self.instructions
+                            .push(Instruction::Ref(Ref::JmpIf(true_label.clone())));
+                        self.instructions
+                            .push(Instruction::Ref(Ref::Jmp(false_label.clone())));
 
-                        self.instructions.push(Instruction::Label(true_label.clone()));
+                        self.instructions
+                            .push(Instruction::Label(true_label.clone()));
                         self.process_expr(*right);
 
-                        self.instructions.push(Instruction::Label(false_label.clone()));
+                        self.instructions
+                            .push(Instruction::Label(false_label.clone()));
                     }
 
                     Or => {
@@ -292,13 +312,17 @@ impl Compiler {
                         let true_label = self.generate_label("or", l);
                         let false_label = self.generate_label("!or", l);
                         self.instructions.push(Instruction::OpCode(OpCode::Dup));
-                        self.instructions.push(Instruction::Ref(Ref::JmpIf(true_label.clone())));
-                        self.instructions.push(Instruction::Ref(Ref::Jmp(false_label.clone())));
+                        self.instructions
+                            .push(Instruction::Ref(Ref::JmpIf(true_label.clone())));
+                        self.instructions
+                            .push(Instruction::Ref(Ref::Jmp(false_label.clone())));
 
-                        self.instructions.push(Instruction::Label(false_label.clone()));
+                        self.instructions
+                            .push(Instruction::Label(false_label.clone()));
                         self.process_expr(*right);
 
-                        self.instructions.push(Instruction::Label(true_label.clone()));
+                        self.instructions
+                            .push(Instruction::Label(true_label.clone()));
                     }
                 }
             }
@@ -310,9 +334,7 @@ impl Compiler {
         self.instructions.push(Instruction::OpCode(OpCode::Halt));
         self.instructions.clone()
     }
-
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -477,8 +499,11 @@ mod tests {
 
     #[test]
     fn compiles_block_without_closure() {
-        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
-        "var a = 1; { var b = 2; }");
+        let r = parse_Program(
+            &mut HashMap::new(),
+            &mut Vec::new(),
+            "var a = 1; { var b = 2; }",
+        );
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -500,8 +525,11 @@ mod tests {
 
     #[test]
     fn compiles_block_with_closure() {
-        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
-                              "var a = 1; { a = 2; }");
+        let r = parse_Program(
+            &mut HashMap::new(),
+            &mut Vec::new(),
+            "var a = 1; { a = 2; }",
+        );
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -523,8 +551,7 @@ mod tests {
 
     #[test]
     fn compiles_logical_and() {
-        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
-                              "false && true;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "false && true;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -545,8 +572,7 @@ mod tests {
 
     #[test]
     fn compiles_logical_and_print() {
-        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
-                              "print false && true;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "print false && true;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -568,8 +594,7 @@ mod tests {
 
     #[test]
     fn compiles_logical_or() {
-        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(),
-                              "false || true;");
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "false || true;");
 
         let mut p = Compiler::new();
         let output = p.generate_instructions(r.unwrap());
@@ -588,4 +613,46 @@ mod tests {
         );
     }
 
+    #[test]
+    fn parses_function_call() {
+        use ast::{Expr, Statement};
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "foo(1);");
+
+        let out = Statement::Program {
+            statements: vec![
+                Statement::Expression {
+                    expression: Box::new(Expr::Call {
+                        callee: Box::new(Expr::Variable {
+                            name: "foo".to_string(),
+                        }),
+                        arguments: vec![Box::new(Expr::Literal { value: 0 })],
+                    }),
+                },
+            ],
+        };
+        assert_eq!(r.unwrap(), out);
+    }
+
+    #[test]
+    fn parses_chained_function_calls() {
+        use ast::{Expr, Statement};
+        let r = parse_Program(&mut HashMap::new(), &mut Vec::new(), "foo(1)(2);");
+
+        let out = Statement::Program {
+            statements: vec![
+                Statement::Expression {
+                    expression: Box::new(Expr::Call {
+                        arguments: vec![Box::new(Expr::Literal { value: 1 })],
+                        callee: Box::new(
+                            Expr::Call {
+                                callee: Box::new(Expr::Variable { name: "foo".to_string() }),
+                                arguments: vec![Box::new(Expr::Literal { value: 0 })],
+                            })
+                    }),
+                },
+            ],
+        };
+
+        assert_eq!(r.unwrap(), out);
+    }
 }
