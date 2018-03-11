@@ -244,7 +244,7 @@ impl Compiler {
 
                 // push args for fn onto stack
                 for a in arguments.into_iter() {
-                    self.process_expr(a);
+                    self.process_expr(*a);
                 };
 
                 // evaluate the callee to put a FunctionDefinition on the stack

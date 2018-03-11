@@ -17,6 +17,18 @@ Semi<T>: Vec<T> = { // (0)
     }
 };
 
+Comma<T>: Vec<J> = { // (0)
+    <v:(<T> ";")*> <e:T?> => match e { // (1)
+        None=> v,
+        Some(e) => {
+            let mut v = v;
+            v.push(e);
+            v
+        }
+    }
+};
+
+
 BinaryTier<Op,NextTier>: Box<Expr> = {
     <left: BinaryTier<Op,NextTier>> <operator: Op> <right: NextTier> => Box::new(Expr::Binary{<>}),
     NextTier
@@ -157,7 +169,7 @@ LogicAnd = LogicTier<LogicAndOp, Equality>;
 Equality = BinaryTier<EqualityOp, Comparison>;
 Comparison = BinaryTier<ComparisonOp, Addition>;
 Addition = BinaryTier<AdditionOp, Multiplication>;
-Multiplication = BinaryTier<MultiplicationOp, Primary>;
+Multiplication = BinaryTier<MultiplicationOp, Call>;
 
 LogicOrOp: LogicalOperator = {
     "||" => LogicalOperator::Or,
@@ -186,6 +198,36 @@ AdditionOp: BinaryOperator = {
 
 MultiplicationOp: BinaryOperator = {
     "*" => BinaryOperator::Star,
+};
+
+Call: Box<Expr> = {
+    // TODO: This can't be right
+    <callee: Primary> <chained_calls:( <Arguments> )*> => {
+        let mut e = callee;
+        for args in chained_calls {
+            e = Box::new(Expr::Call { callee: e, arguments: args })
+        }
+        e
+    }
+};
+
+// Arguments: Vec<Expr> = {
+//     "(" <v:(<Expression> ",")*> <e:Expression?> ")" => match e {
+//         None => v,
+//         Some(e) => {
+//             let mut v = v;
+//             v.push(e);
+//             v
+//         }
+//     }
+// };
+
+Arguments: Vec<Box<Expr>> = {
+    "(" <EComma*> ")"
+};
+
+EComma: Box<Expr> = {
+    <Expression> "," => <>
 };
 
 Primary: Box<Expr> = {
@@ -227,7 +269,7 @@ Literal: usize = {
         let idx = constants.entry("false".to_string()).or_insert_with(|| {
             let v = Value::Bool(false);
             let i = constant_pool.len();
-            constant_pool.push(v);
+
             i
         });
         *idx

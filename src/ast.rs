@@ -50,7 +50,7 @@ pub enum Expr {
     },
     Call {
         callee: Box<Expr>,
-        arguments: Vec<Expr>,
+        arguments: Vec<Box<Expr>>,
     },
     // Grouping {
     //     expression: Box<Expr>,
