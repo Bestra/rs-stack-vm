@@ -1,5 +1,8 @@
 use std::collections::HashMap;
 use std::cell::RefCell;
+use std::io::prelude::*;
+use std::fs::File;
+use std::path::Path;
 use std::rc::Rc;
 
 use ast::{Expr, Statement, print_ast};
@@ -81,13 +84,22 @@ impl Environment {
     }
 }
 
+fn write_to_file(contents: String, filename: &str) {
+    let path = Path::new(filename);
+    let mut file = File::create(&path).unwrap();
+    file.write_all(contents.as_bytes()).unwrap();
+}
+
 pub fn compile(program: &str) -> AssemblyProgram {
     let mut constants = HashMap::new();
     let mut constant_pool = Vec::new();
-    let p = parse_Program(&mut constants, &mut constant_pool, program).unwrap();
-    println!("{}", print_ast(&p).unwrap().join(";\n"));
+    let ast = parse_Program(&mut constants, &mut constant_pool, program).unwrap();
+    match print_ast(&ast) {
+        Ok(res) => write_to_file(res, "ast.dot"),
+        Err(_) => println!("There was a problem generating the ast graph"),
+    };
     let mut compiler = Compiler::new();
-    let instructions = compiler.generate_instructions(p);
+    let instructions = compiler.generate_instructions(ast);
     let mut assembler = Assembler::new(instructions.clone());
     assembler.resolve_labels();
     AssemblyProgram {

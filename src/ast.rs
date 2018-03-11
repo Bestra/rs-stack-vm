@@ -110,7 +110,7 @@ type GraphNode = (usize, String);
 type GraphEdge = (GraphNode, GraphNode);
 type GraphAccum = (Vec<GraphEdge>, usize);
 
-pub fn print_ast(program: &Statement) -> Result<Vec<String>, &str> {
+pub fn print_ast(program: &Statement) -> Result<String, &str> {
     if let &Statement::Program { ref statements } = program {
         let (edges, _) = statements.iter().fold(
             (Vec::new(), 0),
@@ -128,7 +128,8 @@ pub fn print_ast(program: &Statement) -> Result<Vec<String>, &str> {
         let mut node_list: Vec<String> = nodes.into_iter().collect();
         let mut res: Vec<String> = edges.into_iter().map(|((pi, _),(ci, _))| format!("{}->{}", pi, ci)).collect();
         node_list.append(&mut res);
-        Ok(node_list)
+        let out = format!("digraph G {{ \n {} \n }}", node_list.join(";\n"));
+        Ok(out)
     } else {
         Err("print_ast must take a program as its starting node")
     }
@@ -266,36 +267,6 @@ fn print_expr(accum: GraphAccum, node: &Expr, parent_node: GraphNode) -> GraphAc
             edges.push((parent_node.clone(), (idx, format!("Variable {}", name))));
             (edges, idx)
         },
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn makes_graph_edges() {
-        let ast = Statement::Program {
-            statements: vec![
-                Statement::Block {
-                    statements: vec![
-                        Statement::Expression {
-                            expression: Box::new(Expr::Assign {
-                                name: "Foo".to_string(),
-                                value: Box::new(Expr::Literal { value: 42 })
-                            })
-                        }
-                    ]
-                },
-            ]
-        };
-
-        assert_eq!(print_ast(&ast).unwrap(), vec![
-            "0[label=\"Program\"]->1[label=\"Block\"]",
-            "1[label=\"Block\"]->2[label=\"Expression\"]",
-            "2[label=\"Expression\"]->3[label=\"Assign Foo\"]",
-            "3[label=\"Assign Foo\"]->4[label=\"Value 42\"]",
-        ]);
     }
 }
 
