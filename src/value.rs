@@ -5,13 +5,7 @@ use std::fmt;
 use std::rc::Rc;
 use std::cmp::Ordering;
 
-#[derive(Debug)]
-pub struct FunctionDefinition {
-    arg_count: usize,
-    name: Option<String>, // if a name is defined it's a constant
-    label: usize // position in the source
-}
-
+use function::FunctionDefinition;
 
 #[derive(Debug,Clone)]
 pub enum Value {

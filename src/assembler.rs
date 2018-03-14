@@ -1,6 +1,8 @@
 use std::collections::HashMap;
+use std::rc::Rc;
 use instruction::{Instruction, OpCode, Ref};
 use value::Value;
+use function::FunctionDefinition;
 
 #[derive(Debug)]
 pub struct AssemblyProgram {
@@ -29,8 +31,16 @@ impl Assembler {
 
     pub fn resolve_labels(&mut self) {
         for (idx, instruction) in self.program.iter().enumerate() {
-            if let Instruction::Label(ref s) = *instruction {
-                self.labels.insert(s.to_string(), idx);
+            match *instruction {
+                Instruction::Label(ref s) => {
+                    self.labels.insert(s.to_string(), idx);
+                }
+
+                Instruction::OpCode(OpCode::Push(Value::Fn(ref def))) => {
+                    self.labels.insert(def.label.clone(), idx);
+                }
+
+                _ => {}
             }
         }
     }
@@ -55,7 +65,20 @@ impl Assembler {
                         OpCode::Call(*addr)
                     }
                 },
-                Instruction::OpCode(ref o) => o.clone(),
+                Instruction::OpCode(ref o) => match o {
+                    &OpCode::Push(Value::Fn(ref f)) => {
+                        let addr = self.labels.get(&f.label.clone()).unwrap();
+                        let new_def = FunctionDefinition {
+                            arity: f.arity.clone(),
+                            name: f.name.clone(),
+                            label: f.label.clone(),
+                            instruction_address: Some(*addr)
+                        };
+
+                        OpCode::Push(Value::Fn(Rc::new(new_def)))
+                    }
+                   _ => o.clone(),
+                }
                 Instruction::Label(_) |
                 Instruction::Local(_, _) |
                 Instruction::Comment(_) => OpCode::NoOp,

@@ -3,6 +3,8 @@ use ast::{BinaryOperator, Expr, LogicalOperator, Statement};
 use value::Value;
 use std::collections::HashMap;
 
+// The parser uses a constant pool for all values.  Whenever it finds a new Value it
+// puts it into the constant_pool and records its index in the map of constants
 grammar<'c>(constants: &'c mut HashMap<String, usize>, constant_pool: &'c mut Vec<Value>);
 
 // These are some helper macros, the actual grammar starts further down
@@ -17,8 +19,8 @@ Semi<T>: Vec<T> = { // (0)
     }
 };
 
-Comma<T>: Vec<J> = { // (0)
-    <v:(<T> ";")*> <e:T?> => match e { // (1)
+Comma<T>: Vec<T> = { // (0)
+    <v:(<T> ",")*> <e:T?> => match e { // (1)
         None=> v,
         Some(e) => {
             let mut v = v;
@@ -46,6 +48,7 @@ pub Program: Statement = {
 
 Declaration = {
     VariableDeclaration,
+    FunctionDeclaration,
     Statement,
 };
 
@@ -53,6 +56,23 @@ VariableDeclaration: Statement = {
     "var" <i: Identifier> <initializer:("=" <LogicOr> )?> ";" => {
         let name = i.to_string();
         Statement::Var { name, initializer }
+    }
+};
+
+FunctionDeclaration: Statement = {
+    "fun" <i: Identifier> "(" <params:(<Identifier> ",")*> <last_param: Identifier?> ")" <body: Block> ";" => {
+
+        let name = i.to_string();
+        let parameters = match last_param {
+            Some(p) => {
+                let mut params = params; params.push(p); params
+            }
+            None => params
+        };
+
+        let p = parameters.into_iter().map(|s| s.to_string()).collect();
+
+        Statement::Function { name, body: Box::new(body), parameters: p }
     }
 };
 

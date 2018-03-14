@@ -279,7 +279,25 @@ impl CPU {
             }
 
             OpCode::CallFn => {
-                // TODO: implement
+                let function_def = self.stack.pop().unwrap();
+                match function_def {
+                    Value::Fn(d) => {
+                        // at the point a function is called its arguments
+                        // will be on the stack in reverse order.
+                        // foo(a, b) will be called with
+                        // bottom --> [a, b] --> top
+                        assert!(self.stack.len() >= d.arity,
+                                "For function to be called all its arguments must be on the stack");
+                        let i = d.instruction_address.unwrap();
+                        // WW this is the same OpCode::Call
+                        self.assert_jump_address(i);
+                        self.frames.push(Frame::new(self.instruction_address));
+                        self.current_frame_idx += 1;
+                        self.instruction_address = i;
+                        // MM this is the same OpCode::Call
+                    }
+                    _ => panic!("In order to call a function its definition must be at the top of the stack.")
+                }
             }
 
             OpCode::PushFrame => {

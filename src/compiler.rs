@@ -9,6 +9,8 @@ use ast::{print_ast, Expr, Statement};
 use instruction::{Instruction, OpCode, Ref};
 use parser1::parse_Program;
 use assembler::{Assembler, AssemblyProgram};
+use value::Value;
+use function::FunctionDefinition;
 
 pub struct Scope {
     index: usize,
@@ -95,8 +97,12 @@ fn write_to_file(contents: String, filename: &str) {
 
 pub fn compile(program: &str) -> AssemblyProgram {
     let mut constants = HashMap::new();
-    let mut constant_pool = Vec::new();
-    let ast = parse_Program(&mut constants, &mut constant_pool, program).unwrap();
+    let mut constant_pool: Vec<Value> = Vec::new();
+    let ast = parse_Program(
+        &mut constants,
+        &mut constant_pool,
+        program
+    ).unwrap();
     match print_ast(&ast) {
         Ok(res) => write_to_file(res, "ast.dot"),
         Err(_) => println!("There was a problem generating the ast graph"),
@@ -114,6 +120,7 @@ pub fn compile(program: &str) -> AssemblyProgram {
 
 pub struct Compiler {
     instructions: Vec<Instruction>,
+    function_instructions: Vec<Instruction>,
     environment: Environment,
     label_id: i32,
 }
@@ -122,6 +129,7 @@ impl Compiler {
     pub fn new() -> Compiler {
         Compiler {
             instructions: Vec::new(),
+            function_instructions: Vec::new(),
             environment: Environment::new(),
             label_id: 0,
         }
@@ -210,6 +218,42 @@ impl Compiler {
                 self.instructions
                     .push(Instruction::OpCode(OpCode::PopFrame));
                 self.environment.pop();
+            }
+
+            Statement::Function {
+                name,
+                parameters,
+                body,
+            } => {
+                let (frame_idx, idx) = self.environment.define(name.clone());
+                self.instructions.push(Instruction::Local(name.clone(), idx));
+
+                let l = self.get_label_id();
+                let fun_label = self.generate_label(&format!("fun_{}", name), l);
+
+                let function_def = FunctionDefinition {
+                    arity: parameters.len(),
+                    name: name.clone(),
+                    label: fun_label.clone(),
+                    instruction_address: None, // to be updated in an assembler pass
+                };
+
+                self.instructions.push(Instruction::OpCode(OpCode::Push(Value::Fn(Rc::new(function_def)))));
+                self.instructions
+                    .push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
+
+                self.function_instructions.push(Instruction::Label(fun_label));
+
+                // TODO: make this not horrible
+                // 1. cache the current instruction pointer [a, a, a, a] (self.instructions.len() - 1)
+                let first_function_instruction_idx = self.instructions.len();
+                // 2. create instructions for the function block
+                self.process_statement(*body);
+
+                // 3. take all those instructions off self.instructions and transfer them to self.function_instructions
+                let mut new_function_instrs: Vec<Instruction> = self.instructions.drain(first_function_instruction_idx..).collect();
+                self.function_instructions.append(&mut new_function_instrs);
+                self.function_instructions.push(Instruction::OpCode(OpCode::Ret));
             }
 
             Statement::Var { name, initializer } => {
@@ -332,6 +376,7 @@ impl Compiler {
     pub fn generate_instructions(&mut self, program: Statement) -> Vec<Instruction> {
         self.process_statement(program);
         self.instructions.push(Instruction::OpCode(OpCode::Halt));
+        self.instructions.append(&mut self.function_instructions);
         self.instructions.clone()
     }
 }
@@ -654,5 +699,57 @@ mod tests {
         };
 
         assert_eq!(r.unwrap(), out);
+    }
+
+    #[test]
+    fn compiles_function_call() {
+        let r = parse_Program(&mut HashMap::new(),
+                              &mut Vec::new(),
+                              "var foo; foo(1, 2);");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        assert_eq!(
+            output,
+            vec![
+                Instruction::Local("foo".to_string(), 0),
+                Instruction::OpCode(OpCode::Constant(0)),
+                Instruction::OpCode(OpCode::Constant(1)),
+                Instruction::OpCode(OpCode::Load(0, 0)),
+                Instruction::OpCode(OpCode::CallFn),
+                Instruction::OpCode(OpCode::Halt),
+            ]
+        );
+    }
+
+    #[test]
+    fn compiles_function_def() {
+        let r = parse_Program(&mut HashMap::new(),
+                              &mut Vec::new(),
+                              "fun foo() {};");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        let f_label = "fun_foo_1".to_string();
+        let expected_fn_def = FunctionDefinition {
+            arity: 0,
+            name: "foo".to_string(),
+            label: f_label.clone(),
+            instruction_address: None,
+        };
+
+        assert_eq!(
+            format!("{:?}", output),
+            format!("{:?}",vec![
+                Instruction::Local("foo".to_string(), 0),
+                Instruction::OpCode(OpCode::Push(Value::Fn(Rc::new(expected_fn_def)))),
+                Instruction::OpCode(OpCode::Store(0, 0)),
+                Instruction::Label(f_label.clone()),
+                Instruction::OpCode(OpCode::PushFrame),
+                Instruction::OpCode(OpCode::PopFrame),
+                Instruction::OpCode(OpCode::Ret),
+                Instruction::OpCode(OpCode::Halt),
+            ])
+        );
     }
 }

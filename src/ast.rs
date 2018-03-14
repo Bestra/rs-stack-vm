@@ -84,7 +84,11 @@ pub enum Statement {
     Expression {
         expression: Box<Expr>,
     },
-    // Function(FunctionDeclaration),
+    Function {
+        name: String,
+        parameters: Vec<String>,
+        body: Box<Statement>,
+    },
     If {
         condition: Box<Expr>,
         then_branch: Box<Statement>,
@@ -163,7 +167,16 @@ fn print_statement(accum: GraphAccum, node: &Statement, parent_node: GraphNode) 
             edges.push((parent_node.clone(), (idx, "Expression".to_string())));
             print_expr((edges, idx), expression, (idx, "Expression".to_string()))
         },
-        // // Function(FunctionDeclaration),
+        &Function {
+            ref name,
+            ref parameters,
+            ref body,
+        } => {
+
+            let p = (idx, format!("fun {} ({:?})", name, parameters));
+            edges.push((parent_node.clone(), p.clone()));
+            print_statement((edges, idx), body, p.clone())
+        },
         &If {
             ref condition,
             ref then_branch,
