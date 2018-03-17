@@ -238,7 +238,8 @@ impl Compiler {
                     instruction_address: None, // to be updated in an assembler pass
                 };
 
-                self.instructions.push(Instruction::OpCode(OpCode::Push(Value::Fn(Rc::new(function_def)))));
+                self.instructions.push(Instruction::OpCode(OpCode::DefineFunction(function_def)));
+                //defineFunction will put the function definition back on the stack.
                 self.instructions
                     .push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
 

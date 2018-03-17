@@ -1,5 +1,7 @@
 use instruction::OpCode;
 use assembler::AssemblyProgram;
+use std::rc::Rc;
+use std::cell::RefCell;
 use value::Value;
 
 #[derive(Debug)]
@@ -29,12 +31,52 @@ impl Frame {
     }
 }
 
+// A closure acts as the execution environment for a function.
+// I've kinda stolen this from what I understand of Lua's vm.
+// Closures have to be created at runtime by the VM rather than
+// compile time.
+//
+// Frame indices for Closures should be paralleled by the compiler's
+// Scope indices.
+#[derive(Debug, Clone)]
+pub struct Closure {
+    pub frames: Vec<Rc<RefCell<Frame>>>,
+}
+
+impl Closure {
+    pub fn from(source: &Closure) -> Closure {
+        Closure {
+            frames: source.frames.iter().map(|e| Rc::clone(e)).collect(),
+        }
+    }
+
+    pub fn new() -> Closure {
+        Closure {
+            frames: vec![Rc::new(RefCell::new(Frame::new(0)))]
+        }
+    }
+
+    pub fn get_frame(&self, idx: usize) -> Rc<RefCell<Frame>> {
+         Rc::clone(self.frames.get(idx).unwrap())
+    }
+
+    pub fn push(&mut self, frame: Frame) {
+        self.frames.push(Rc::new(RefCell::new(frame)));
+    }
+
+    pub fn pop(&mut self) {
+        self.frames.pop();
+    }
+}
+
 pub struct CPU {
     stack: Vec<Value>,
     print_buffer: Vec<String>,
     program: AssemblyProgram,
     current_frame_idx: usize,
-    frames: Vec<Frame>,
+    environment: Closure,
+    // the function environment will either be the
+    // CPU's environment or one that belongs to the function
     instruction_address: usize,
     halted: bool,
     pub debug: bool,
@@ -47,7 +89,7 @@ impl CPU {
             print_buffer: Vec::new(),
             program: program,
             current_frame_idx: 0,
-            frames: vec![Frame::new(0)],
+            environment: Closure::new(),
             instruction_address: 0,
             halted: false,
             debug: false,
@@ -67,26 +109,18 @@ impl CPU {
         &self.print_buffer
     }
 
-    pub fn get_frame(&self, idx: usize) -> &Frame {
-        self.frames.get(idx).unwrap()
-    }
-
-    pub fn get_frame_mut(&mut self, idx: usize) -> &mut Frame {
-        self.frames.get_mut(idx).unwrap()
-    }
-
-    pub fn current_frame(&self) -> &Frame {
-        self.frames.get(self.current_frame_idx).unwrap()
-    }
-
-    pub fn current_frame_mut(&mut self) -> &mut Frame {
-        self.frames.get_mut(self.current_frame_idx).unwrap()
-    }
-
     pub fn run(&mut self) {
         while !self.halted {
             self.step();
         }
+    }
+
+    pub fn current_frame(&self) -> Rc<RefCell<Frame>> {
+        self.get_frame(self.current_frame_idx)
+    }
+
+    pub fn get_frame(&self, idx: usize) -> Rc<RefCell<Frame>> {
+        self.environment.get_frame(idx)
     }
 
     pub fn step(&mut self) {
@@ -113,7 +147,7 @@ impl CPU {
     }
 
     fn assert_return_address(&self) {
-        assert!(self.frames.len() > 1, "Invalid Ret instruction: no current function call");
+        assert!(self.environment.frames.len() > 1, "Invalid Ret instruction: no current function call");
     }
 
     pub fn load_constant(&mut self, idx: usize) {
@@ -122,7 +156,7 @@ impl CPU {
     }
 
     pub fn load_local(&mut self, frame_idx: usize, var_pos: usize) {
-            let v = self.get_frame(frame_idx).get_variable(var_pos);
+            let v = self.get_frame(frame_idx).borrow().get_variable(var_pos);
             self.stack.push(v);
     }
 
@@ -132,7 +166,7 @@ impl CPU {
             "stack needs at least 1 value to store"
         );
         let k = self.stack.pop().unwrap();
-        self.get_frame_mut(frame_idx).set_variable(var_pos, k);
+        self.get_frame(frame_idx).borrow_mut().set_variable(var_pos, k);
     }
 
     fn decode_next_instruction(&mut self) {
@@ -252,11 +286,11 @@ impl CPU {
                     "stack needs at least 1 value to store"
                 );
                 let k = self.stack.pop().unwrap();
-                self.current_frame_mut().set_variable(var_pos, k);
+                self.current_frame().borrow_mut().set_variable(var_pos, k);
             }
 
             OpCode::LoadLocal(var_pos) => {
-                let v = self.current_frame().get_variable(var_pos);
+                let v = self.current_frame().borrow().get_variable(var_pos);
                 self.stack.push(v);
             }
 
@@ -273,9 +307,14 @@ impl CPU {
 
             OpCode::Call(i) => {
                 self.assert_jump_address(i);
-                self.frames.push(Frame::new(self.instruction_address));
+                self.environment.push(Frame::new(self.instruction_address));
                 self.current_frame_idx += 1;
                 self.instruction_address = i;
+            }
+
+            // creates a new closure, then pushes the new function definition onto the stack
+            OpCode::DefineFunction(ref _function) => {
+                
             }
 
             OpCode::CallFn => {
@@ -291,7 +330,7 @@ impl CPU {
                         let i = d.instruction_address.unwrap();
                         // WW this is the same OpCode::Call
                         self.assert_jump_address(i);
-                        self.frames.push(Frame::new(self.instruction_address));
+                        self.environment.push(Frame::new(self.instruction_address));
                         self.current_frame_idx += 1;
                         self.instruction_address = i;
                         // MM this is the same OpCode::Call
@@ -301,19 +340,19 @@ impl CPU {
             }
 
             OpCode::PushFrame => {
-                self.frames.push(Frame::new(0));
+                self.environment.push(Frame::new(0));
                 self.current_frame_idx += 1;
             }
 
             OpCode::PopFrame => {
-                self.frames.pop();
+                self.environment.pop();
                 self.current_frame_idx -= 1;
             }
 
             OpCode::Ret => {
                 self.assert_return_address();
-                let return_address = self.current_frame().return_address;
-                self.frames.pop();
+                let return_address = self.current_frame().borrow().return_address;
+                self.environment.pop();
                 self.current_frame_idx -= 1;
                 self.instruction_address = return_address;
             }

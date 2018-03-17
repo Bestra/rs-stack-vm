@@ -1,4 +1,5 @@
 use value::Value;
+use function::FunctionDefinition;
 use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -30,6 +31,7 @@ pub enum OpCode {
     DebugPrint,
     Call(usize),
     CallFn,
+    DefineFunction(FunctionDefinition),
     PushFrame,
     PopFrame,
     Constant(usize),
@@ -65,6 +67,7 @@ impl fmt::Display for OpCode {
             &Store(idx, i) => format!("STORE {} {}", idx, i),
             &Print => format!("PRINT"),
             &DebugPrint => format!("DEBUG_PRINT"),
+            &DefineFunction(_) => format!("DEFINE_FUNCTION"),
             &Call(i) => format!("CALL {}", i),
             &CallFn => format!("CALL_FN"),
             &PushFrame => format!("PUSH_FRAME"),
