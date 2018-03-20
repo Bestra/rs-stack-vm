@@ -12,6 +12,7 @@ use assembler::{Assembler, AssemblyProgram};
 use value::Value;
 use function::FunctionDefinition;
 
+#[derive(Debug)]
 pub struct Scope {
     index: usize,
     table: HashMap<String, usize>,
@@ -46,6 +47,7 @@ fn new_scope() -> Rc<RefCell<Scope>> {
     Rc::new(RefCell::new(Scope::new()))
 }
 
+#[derive(Debug)]
 pub struct Environment {
     scopes: Vec<Rc<RefCell<Scope>>>,
 }
@@ -120,7 +122,7 @@ pub fn compile(program: &str) -> AssemblyProgram {
 
 pub struct Compiler {
     instructions: Vec<Instruction>,
-    function_instructions: Vec<Instruction>,
+    all_function_instructions: Vec<Vec<Instruction>>,
     environment: Environment,
     label_id: i32,
 }
@@ -129,7 +131,7 @@ impl Compiler {
     pub fn new() -> Compiler {
         Compiler {
             instructions: Vec::new(),
-            function_instructions: Vec::new(),
+            all_function_instructions: vec![Vec::new()],
             environment: Environment::new(),
             label_id: 0,
         }
@@ -221,14 +223,11 @@ impl Compiler {
                 self.environment.pop();
             }
 
-            Statement::Function {
+            Statement::Function { // function definition
                 name,
                 parameters,
                 body,
             } => {
-                let (frame_idx, idx) = self.environment.define(name.clone());
-                self.instructions.push(Instruction::Local(name.clone(), idx));
-
                 let l = self.get_label_id();
                 let fun_label = self.generate_label(&format!("fun_{}", name), l);
 
@@ -242,17 +241,22 @@ impl Compiler {
 
                 self.instructions.push(Instruction::OpCode(OpCode::DefineFunction(function_def)));
                 //defineFunction will put the function prototype on the stack.
+
+                let (frame_idx, idx) = self.environment.define(name.clone());
+                self.instructions.push(Instruction::Local(name.clone(), idx));
+
                 self.instructions
                     .push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
 
-                self.function_instructions.push(Instruction::Label(fun_label));
+                let mut function_instructions = Vec::new();
+                function_instructions.push(Instruction::Label(fun_label));
 
                 // TODO: make this not horrible
                 // 1. cache the current instruction pointer [a, a, a, a] (self.instructions.len() - 1)
                 let first_function_instruction_idx = self.instructions.len();
                 // 2. create instructions for the function block
                 // first define all the local variables for the parameters
-                for p in parameters {
+                for p in parameters.into_iter().rev() {
                     let (frame_idx, idx) = self.environment.define(p.clone());
                     self.instructions.push(Instruction::Local(p, idx));
                     self.instructions
@@ -263,8 +267,9 @@ impl Compiler {
 
                 // 3. take all those instructions off self.instructions and transfer them to self.function_instructions
                 let mut new_function_instrs: Vec<Instruction> = self.instructions.drain(first_function_instruction_idx..).collect();
-                self.function_instructions.append(&mut new_function_instrs);
-                self.function_instructions.push(Instruction::OpCode(OpCode::Ret));
+                function_instructions.append(&mut new_function_instrs);
+                function_instructions.push(Instruction::OpCode(OpCode::Ret));
+                self.all_function_instructions.push(function_instructions);
             }
 
             Statement::Return { value } => {
@@ -395,7 +400,9 @@ impl Compiler {
     pub fn generate_instructions(&mut self, program: Statement) -> Vec<Instruction> {
         self.process_statement(program);
         self.instructions.push(Instruction::OpCode(OpCode::Halt));
-        self.instructions.append(&mut self.function_instructions);
+        for mut function_block in self.all_function_instructions.iter_mut() {
+            self.instructions.append(&mut function_block);
+        };
         self.instructions.clone()
     }
 }

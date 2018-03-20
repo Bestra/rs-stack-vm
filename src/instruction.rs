@@ -90,6 +90,20 @@ pub enum Instruction {
     Local(String, usize)
 }
 
+impl fmt::Display for Instruction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use instruction::Instruction::*;
+        let s = match self {
+            &OpCode(ref o) => format!("{}", o),
+            &Ref(ref r) => format!("{:?}", r),
+            &Label(ref s) => format!("{}:", s),
+            &Comment(ref s) => format!("//{}", s),
+            &Local(ref s, i) => format!("LOCAL {} {}", s, i),
+        };
+        f.pad(s.as_str())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Ref {
     Jmp(String),

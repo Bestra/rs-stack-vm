@@ -59,7 +59,7 @@ VariableDeclaration: Statement = {
 };
 
 FunctionDeclaration: Statement = {
-    "fun" <i: Identifier> "(" <params:(<Identifier> ",")*> <last_param: Identifier?> ")" <body: Block> ";" => {
+    "fun" <i: Identifier> "(" <params:(<Identifier> ",")*> <last_param: Identifier?> ")" <body: Block> => {
 
         let name = i.to_string();
         let parameters = match last_param {
@@ -84,6 +84,18 @@ Statement = {
     WhileStatement,
     ForStatement,
     Block,
+};
+
+PrintStatement: Statement = {
+    "print" <expression: Expression> ";" => Statement::Print{<>}
+};
+
+ReturnStatement: Statement = {
+    "return" <value: Expression?> ";" => Statement::Return{<>}
+};
+
+Block: Statement = {
+    "{" <statements: Declaration*> "}" => Statement::Block{<>}
 };
 
 ExprStatement: Statement = {
@@ -168,18 +180,6 @@ ForInitializer: Option<Statement> = {
     VariableDeclaration => Some(<>),
     ExprStatement => Some(<>),
     ";" => None,
-};
-
-PrintStatement: Statement = {
-    "print" <expression: Expression> ";" => Statement::Print{<>}
-};
-
-ReturnStatement: Statement = {
-    "return" <value: Expression?> ";" => Statement::Return{<>}
-};
-
-Block: Statement = {
-    "{" <statements: Declaration*> "}" => Statement::Block{<>}
 };
 
 Expression = {

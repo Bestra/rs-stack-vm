@@ -22,12 +22,13 @@ pub struct FunctionPrototype {
 
 impl fmt::Debug for FunctionPrototype {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        let closure_frames = &self.closure.frames.len();
         fmt.debug_struct("FunctionPrototype")
             .field("arity", &self.arity)
             .field("name", &self.name)
             .field("label", &self.label)
             .field("instruction_address", &self.instruction_address)
-            .field("closure", &"[opaque]".to_string())
+            .field("closure", &format!("({} frames)", closure_frames))
             .finish()
     }
 }

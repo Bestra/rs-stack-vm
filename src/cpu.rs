@@ -426,6 +426,7 @@ impl CPU {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use function::FunctionDefinition;
 
     fn assert_current_frame_value(cpu: &CPU, index: usize, value: Value) {
         assert_eq!(cpu.current_frame().borrow().get_variable(index), value);

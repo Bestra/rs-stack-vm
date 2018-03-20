@@ -86,7 +86,7 @@ fn fun_print_arg() {
    test_output("
 fun hello(a) {
   print \"hello \" + a;
-};
+}
 
 hello(\"world\");
 ", vec!["hello world"]);
@@ -97,7 +97,7 @@ fn fun_return() {
     test_output("
 fun add1(a) {
   return a + 1;
-};
+}
 
 print add1(1);
 ", vec!["2"]);
@@ -106,10 +106,31 @@ print add1(1);
 #[test]
 fn fun_multiple_args() {
     test_output("
-fun add(x, y) {
-  return x + y;
-};
+fun prints(x, y) {
+  print x;
+  print y;
+}
 
-print add(1, 3) - 2;
-", vec!["2"]);
+prints(\"foo\", \"bar\");
+
+", vec!["foo", "bar"]);
+}
+
+#[test]
+fn fun_closures() {
+    test_output("
+fun makePoint(x, y) {
+  fun closure(method) {
+    if (method == \"x\") return x; end
+    if (method == \"y\") return y; end
+    print \"unknown method \" + method;
+  }
+
+  return closure;
+}
+
+var point = makePoint(2, 3);
+print point(\"x\");
+print point(\"y\");
+", vec!["2", "3"]);
 }

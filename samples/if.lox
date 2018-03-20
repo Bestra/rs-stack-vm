@@ -1,3 +1,5 @@
-if (false) print "t"; else print "f"; end
+fun pr(i) {
+if (i == true) return "t"; else return "f"; end
+};
 
-if (true) print "also true"; end
+print pr(false);

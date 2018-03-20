@@ -1,0 +1,14 @@
+fun makePoint(x, y) {
+  fun closure(method) {
+    if (method == "x") return x; end
+    if (method == "y") return y; end
+    print "unknown method " + method;
+  }
+
+  return closure;
+}
+
+var point = makePoint(2, 3);
+print point("x");
+print point("y");
+
