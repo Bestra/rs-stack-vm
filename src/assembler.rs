@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::rc::Rc;
 use instruction::{Instruction, OpCode, Ref};
 use value::Value;
 use function::FunctionDefinition;
@@ -66,16 +65,17 @@ impl Assembler {
                     }
                 },
                 Instruction::OpCode(ref o) => match o {
-                    &OpCode::Push(Value::Fn(ref f)) => {
+                    &OpCode::DefineFunction(ref f) => {
                         let addr = self.labels.get(&f.label.clone()).unwrap();
                         let new_def = FunctionDefinition {
                             arity: f.arity.clone(),
+                            parameters: f.parameters.clone(),
                             name: f.name.clone(),
                             label: f.label.clone(),
                             instruction_address: Some(*addr)
                         };
 
-                        OpCode::Push(Value::Fn(Rc::new(new_def)))
+                        OpCode::DefineFunction(new_def)
                     }
                    _ => o.clone(),
                 }

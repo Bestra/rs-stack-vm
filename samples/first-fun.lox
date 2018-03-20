@@ -1,5 +1,5 @@
-fun foo() {
-  print("foo in a function!");
+fun hello(a) {
+  print "hello " + a;
 };
 
-foo();
+hello("world");

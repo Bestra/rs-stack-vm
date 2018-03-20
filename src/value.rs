@@ -5,14 +5,14 @@ use std::fmt;
 use std::rc::Rc;
 use std::cmp::Ordering;
 
-use function::FunctionDefinition;
+use function::FunctionPrototype;
 
 #[derive(Debug,Clone)]
 pub enum Value {
     Number(i32),
     Bool(bool),
     String(String),
-    Fn(Rc<FunctionDefinition>),
+    Fn(Rc<FunctionPrototype>),
     // Float(f64),
 }
 

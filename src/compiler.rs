@@ -153,6 +153,7 @@ impl Compiler {
         match s {
             Statement::Program { statements } => self.process_statements(statements),
             Statement::Expression { expression } => self.process_expr(*expression),
+            Statement::Debugger => self.instructions.push(Instruction::OpCode(OpCode::Debugger)),
             Statement::Print { expression } => {
                 self.process_expr(*expression);
                 self.instructions.push(Instruction::OpCode(OpCode::Print));
@@ -233,13 +234,14 @@ impl Compiler {
 
                 let function_def = FunctionDefinition {
                     arity: parameters.len(),
+                    parameters: parameters.clone(),
                     name: name.clone(),
                     label: fun_label.clone(),
                     instruction_address: None, // to be updated in an assembler pass
                 };
 
                 self.instructions.push(Instruction::OpCode(OpCode::DefineFunction(function_def)));
-                //defineFunction will put the function definition back on the stack.
+                //defineFunction will put the function prototype on the stack.
                 self.instructions
                     .push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
 
@@ -249,6 +251,14 @@ impl Compiler {
                 // 1. cache the current instruction pointer [a, a, a, a] (self.instructions.len() - 1)
                 let first_function_instruction_idx = self.instructions.len();
                 // 2. create instructions for the function block
+                // first define all the local variables for the parameters
+                for p in parameters {
+                    let (frame_idx, idx) = self.environment.define(p.clone());
+                    self.instructions.push(Instruction::Local(p, idx));
+                    self.instructions
+                        .push(Instruction::OpCode(OpCode::Store(frame_idx, idx)));
+                }
+
                 self.process_statement(*body);
 
                 // 3. take all those instructions off self.instructions and transfer them to self.function_instructions
@@ -734,6 +744,7 @@ mod tests {
         let f_label = "fun_foo_1".to_string();
         let expected_fn_def = FunctionDefinition {
             arity: 0,
+            parameters: vec![],
             name: "foo".to_string(),
             label: f_label.clone(),
             instruction_address: None,
@@ -743,13 +754,49 @@ mod tests {
             format!("{:?}", output),
             format!("{:?}",vec![
                 Instruction::Local("foo".to_string(), 0),
-                Instruction::OpCode(OpCode::Push(Value::Fn(Rc::new(expected_fn_def)))),
+                Instruction::OpCode(OpCode::DefineFunction(expected_fn_def)),
                 Instruction::OpCode(OpCode::Store(0, 0)),
+                Instruction::OpCode(OpCode::Halt),
                 Instruction::Label(f_label.clone()),
                 Instruction::OpCode(OpCode::PushFrame),
                 Instruction::OpCode(OpCode::PopFrame),
                 Instruction::OpCode(OpCode::Ret),
+            ])
+        );
+    }
+
+    #[test]
+    fn compiles_function_def_with_params() {
+        let r = parse_Program(&mut HashMap::new(),
+                              &mut Vec::new(),
+                              "fun foo(a, b) {};");
+
+        let mut p = Compiler::new();
+        let output = p.generate_instructions(r.unwrap());
+        let f_label = "fun_foo_1".to_string();
+        let expected_fn_def = FunctionDefinition {
+            arity: 2,
+            parameters: vec!["a".to_string(), "b".to_string()],
+            name: "foo".to_string(),
+            label: f_label.clone(),
+            instruction_address: None,
+        };
+
+        assert_eq!(
+            format!("{:?}", output),
+            format!("{:?}",vec![
+                Instruction::Local("foo".to_string(), 0),
+                Instruction::OpCode(OpCode::DefineFunction(expected_fn_def)),
+                Instruction::OpCode(OpCode::Store(0, 0)),
                 Instruction::OpCode(OpCode::Halt),
+                Instruction::Label(f_label.clone()),
+                Instruction::Local("a".to_string(), 1),
+                Instruction::OpCode(OpCode::Store(0, 1)),
+                Instruction::Local("b".to_string(), 2),
+                Instruction::OpCode(OpCode::Store(0, 2)),
+                Instruction::OpCode(OpCode::PushFrame),
+                Instruction::OpCode(OpCode::PopFrame),
+                Instruction::OpCode(OpCode::Ret),
             ])
         );
     }

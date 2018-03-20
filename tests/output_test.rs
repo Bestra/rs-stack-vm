@@ -80,3 +80,14 @@ var i = 1;
 for (; i < 3; i = i + 1) { print i; }
 ", vec!["1", "2"]);
 }
+
+#[test]
+fn fun_print_arg() {
+   test_output("
+fun hello(a) {
+  print \"hello \" + a;
+};
+
+hello(\"world\");
+", vec!["hello world"]);
+}

@@ -78,6 +78,8 @@ pub enum Statement {
         statements: Vec<Statement>,
     },
 
+    Debugger,
+
     Block {
         statements: Vec<Statement>,
     },
@@ -160,6 +162,13 @@ fn print_statement(accum: GraphAccum, node: &Statement, parent_node: GraphNode) 
                 |acc, s| print_statement(acc, &s, (idx, "Block".to_string()))
             )
         },
+
+        &Debugger => {
+            let p = (idx, "debugger".to_string());
+            edges.push((parent_node.clone(), p.clone()));
+            (edges, idx)
+        }
+
         &Expression {
             ref expression,
         } => {
