@@ -267,6 +267,14 @@ impl Compiler {
                 self.function_instructions.push(Instruction::OpCode(OpCode::Ret));
             }
 
+            Statement::Return { value } => {
+                match value {
+                    Some(v) => self.process_expr(*v),
+                    None => ()
+                }
+                self.instructions.push(Instruction::OpCode(OpCode::Ret));
+            }
+
             Statement::Var { name, initializer } => {
                 let (frame_idx, idx) = self.environment.define(name.clone());
                 self.instructions.push(Instruction::Local(name, idx));

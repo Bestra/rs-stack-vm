@@ -78,6 +78,7 @@ FunctionDeclaration: Statement = {
 Statement = {
     PrintStatement,
     DebuggerStatement,
+    ReturnStatement,
     ExprStatement,
     IfStatement,
     WhileStatement,
@@ -171,6 +172,10 @@ ForInitializer: Option<Statement> = {
 
 PrintStatement: Statement = {
     "print" <expression: Expression> ";" => Statement::Print{<>}
+};
+
+ReturnStatement: Statement = {
+    "return" <value: Expression?> ";" => Statement::Return{<>}
 };
 
 Block: Statement = {

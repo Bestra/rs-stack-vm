@@ -91,3 +91,25 @@ fun hello(a) {
 hello(\"world\");
 ", vec!["hello world"]);
 }
+
+#[test]
+fn fun_return() {
+    test_output("
+fun add1(a) {
+  return a + 1;
+};
+
+print add1(1);
+", vec!["2"]);
+}
+
+#[test]
+fn fun_multiple_args() {
+    test_output("
+fun add(x, y) {
+  return x + y;
+};
+
+print add(1, 3) - 2;
+", vec!["2"]);
+}

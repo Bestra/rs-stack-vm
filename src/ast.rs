@@ -99,9 +99,9 @@ pub enum Statement {
     Print {
         expression: Box<Expr>,
     },
-    // Return {
-    //     value: Option<Box<Expr>>,
-    // },
+    Return {
+        value: Option<Box<Expr>>,
+    },
     While {
         condition: Box<Expr>,
         body: Box<Statement>,
@@ -207,9 +207,16 @@ fn print_statement(accum: GraphAccum, node: &Statement, parent_node: GraphNode) 
             edges.push((parent_node.clone(), p.clone()));
             print_expr((edges, idx), expression, p.clone())
         },
-        // // Return {
-        // //     value: Option<Box<Expr>>,
-        // // },
+        &Return {
+            ref value,
+        } => {
+            let p = (idx, "Return".to_string());
+            edges.push((parent_node.clone(), p.clone()));
+            match value {
+                &Some(ref e) => print_expr((edges, idx), &*e, p.clone()),
+                &None => (edges, idx),
+            }
+        },
         &While {
             ref condition,
             ref body,
