@@ -256,6 +256,8 @@ impl Compiler {
                 let first_function_instruction_idx = self.instructions.len();
                 // 2. create instructions for the function block
                 // first define all the local variables for the parameters
+
+                self.environment.push();
                 for p in parameters.into_iter().rev() {
                     let (frame_idx, idx) = self.environment.define(p.clone());
                     self.instructions.push(Instruction::Local(p, idx));
@@ -265,6 +267,7 @@ impl Compiler {
 
                 self.process_statement(*body);
 
+                self.environment.pop();
                 // 3. take all those instructions off self.instructions and transfer them to self.function_instructions
                 let mut new_function_instrs: Vec<Instruction> = self.instructions.drain(first_function_instruction_idx..).collect();
                 function_instructions.append(&mut new_function_instrs);

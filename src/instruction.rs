@@ -58,7 +58,7 @@ impl fmt::Display for OpCode {
             &NEq => format!("N_EQ"),
             &IsGt => format!("IS_GT"),
             &IsGe => format!("IS_GE"),
-            &IsLt => format!("ID_LT"),
+            &IsLt => format!("IS_LT"),
             &IsLe => format!("IS_LE"),
             &Jmp(i) => format!("JMP {}", i),
             &JmpIf(i) => format!("JMP_IF {}", i),

@@ -81,9 +81,7 @@ pub struct CPU {
     print_buffer: Vec<String>,
     program: AssemblyProgram,
     current_frame_idx: usize,
-    environment: Closure,
-    global_environment: Closure,
-    call_stack: Vec<Rc<FunctionPrototype>>,
+    call_stack: Vec<(Closure, Option<Rc<FunctionPrototype>>)>,
     // the function environment will either be the
     // CPU's environment or one that belongs to the function
     instruction_address: usize,
@@ -94,17 +92,11 @@ pub struct CPU {
 
 impl CPU {
     pub fn new(program: AssemblyProgram) -> CPU {
-        let global_env = Closure::new();
-        let env = Closure::from(&global_env);
         CPU {
-            call_stack: Vec::new(),
+            call_stack: vec![(Closure::new(), None)],
             current_frame_idx: 0,
             debug: false,
             debugger_mode: false,
-            environment: env, // the place where we do all the actual resolution.
-            // environment serves as a bucket into which we Rc::clone() frames from either the top of the
-            // call stack or the global environment
-            global_environment: global_env, // frames that are not created in a closure
             halted: false,
             instruction_address: 0,
             print_buffer: Vec::new(),
@@ -137,7 +129,25 @@ impl CPU {
     }
 
     pub fn get_frame(&self, idx: usize) -> Rc<RefCell<Frame>> {
-        self.environment.get_frame(idx)
+        self.environment().get_frame(idx)
+    }
+
+    pub fn environment(&self) -> &Closure {
+        match self.call_stack.last() {
+            Some(&(ref env, _)) => {
+                env
+            }
+            None => panic!("The call stack is empty")
+        }
+    }
+    
+    pub fn environment_mut(&mut self) -> &mut Closure {
+        match self.call_stack.last_mut() {
+            Some(&mut (ref mut env, _)) => {
+                env
+            }
+            None => panic!("The call stack is empty")
+        }
     }
 
     pub fn step(&mut self) {
@@ -192,8 +202,8 @@ impl CPU {
         assert!(self.instruction_address < self.program.op_codes.len());
         let next_ins = &self.program.op_codes[self.instruction_address];
         if self.debug || self.debugger_mode {
-            println!("{:<3}: {:15} stack: {:?}, call stack frames: {}", self.instruction_address, next_ins, self.stack, self.call_stack.len());
-            println!("environment: {:?}", self.environment);
+            println!("{:<3}: {:15} stack: {:?}, call stack frames: {}, environment frames: {}", self.instruction_address, next_ins, self.stack, self.call_stack.len(), self.environment().frames.len());
+            println!("environment: {:?}", self.environment());
         }
 
         if self.debugger_mode {
@@ -275,7 +285,7 @@ impl CPU {
                 assert!(
                     self.stack.len() >= 1,
                     "stack needs at least 1 values to add"
-                );
+                        );
 
                 let top = self.stack.pop().unwrap() == Value::Bool(true);
                 self.stack.push(Value::Bool(!top));
@@ -342,14 +352,14 @@ impl CPU {
             // TODO: basically replace this with CallFn
             OpCode::Call(i) => {
                 self.assert_jump_address(i);
-                self.environment.push(Frame::new());
+                self.environment_mut().push(Frame::new());
                 self.current_frame_idx += 1;
                 self.instruction_address = i;
             }
 
             // creates a new closure, then pushes the new function prototype onto the stack
             OpCode::DefineFunction(ref function_def) => {
-                let c = Closure::from(&self.environment);
+                let c = Closure::from(&self.environment());
                 let function_proto = FunctionPrototype {
                     arity: function_def.arity,
                     name: function_def.name.clone(),
@@ -374,14 +384,14 @@ impl CPU {
                         // WW this is the same OpCode::Call
                         self.assert_jump_address(i);
 
-                        self.call_stack.push(Rc::clone(&proto));
+                        let mut env = Closure::from(&proto.closure);
+                        env.return_address = self.instruction_address;
+                        env.push(Frame::new());
+
+                        self.call_stack.push((env, Some(Rc::clone(&proto))));
 
                         // set the environment to be the environment from the function's
                         // closure
-                        self.environment = Closure::from(&proto.closure);
-                        self.environment.return_address = self.instruction_address;
-
-                        self.environment.push(Frame::new());
                         self.current_frame_idx += 1;
                         self.instruction_address = i;
                         // MM this is the same OpCode::Call
@@ -391,12 +401,12 @@ impl CPU {
             }
 
             OpCode::PushFrame => {
-                self.environment.push(Frame::new());
+                self.environment_mut().push(Frame::new());
                 self.current_frame_idx += 1;
             }
 
             OpCode::PopFrame => {
-                self.environment.pop();
+                self.environment_mut().pop();
                 self.current_frame_idx -= 1;
             }
 
@@ -404,18 +414,9 @@ impl CPU {
                 self.assert_return_address();
                 // this return address will come from the closure at the top
                 // of the call stack
-                let return_address = self.environment.return_address;
-                self.environment.pop();
+                let return_address = self.environment().return_address;
+                self.environment_mut().pop();
                 self.call_stack.pop();
-                match self.call_stack.last() {
-                    Some(proto) => {
-                        self.environment = Closure::from(&proto.closure);
-                    }
-
-                    None => {
-                        self.environment = Closure::from(&self.global_environment);
-                    }
-                }
                 self.current_frame_idx -= 1;
                 self.instruction_address = return_address;
             }
@@ -713,7 +714,7 @@ mod tests {
         ]);
         cpu.run();
         assert_halted_at(&cpu, 2);
-        assert_eq!(cpu.environment.len(), 2);
+        assert_eq!(cpu.environment().len(), 2);
     }
 
     #[test]
@@ -725,6 +726,6 @@ mod tests {
         ]);
         cpu.run();
         assert_halted_at(&cpu, 3);
-        assert_eq!(cpu.environment.len(), 1);
+        assert_eq!(cpu.environment().len(), 1);
     }
 }
