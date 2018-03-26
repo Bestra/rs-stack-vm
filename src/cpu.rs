@@ -77,17 +77,17 @@ impl Closure {
 }
 
 pub struct CPU {
-    stack: Vec<Value>,
+    pub stack: Vec<Value>,
     print_buffer: Vec<String>,
-    program: AssemblyProgram,
+    pub program: AssemblyProgram,
     current_frame_idx: usize,
-    call_stack: Vec<(Closure, Option<Rc<FunctionPrototype>>)>,
+    pub call_stack: Vec<(Closure, Option<Rc<FunctionPrototype>>)>,
     // the function environment will either be the
     // CPU's environment or one that belongs to the function
-    instruction_address: usize,
-    halted: bool,
+    pub instruction_address: usize,
+    pub halted: bool,
     pub debug: bool,
-    debugger_mode: bool,
+    pub debugger_mode: bool,
 }
 
 impl CPU {
@@ -120,6 +120,12 @@ impl CPU {
 
     pub fn run(&mut self) {
         while !self.halted {
+            self.step();
+        }
+    }
+
+    pub fn run_to_debugger(&mut self) {
+        while !self.debugger_mode && !self.halted {
             self.step();
         }
     }
@@ -198,6 +204,11 @@ impl CPU {
         target_frame.borrow_mut().set_variable(var_pos, k);
     }
 
+    pub fn next_instruction(&self) -> String {
+        let next_ins = &self.program.op_codes[self.instruction_address];
+        format!("{}", next_ins)
+    }
+
     fn decode_next_instruction(&mut self) {
         assert!(self.instruction_address < self.program.op_codes.len());
         let next_ins = &self.program.op_codes[self.instruction_address];
@@ -206,15 +217,15 @@ impl CPU {
             println!("environment: {:?}", self.environment());
         }
 
-        if self.debugger_mode {
-            let reply = rprompt::prompt_reply_stdout("Debugger: ").unwrap();
-            println!("Your reply is {}", reply);
+        // if self.debugger_mode {
+        //     let reply = rprompt::prompt_reply_stdout("Debugger: ").unwrap();
+        //     println!("Your reply is {}", reply);
 
-            match reply.as_ref() {
-                "e" => self.debugger_mode = false,
-                _ => (),
-            }
-        }
+        //     match reply.as_ref() {
+        //         "e" => self.debugger_mode = false,
+        //         _ => (),
+        //     }
+        // }
         self.instruction_address += 1;
 
         match *next_ins {
@@ -222,6 +233,7 @@ impl CPU {
             OpCode::Debugger => {
                 println!("You've entered the debugger! Enter 'n' to continue or 'e' to exit");
                 self.debugger_mode = true;
+
             },
             OpCode::NoOp => (), //no-op
             OpCode::Push(ref val) => self.stack.push(val.clone()),

@@ -10,6 +10,33 @@ pub struct AssemblyProgram {
     pub constant_pool: Vec<Value>,
 }
 
+impl AssemblyProgram {
+    pub fn op_code_list(&self, current_address: Option<usize>) -> String {
+        let mut v = Vec::new();
+
+        match current_address {
+            None => {
+                for (i, o) in self.op_codes.iter().enumerate() {
+                    v.push(format!("{} {}", i, o));
+                }
+                v.join("\n")
+            }
+
+            Some(addr) => {
+                for (i, o) in self.op_codes.iter().enumerate() {
+                    let cursor = if addr == i {
+                        "====>"
+                    } else {
+                        "     "
+                    };
+                    v.push(format!("{} {} {}", cursor, i, o));
+                }
+                v.join("\n")
+            }
+        }
+    }
+}
+
 pub struct Assembler {
     program: Vec<Instruction>,
     labels: HashMap<String, usize>,
